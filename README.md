@@ -52,12 +52,12 @@ npm run publish
 
 The bundled `index.html` preserves **All Documents** mode: three mode-scoped scrapes (`IEP`, `BSP`, `Adjustments`), filenames `[Name]_IEP.doc`, `[Name]_BSP.doc`, `[Name]_Adjustments.doc`, and a 1 second delay between downloads.
 
-## PDF export
+## Word export (desktop)
 
-In the desktop app, after you **Generate** documents, each export row includes **Save PDF**. That uses Electron’s native `webContents.printToPDF()` (Chromium) with the same print CSS as **Print / Save as PDF**, so only the selected document section is included.
+After you **Generate** documents, each export row has **Generate Word** only (no PDF buttons). In the desktop app, saving uses Electron’s system **Save** dialog and `fs.writeFile` in `src/main.js` (`save-word-document` IPC), so each IEP, BSP, and Adjustments file is written independently without blocking the UI.
 
 Implementation:
 
-- `src/main.js` — IPC handler `save-document-pdf`
-- `src/preload.js` — exposes `window.electronAPI.saveDocumentAsPdf()`
-- `index.html` — **Save PDF** buttons when running inside Electron
+- `src/main.js` — IPC handler `save-word-document`
+- `src/preload.js` — exposes `window.electronAPI.saveWordDocument()`
+- `index.html` — isolated per-document snapshots and individual **Generate Word** actions (including in Full suite / All Documents mode)

@@ -96,6 +96,36 @@ app.on('window-all-closed', () => {
   }
 });
 
+ipcMain.handle('save-word-document', async (event, options) => {
+  const suggestedFilename = (options && options.suggestedFilename) || 'document.doc';
+  const content = options && options.content;
+
+  if (content == null || content === '') {
+    throw new Error('No document content to save.');
+  }
+
+  const webContents = event.sender;
+  const win = BrowserWindow.fromWebContents(webContents);
+  if (!win) {
+    throw new Error('Could not find application window.');
+  }
+
+  const { canceled, filePath } = await dialog.showSaveDialog(win, {
+    title: 'Save Word document',
+    defaultPath: suggestedFilename,
+    filters: [{ name: 'Word documents', extensions: ['doc'] }]
+  });
+
+  if (canceled || !filePath) {
+    return { canceled: true };
+  }
+
+  const finalPath = filePath.toLowerCase().endsWith('.doc') ? filePath : filePath + '.doc';
+  await fs.writeFile(finalPath, content, 'utf8');
+
+  return { canceled: false, filePath: finalPath };
+});
+
 ipcMain.handle('save-document-pdf', async (event, options) => {
   const docKey = options && options.docKey;
   const suggestedFilename = (options && options.suggestedFilename) || 'document.pdf';

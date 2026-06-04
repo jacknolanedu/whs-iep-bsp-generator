@@ -45,9 +45,12 @@
       inset: 0;
       z-index: 2000;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
-      padding: 2rem 1.25rem;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      padding: 1.25rem 1.25rem 0;
       opacity: 1;
       visibility: visible;
       transition: opacity 0.45s ease, visibility 0.45s ease;
@@ -79,7 +82,12 @@
     .launchpad__inner {
       position: relative;
       width: min(920px, 100%);
+      flex-shrink: 0;
       animation: launchpadEnter 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+    .launchpad__scroll {
+      overflow-y: visible;
+      padding-bottom: 60px;
     }
     @keyframes launchpadEnter {
       from {
@@ -102,7 +110,7 @@
     }
     .launchpad__brand {
       text-align: center;
-      margin-bottom: 1.75rem;
+      margin-bottom: 1.25rem;
     }
     .launchpad__logo {
       display: inline-flex;
@@ -132,15 +140,15 @@
     .launchpad__subtitle {
       text-align: center;
       color: rgba(255, 255, 255, 0.72);
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       max-width: 32rem;
-      margin: 0 auto 2.25rem;
-      line-height: 1.55;
+      margin: 0 auto 1.5rem;
+      line-height: 1.5;
     }
     .launchpad__grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 1rem;
+      gap: 0.75rem;
     }
     @media (max-width: 640px) {
       .launchpad__grid {
@@ -247,67 +255,97 @@
       flex-direction: row;
       flex-wrap: wrap;
       align-items: center;
-      padding: 1.35rem 1.5rem;
-      border: 2px solid rgba(14, 168, 90, 0.55);
-      background: linear-gradient(
-        135deg,
-        rgba(10, 122, 62, 0.28) 0%,
-        rgba(14, 168, 90, 0.14) 45%,
-        rgba(255, 255, 255, 0.06) 100%
-      );
+      padding: 1.1rem 1.25rem;
+      border: 2px solid rgba(14, 168, 90, 0.75);
+      background: #1a202c;
+      opacity: 1;
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
       box-shadow:
-        0 4px 28px rgba(10, 122, 62, 0.28),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        0 6px 24px rgba(0, 0, 0, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
     }
     .launchpad__card--all:hover {
-      border-color: var(--primary-light);
-      background: linear-gradient(
-        135deg,
-        rgba(10, 122, 62, 0.38) 0%,
-        rgba(14, 168, 90, 0.2) 45%,
-        rgba(255, 255, 255, 0.1) 100%
-      );
+      border-color: #0ea85a;
+      background: #1e293b;
       box-shadow:
-        0 12px 40px rgba(10, 122, 62, 0.35),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+        0 10px 32px rgba(0, 0, 0, 0.45),
+        0 0 0 1px rgba(14, 168, 90, 0.4),
+        inset 0 1px 0 rgba(255, 255, 255, 0.08);
     }
     .launchpad__card--all.launchpad__card--selected {
       border-color: var(--accent);
-      background: linear-gradient(
-        135deg,
-        rgba(242, 183, 5, 0.2) 0%,
-        rgba(10, 122, 62, 0.3) 100%
-      );
+      background: #1e293b;
+      box-shadow:
+        0 0 0 2px rgba(242, 183, 5, 0.5),
+        0 10px 32px rgba(0, 0, 0, 0.45);
     }
     .launchpad__card--all .launchpad__card-icon {
       margin-bottom: 0;
       margin-right: 0.75rem;
-      background: rgba(10, 122, 62, 0.55);
-      border-color: rgba(14, 168, 90, 0.7);
+      background: linear-gradient(135deg, var(--primary) 0%, #0ea85a 100%);
+      border: 2px solid rgba(255, 255, 255, 0.25);
       color: #fff;
       width: 2.75rem;
       height: 2.75rem;
       font-size: 0.65rem;
+      box-shadow: 0 0 14px rgba(10, 122, 62, 0.55);
     }
     .launchpad__card--all .launchpad__card-body {
       flex: 1;
       min-width: 200px;
     }
     .launchpad__card--all .launchpad__card-title {
-      color: #fff;
+      color: #ffffff;
+      font-weight: 600;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
     }
     .launchpad__card--all .launchpad__card-desc {
-      color: rgba(255, 255, 255, 0.82);
+      color: #e2e8f0;
+      font-weight: 400;
     }
     .launchpad__card-tag--primary {
       margin-top: 0;
       margin-left: auto;
-      padding: 0.3rem 0.7rem;
+      padding: 0.35rem 0.85rem;
       border-radius: 999px;
-      background: var(--primary);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.25);
-      box-shadow: 0 2px 8px rgba(10, 122, 62, 0.4);
+      background: linear-gradient(135deg, var(--primary) 0%, #0ea85a 100%);
+      color: #ffffff;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      border: 2px solid rgba(255, 255, 255, 0.35);
+      box-shadow:
+        0 0 14px rgba(10, 122, 62, 0.7),
+        0 0 0 1px rgba(14, 168, 90, 0.85),
+        0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+    .launchpad__card--all:hover .launchpad__card-tag--primary {
+      box-shadow:
+        0 0 18px rgba(14, 168, 90, 0.85),
+        0 0 0 1px rgba(255, 255, 255, 0.4),
+        0 2px 12px rgba(0, 0, 0, 0.35);
+    }
+    /* IEP, BSP, ADJ cards only — slightly smaller to fit smaller screens */
+    .launchpad__card:not(.launchpad__card--all) {
+      padding: 1rem 1.1rem 1.05rem;
+      gap: 0.35rem;
+    }
+    .launchpad__card:not(.launchpad__card--all) .launchpad__card-icon {
+      width: 2.15rem;
+      height: 2.15rem;
+      font-size: 0.62rem;
+      margin-bottom: 0.05rem;
+    }
+    .launchpad__card:not(.launchpad__card--all) .launchpad__card-title {
+      font-size: 1rem;
+    }
+    .launchpad__card:not(.launchpad__card--all) .launchpad__card-desc {
+      font-size: 0.78rem;
+      line-height: 1.4;
+    }
+    .launchpad__card:not(.launchpad__card--all) .launchpad__card-tag {
+      margin-top: 0.2rem;
+      font-size: 0.68rem;
     }
 
     .app-main {
@@ -710,12 +748,6 @@
     }
 
     /* Buttons */
-    .btn-row {
-      display: flex;
-      gap: 1rem;
-      margin-top: 2rem;
-      flex-wrap: wrap;
-    }
     .form-actions {
       position: static;
       top: auto;
@@ -732,6 +764,24 @@
     }
     .form-actions-row {
       margin-top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+    }
+    .form-actions-compact-all {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.45rem;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.38rem 0.6rem;
+      background: #f8fafc;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--primary-dark);
+      white-space: nowrap;
     }
     #generatePlanBtn {
       position: static;
@@ -1487,6 +1537,7 @@
   <div id="launchpad" class="launchpad no-print" role="dialog" aria-modal="true" aria-labelledby="launchpadTitle">
     <div class="launchpad__backdrop" aria-hidden="true"></div>
     <div class="launchpad__inner">
+      <div class="launchpad__scroll">
       <div class="launchpad__brand">
         <span class="launchpad__logo" aria-hidden="true">WHS</span>
       </div>
@@ -1519,6 +1570,7 @@
           </span>
           <span class="launchpad__card-tag launchpad__card-tag--primary">Full suite</span>
         </button>
+      </div>
       </div>
     </div>
   </div>
@@ -1561,7 +1613,7 @@
     <div class="doc-picker no-print" id="docPicker">
       <div class="doc-picker-header">
         <h3>Documents to generate</h3>
-        <p>Choose which plans to complete, print, and export. Unchecked plans are hidden and their form fields are not required.</p>
+        <p>Choose which plans to complete and export. Unchecked plans are hidden and their form fields are not required.</p>
       </div>
       <div class="doc-picker-grid">
         <label class="doc-picker-card doc-picker-card--all">
@@ -1643,10 +1695,7 @@
           <label>Purpose of this BSP / IEP <textarea name="meetingPurpose" rows="4" placeholder="Why this plan is being developed (e.g. response to patterns of concern, SSG decision, review cycle, parent/student request)."></textarea></label>
           <label>What is being observed <textarea name="meetingObserved" rows="4" placeholder="What staff, home or the student report seeing (e.g. in class, yard, transitions, attendance, wellbeing)."></textarea></label>
         </div>
-        <div class="btn-row">
-          <button type="button" class="btn btn-secondary tab-next" data-next="studentvoice">Next: Student Voice →</button>
       </div>
-    </div>
 
       <!-- Tab 2: Student Voice — all information gathered from the student -->
       <div id="tab-studentvoice" class="tab-panel" role="tabpanel">
@@ -1743,10 +1792,6 @@
             <textarea name="successEnvOther" rows="2" placeholder="e.g. specific routines, tools, or settings the student needs"></textarea>
           </label>
         </div>
-        <div class="btn-row">
-          <button type="button" class="btn btn-secondary tab-prev" data-prev="details">← Back</button>
-          <button type="button" class="btn btn-secondary tab-next" data-next="parentvoice">Next: Parent Voice →</button>
-        </div>
       </div>
 
       <!-- Tab: Parent Voice — parent/carer perspective and key information -->
@@ -1789,10 +1834,6 @@
             </ul>
           </div>
           <p class="example" style="margin:0.5rem 0 0 0;">Use this to inform the <strong>IEP</strong> tab — especially the school <strong>Long-term goal (optional)</strong> and SMART goals — alongside <strong>Student Voice</strong>, so the year-level direction is holistic (not only academics).</p>
-        </div>
-        <div class="btn-row">
-          <button type="button" class="btn btn-secondary tab-prev" data-prev="studentvoice">← Back</button>
-          <button type="button" class="btn btn-secondary tab-next" data-next="behaviours">Next: Behaviours →</button>
         </div>
       </div>
 
@@ -1915,10 +1956,6 @@
             <textarea name="pbisInterventionOther" rows="2" placeholder="e.g. school-wide acknowledgment system, office discipline referral flow, combined Tier 2 package"></textarea>
           </label>
         </div>
-        <div class="btn-row">
-          <button type="button" class="btn btn-secondary tab-prev" data-prev="parentvoice">← Back</button>
-          <button type="button" class="btn btn-secondary tab-next" data-next="bsp">Next: BSP Goals →</button>
-        </div>
       </div>
 
       <!-- Tab 4: BSP Goals -->
@@ -2002,10 +2039,6 @@
               <input type="text" name="bsp3_timebound" placeholder="By when?">
             </div>
           </div>
-        </div>
-        <div class="btn-row">
-          <button type="button" class="btn btn-secondary tab-prev" data-prev="behaviours">← Back</button>
-          <button type="button" class="btn btn-secondary tab-next" data-next="iep">Next: IEP →</button>
         </div>
       </div>
 
@@ -2169,10 +2202,6 @@
             </ul>
           </div>
         </div>
-        <div class="btn-row">
-          <button type="button" class="btn btn-secondary tab-prev" data-prev="bsp">← Back</button>
-          <button type="button" class="btn btn-secondary tab-next" data-next="dip">Next: DIP →</button>
-        </div>
       </div>
 
       <!-- Tab: DIP — Differentiated Instruction Plan -->
@@ -2216,14 +2245,15 @@
             <textarea name="dipLearning" data-doc-required="classroom" required placeholder="E.g. Modified texts, scaffolded tasks, graphic organisers, extended time"></textarea>
           </div>
         </div>
-        <div class="btn-row">
-          <button type="button" class="btn btn-secondary tab-prev" data-prev="iep">← Back</button>
-        </div>
       </div>
 
       <div class="form-actions plan-form-footer" id="formActions">
         <div id="formValidationSummary" class="validation-summary" role="alert" aria-live="polite" hidden></div>
         <div class="btn-row form-actions-row">
+          <label class="form-actions-compact-all" for="fixedDocSelectAll">
+            <input type="checkbox" id="fixedDocSelectAll">
+            <span>All Documents</span>
+          </label>
           <button type="button" class="btn btn-accent" id="generatePlanBtn">Download Word document</button>
         </div>
       </div>
@@ -2233,7 +2263,6 @@
   </div>
   </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" crossorigin="anonymous"></script>
 <script>
     var LEARNING_LEVEL_SCALE = ['Well Below', 'Below', 'At Standard', 'Above', 'Well Above'];
 
@@ -4596,7 +4625,7 @@
       '</table>';
     }
 
-    /** Word export: learning levels as plain paragraphs (not a bordered table). */
+    /** Word export: learning levels as a professional 2-column table. */
     function formatLearningLevelsWordHtml(values) {
       var rows = [
         ['English – Reading', values.levelReading],
@@ -4604,14 +4633,16 @@
         ['Mathematics', values.levelNumeracy],
         ['Personal and Social Capability', values.levelPersonalSocial]
       ];
-      var html = '';
-      rows.forEach(function (pair) {
-        if (!wordSectionHasContent(pair[1])) return;
+      var bodyRows = rows.map(function (pair) {
+        if (!wordSectionHasContent(pair[1])) return '';
         var level = normalizeLearningLevel(pair[1]) || pair[1];
-        html += '<p class="word-para"><strong>' + escapeHtml(pair[0]) + ':</strong> ' +
-          escapeHtml(String(level).trim()) + '</p>';
-      });
-      return html;
+        return '<tr><td><strong>' + escapeHtml(pair[0]) + '</strong></td><td>' +
+          escapeHtml(String(level).trim()) + '</td></tr>';
+      }).filter(Boolean).join('');
+      if (!bodyRows) return '';
+      return '<table class="word-learning-levels-table" border="1" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">' +
+        '<thead><tr><th>Subject Area</th><th>Current Working Level</th></tr></thead>' +
+        '<tbody>' + bodyRows + '</tbody></table>';
     }
 
     function syncStudentPersonalizationFromForm() {
@@ -5370,11 +5401,15 @@
       var bsp = document.getElementById('docCheckBsp');
       var classroom = document.getElementById('docCheckClassroom');
       var selectAll = document.getElementById('docSelectAll');
+      var fixedSelectAll = document.getElementById('fixedDocSelectAll');
       if (iep) iep.checked = !!opts.iep;
       if (bsp) bsp.checked = !!opts.bsp;
       if (classroom) classroom.checked = !!opts.classroom;
       if (selectAll) {
         selectAll.checked = !!(opts.iep && opts.bsp && opts.classroom);
+      }
+      if (fixedSelectAll) {
+        fixedSelectAll.checked = !!(opts.iep && opts.bsp && opts.classroom);
       }
       updateDocumentVisibility();
       syncSelectedModeFromDocuments();
@@ -5506,10 +5541,12 @@
       var bsp = document.getElementById('docCheckBsp');
       var classroom = document.getElementById('docCheckClassroom');
       var selectAll = document.getElementById('docSelectAll');
+      var fixedSelectAll = document.getElementById('fixedDocSelectAll');
       if (iep) iep.checked = !!map.iep;
       if (bsp) bsp.checked = !!map.bsp;
       if (classroom) classroom.checked = !!map.classroom;
       if (selectAll) selectAll.checked = mode === 'ALL';
+      if (fixedSelectAll) fixedSelectAll.checked = mode === 'ALL';
       updateDocumentVisibility();
 
       if (typeof switchTab === 'function') {
@@ -5571,7 +5608,6 @@
       if (el.getAttribute('aria-hidden') === 'true') return false;
       if (el.classList.contains('tab-btn')) return false;
       if (el.id === 'generatePlanBtn') return false;
-      if (el.classList.contains('tab-next') || el.classList.contains('tab-prev')) return false;
       return true;
     }
 
@@ -5826,34 +5862,6 @@
       return btn ? btn.getAttribute('data-tab') : 'details';
     }
 
-    function resolveVisibleTabTarget(tabId, direction) {
-      if (tabId && isFormTabAvailable(tabId)) return tabId;
-      var buttons = Array.prototype.slice.call(
-        document.querySelectorAll('#planForm .tab-btn')
-      );
-      var startIdx = -1;
-      if (tabId) {
-        buttons.forEach(function (btn, i) {
-          if (btn.getAttribute('data-tab') === tabId) startIdx = i;
-        });
-      }
-      if (direction === 'prev') {
-        for (var p = startIdx - 1; p >= 0; p--) {
-          if (!buttons[p].classList.contains('tab-doc-inactive')) {
-            return buttons[p].getAttribute('data-tab');
-          }
-        }
-      } else {
-        var from = startIdx < 0 ? 0 : startIdx + 1;
-        for (var n = from; n < buttons.length; n++) {
-          if (!buttons[n].classList.contains('tab-doc-inactive')) {
-            return buttons[n].getAttribute('data-tab');
-          }
-        }
-      }
-      return getFirstAvailableTabId();
-    }
-
     function updateFormTabVisibility() {
       var mode = getSelectedMode();
       var form = document.getElementById('planForm');
@@ -5873,32 +5881,6 @@
       if (activePanel && activePanel.classList.contains('tab-doc-inactive')) {
         switchTab(getFirstAvailableTabId());
       }
-      updateTabNavigationLabels();
-    }
-
-    var TAB_NAV_LABELS = {
-      details: 'Details',
-      studentvoice: 'Student Voice',
-      parentvoice: 'Parent Voice',
-      behaviours: 'Behaviours',
-      bsp: 'BSP Goals',
-      iep: 'IEP',
-      dip: 'DIP'
-    };
-
-    function updateTabNavigationLabels() {
-      document.querySelectorAll('.tab-next[data-next]').forEach(function (btn) {
-        var target = resolveVisibleTabTarget(btn.getAttribute('data-next'), 'next');
-        if (target) {
-          btn.textContent = 'Next: ' + (TAB_NAV_LABELS[target] || target) + ' →';
-        }
-      });
-      document.querySelectorAll('.tab-prev[data-prev]').forEach(function (btn) {
-        var target = resolveVisibleTabTarget(btn.getAttribute('data-prev'), 'prev');
-        if (target) {
-          btn.textContent = '← ' + (TAB_NAV_LABELS[target] || target);
-        }
-      });
     }
 
     function updateDocumentVisibility() {
@@ -5925,22 +5907,37 @@
     function syncSelectAllCheckbox() {
       var checks = document.querySelectorAll('.doc-check');
       var selectAll = document.getElementById('docSelectAll');
+      var fixedSelectAll = document.getElementById('fixedDocSelectAll');
       if (!selectAll || !checks.length) return;
       var allChecked = Array.prototype.every.call(checks, function (cb) { return cb.checked; });
       selectAll.checked = allChecked;
+      if (fixedSelectAll) fixedSelectAll.checked = allChecked;
     }
 
     (function initDocumentPicker() {
       var selectAll = document.getElementById('docSelectAll');
-      if (!selectAll) return;
+      var fixedSelectAll = document.getElementById('fixedDocSelectAll');
+      if (!selectAll && !fixedSelectAll) return;
 
-      selectAll.addEventListener('change', function () {
-        var on = selectAll.checked;
+      function setAllDocuments(on) {
         document.querySelectorAll('.doc-check').forEach(function (cb) {
           cb.checked = on;
         });
+        if (selectAll) selectAll.checked = on;
+        if (fixedSelectAll) fixedSelectAll.checked = on;
         updateDocumentVisibility();
-      });
+      }
+
+      if (selectAll) {
+        selectAll.addEventListener('change', function () {
+          setAllDocuments(selectAll.checked);
+        });
+      }
+      if (fixedSelectAll) {
+        fixedSelectAll.addEventListener('change', function () {
+          setAllDocuments(fixedSelectAll.checked);
+        });
+      }
 
       document.querySelectorAll('.doc-check').forEach(function (cb) {
         cb.addEventListener('change', function () {
@@ -6027,6 +6024,7 @@
       updateFormFieldDisabledState();
       renderFormValidationSummary();
       updateGenerateButtonLabel();
+      ensureGenerateButtonPlacement();
     }
 
     function initMainTabNavigation() {
@@ -6039,17 +6037,6 @@
           switchTab(btn.getAttribute('data-tab'));
         });
       });
-      form.querySelectorAll('.tab-next').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          switchTab(resolveVisibleTabTarget(btn.getAttribute('data-next'), 'next'));
-        });
-      });
-      form.querySelectorAll('.tab-prev').forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          switchTab(resolveVisibleTabTarget(btn.getAttribute('data-prev'), 'prev'));
-        });
-      });
-
       updateFormTabVisibility();
       var activeBtn = form.querySelector('.tab-btn.active:not(.tab-doc-inactive)');
       var initialTab = activeBtn
@@ -6298,9 +6285,12 @@
         '.word-doc .word-report-header{margin-bottom:20px !important;}' +
         '.word-doc table.word-details-grid-table{margin-bottom:20px !important;}' +
         '.word-doc table{width:100%;border-collapse:collapse;margin:14px 0;font-size:10.5pt;line-height:1.5;border:1px solid #33475b;}' +
-        '.word-doc th,.word-doc td{border:1px solid #33475b;padding:5pt;text-align:left;vertical-align:top;line-height:1.5;}' +
+        '.word-doc th,.word-doc td{border:1px solid #33475b;padding:6pt;text-align:left;vertical-align:top;line-height:1.5;}' +
         '.word-doc table.word-details-grid-table{width:100%;border:none !important;margin:0 0 14px 0;}' +
-        '.word-doc table.word-details-grid-table td{border:none !important;padding:4px 6px;}' +
+        '.word-doc table.word-details-grid-table{border:1px solid #33475b !important;}' +
+        '.word-doc table.word-details-grid-table td{padding:6pt;vertical-align:top;}' +
+        '.word-doc td.word-details-label-cell{width:34%;font-weight:700;background:#f4f7f9;border-right:1px solid #33475b;}' +
+        '.word-doc td.word-details-value-cell{background:#fff;}' +
         '.word-doc table.word-goal-table{width:100%;border-collapse:collapse;border:2px solid #33475b;margin:10px 0 16px 0;}' +
         '.word-doc table.word-goal-table th,.word-doc table.word-goal-table td{border:1px solid #33475b;padding:5pt;}' +
         '.word-doc table.word-goal-table th{background:#f4f7f9;color:#0b2e4a;font-weight:700;text-align:left;}' +
@@ -6309,8 +6299,8 @@
         '.word-doc table.word-goal-table tr.goal-long-term-row td.goal-long-term-label strong{font-weight:700;}' +
         '.word-doc .word-confidential-footer{margin-top:32px;padding-top:14px;font-family:Calibri,Arial,sans-serif;font-size:9pt;color:#94a3b8;text-align:center;line-height:1.4;}' +
         '.word-doc .table-adjustments th,.word-doc .table-adjustments td{padding:10px 12px;}' +
-        '.word-doc .learning-levels-table td{padding:8px 10px;}' +
-        '.word-doc .learning-levels-table td:first-child{font-weight:bold;background:#f8fafc;}' +
+        '.word-doc .learning-levels-table td,.word-doc .word-learning-levels-table td,.word-doc .word-learning-levels-table th{padding:6pt;}' +
+        '.word-doc .learning-levels-table td:first-child,.word-doc .word-learning-levels-table td:first-child{font-weight:bold;background:#f4f7f9;}' +
         '.word-doc th{background:#f4f7f9;color:#0b2e4a;font-weight:bold;}' +
         '.word-doc ul{margin:0.35em 0 0.85em 1.25em;line-height:1.5;padding-left:1.1em;}' +
         '.word-doc .dip-bullets{list-style:disc;padding-left:1.25em;margin:0.35em 0;line-height:1.5;}' +
@@ -6595,36 +6585,40 @@
       else dateVal = values.dateCreated || values.iepDate || '—';
       if (!dateVal || dateVal === '—') dateVal = formatExportDate();
 
-      // Clean aligned details grid (no visible borders).
+      // Professional 2-column details table at top of report.
       var html = '' +
-        '<table class="word-details-grid-table" border="0" cellpadding="6" cellspacing="0" style="width:100%;border-collapse:collapse;border:none;">' +
+        '<table class="word-details-grid-table" border="1" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">' +
         '<tbody>' +
         '<tr>' +
-        '<td style="border:none;width:33%;padding:4px 6px;vertical-align:top;"><strong>Year Level</strong></td>' +
-        '<td style="border:none;padding:4px 6px;vertical-align:top;">' + escapeHtml(yearLevel) + '</td>' +
+        '<td class="word-details-label-cell"><strong>Student Name</strong></td>' +
+        '<td class="word-details-value-cell">' + escapeHtml(values.name || '—') + '</td>' +
         '</tr>' +
         '<tr>' +
-        '<td style="border:none;width:33%;padding:4px 6px;vertical-align:top;"><strong>School</strong></td>' +
-        '<td style="border:none;padding:4px 6px;vertical-align:top;">' + escapeHtml(school) + '</td>' +
+        '<td class="word-details-label-cell"><strong>Year Level</strong></td>' +
+        '<td class="word-details-value-cell">' + escapeHtml(yearLevel) + '</td>' +
         '</tr>' +
         '<tr>' +
-        '<td style="border:none;width:33%;padding:4px 6px;vertical-align:top;"><strong>Date</strong></td>' +
-        '<td style="border:none;padding:4px 6px;vertical-align:top;">' + escapeHtml(dateVal) + '</td>' +
+        '<td class="word-details-label-cell"><strong>School</strong></td>' +
+        '<td class="word-details-value-cell">' + escapeHtml(school) + '</td>' +
+        '</tr>' +
+        '<tr>' +
+        '<td class="word-details-label-cell"><strong>Date</strong></td>' +
+        '<td class="word-details-value-cell">' + escapeHtml(dateVal) + '</td>' +
         '</tr>';
       if (opts.showAge && values.age) {
-        html += '<tr><td style="border:none;width:33%;padding:4px 6px;vertical-align:top;"><strong>Age</strong></td>' +
-          '<td style="border:none;padding:4px 6px;vertical-align:top;">' + escapeHtml(String(values.age)) + '</td></tr>';
+        html += '<tr><td class="word-details-label-cell"><strong>Age</strong></td>' +
+          '<td class="word-details-value-cell">' + escapeHtml(String(values.age)) + '</td></tr>';
       }
       if (opts.showLeadContact && values.leadContact) {
-        html += '<tr><td style="border:none;width:33%;padding:4px 6px;vertical-align:top;"><strong>Lead IEP Contact</strong></td>' +
-          '<td style="border:none;padding:4px 6px;vertical-align:top;">' +
+        html += '<tr><td class="word-details-label-cell"><strong>Lead IEP Contact</strong></td>' +
+          '<td class="word-details-value-cell">' +
           (wordTextToParagraphsHtml(values.leadContact) ||
             '<p class="word-para">' + escapeHtml(cleanWordExportText(values.leadContact)) + '</p>') +
           '</td></tr>';
       }
       if (opts.showAttendees && values.attendees) {
-        html += '<tr><td style="border:none;width:33%;padding:4px 6px;vertical-align:top;"><strong>Attendees</strong></td>' +
-          '<td style="border:none;padding:4px 6px;vertical-align:top;">' +
+        html += '<tr><td class="word-details-label-cell"><strong>Attendees</strong></td>' +
+          '<td class="word-details-value-cell">' +
           (wordTextToParagraphsHtml(values.attendees) ||
             '<p class="word-para">' + escapeHtml(cleanWordExportText(values.attendees)) + '</p>') +
           '</td></tr>';
@@ -6877,12 +6871,31 @@
       return createWordBlobFromContentString(buildWordDocumentContentString(htmlContent, styleText, exportMeta));
     }
 
-    function downloadWordContentString(contentString, filename) {
+    async function saveWordDocumentToDisk(contentString, filename) {
+      var safeName = sanitizeDownloadFilename(filename);
+      if (window.electronAPI && window.electronAPI.saveWordDocument) {
+        var result = await window.electronAPI.saveWordDocument({
+          content: contentString,
+          suggestedFilename: safeName
+        });
+        if (result && result.canceled) {
+          return { canceled: true };
+        }
+        if (result && result.filePath) {
+          console.log('Word document saved:', result.filePath);
+        }
+        return { canceled: false, filePath: result && result.filePath };
+      }
       var blob = createWordBlobFromContentString(contentString);
-      return triggerBlobDownload(blob, filename);
+      await triggerBlobDownload(blob, safeName);
+      return { canceled: false };
     }
 
-    function downloadWordBlobFromHtml(htmlContent, filename, styleText, exportMeta) {
+    async function downloadWordContentString(contentString, filename) {
+      return saveWordDocumentToDisk(contentString, filename);
+    }
+
+    async function downloadWordBlobFromHtml(htmlContent, filename, styleText, exportMeta) {
       var contentString = buildWordDocumentContentString(htmlContent, styleText, exportMeta);
       return downloadWordContentString(contentString, filename);
     }
@@ -7007,6 +7020,10 @@
         doneBtn.dataset.bound = 'true';
         doneBtn.addEventListener('click', hideGenerationProgressOverlay);
       }
+
+      if (options.autoHideOverlay !== false) {
+        setTimeout(hideGenerationProgressOverlay, 2200);
+      }
     }
 
     function failGenerationProgressOverlay(message) {
@@ -7085,7 +7102,14 @@
         setGenerationProgressStep(item.step, 'active');
         setGenerationProgressBar((i / items.length) * 100);
 
-        var contentString = buildWordDocumentContentString(item.html, styleText, {
+        var html = typeof item.getHtml === 'function' ? item.getHtml() : item.html;
+        if (!html) {
+          console.warn('Skipping empty export for step:', item.step);
+          downloadIssueCount++;
+          continue;
+        }
+
+        var contentString = buildWordDocumentContentString(html, styleText, {
           documentType: item.documentType || exportOptions.documentType || '',
           studentName: exportOptions.studentName || ''
         });
@@ -7099,8 +7123,11 @@
         results.push(entry);
 
         try {
-          await triggerBlobDownload(blob, entry.filename);
-          entry.downloadTriggered = true;
+          var saveResult = await saveWordDocumentToDisk(contentString, entry.filename);
+          entry.downloadTriggered = !(saveResult && saveResult.canceled);
+          if (saveResult && saveResult.canceled) {
+            entry.downloadCanceled = true;
+          }
         } catch (dlErr) {
           console.warn('Download failed for ' + entry.filename, dlErr);
           downloadIssueCount++;
@@ -7436,6 +7463,104 @@
       return '';
     }
 
+    /** Per-document export cache so IEP, BSP, and Adjustments never overwrite each other. */
+    var isolatedExportSnapshots = {
+      iep: null,
+      bsp: null,
+      classroom: null
+    };
+
+    function cloneExportValues(src) {
+      if (!src) return null;
+      return {
+        mode: src.mode,
+        includesIep: src.includesIep,
+        includesBsp: src.includesBsp,
+        includesAdjustments: src.includesAdjustments,
+        name: src.name,
+        studentGender: src.studentGender,
+        age: src.age,
+        yearLevel: src.yearLevel,
+        yearLevelLabel: src.yearLevelLabel,
+        dateCreated: src.dateCreated,
+        iepDate: src.iepDate,
+        leadContact: src.leadContact,
+        attendees: src.attendees,
+        meetingPurpose: src.meetingPurpose,
+        meetingObserved: src.meetingObserved,
+        likesStrengths: src.likesStrengths,
+        challenges: src.challenges,
+        supportsLearningStyles: src.supportsLearningStyles,
+        profileSupportServices: src.profileSupportServices,
+        parentConcerns: src.parentConcerns,
+        parentKeyInfo: src.parentKeyInfo,
+        parentLongTermGoals: src.parentLongTermGoals,
+        env: (src.env || []).slice(),
+        behaviours: (src.behaviours || []).slice(),
+        behavioursPositive: (src.behavioursPositive || []).slice(),
+        triggers: src.triggers,
+        functionalBehaviour: src.functionalBehaviour,
+        interventions: (src.interventions || []).slice(),
+        pbisInterventions: (src.pbisInterventions || []).slice(),
+        pbis: src.pbis,
+        bspGoals: (src.bspGoals || []).map(function (g) {
+          if (!g) return g;
+          return {
+            specific: g.specific,
+            measurable: g.measurable,
+            achievable: g.achievable,
+            relevant: g.relevant,
+            timebound: g.timebound
+          };
+        }),
+        fnNeeds: (src.fnNeeds || []).slice(),
+        functionalNeedsOther: src.functionalNeedsOther,
+        functionalNeedsElaboration: src.functionalNeedsElaboration,
+        levelReading: src.levelReading,
+        levelWriting: src.levelWriting,
+        levelNumeracy: src.levelNumeracy,
+        levelPersonalSocial: src.levelPersonalSocial,
+        iepSupports: src.iepSupports,
+        iepAreaGoals: (src.iepAreaGoals || []).map(function (goal) {
+          return goal ? Object.assign({}, goal) : goal;
+        }),
+        dipCommunication: src.dipCommunication,
+        dipMobility: src.dipMobility,
+        dipSelfCare: src.dipSelfCare,
+        dipGeneralTasks: src.dipGeneralTasks,
+        dipInterpersonal: src.dipInterpersonal,
+        dipLearning: src.dipLearning,
+        monitoring: src.monitoring
+      };
+    }
+
+    function clearIsolatedExportSnapshots() {
+      isolatedExportSnapshots.iep = null;
+      isolatedExportSnapshots.bsp = null;
+      isolatedExportSnapshots.classroom = null;
+    }
+
+    function captureIsolatedExportSnapshot(form, values, exportKind, scrapeMode) {
+      if (!values) return;
+      prepareFormForWordExport(form, scrapeMode);
+      var cloned = cloneExportValues(values);
+      isolatedExportSnapshots[exportKind] = {
+        values: cloned,
+        html: buildDocExportWordHtml(cloned, exportKind)
+      };
+    }
+
+    function getIsolatedExportHtml(exportKind, form, scrapeMode) {
+      var snap = isolatedExportSnapshots[exportKind];
+      if (snap && snap.html) {
+        return snap.html;
+      }
+      prepareFormForWordExport(form, scrapeMode);
+      var freshValues = getVisibleData(form, scrapeMode);
+      if (!freshValues) return '';
+      return buildDocExportWordHtml(cloneExportValues(freshValues), exportKind);
+    }
+
     /**
      * Collect form values only from tabs in scope for the launchpad mode.
      * ALL = every document tab; IEP / BSP / Adjustments = matching tabs plus shared Details & voice tabs.
@@ -7595,19 +7720,25 @@
       return [
         {
           step: 'iep',
-          html: buildDocExportWordHtml(getVisibleData(form, 'IEP'), 'iep'),
+          getHtml: function () {
+            return getIsolatedExportHtml('iep', form, 'IEP');
+          },
           filename: baseName + '_IEP.doc',
           documentType: WORD_DOC_TYPE_LABELS.IEP
         },
         {
           step: 'bsp',
-          html: buildDocExportWordHtml(getVisibleData(form, 'BSP'), 'bsp'),
+          getHtml: function () {
+            return getIsolatedExportHtml('bsp', form, 'BSP');
+          },
           filename: baseName + '_BSP.doc',
           documentType: WORD_DOC_TYPE_LABELS.BSP
         },
         {
           step: 'classroom',
-          html: buildDocExportWordHtml(getVisibleData(form, 'Adjustments'), 'classroom'),
+          getHtml: function () {
+            return getIsolatedExportHtml('classroom', form, 'Adjustments');
+          },
           filename: baseName + '_Adjustments.doc',
           documentType: WORD_DOC_TYPE_LABELS.Adjustments
         }
@@ -7864,9 +7995,23 @@
       var exportValuesIep = genMode === 'ALL' ? valuesIep : values;
       var exportValuesBsp = genMode === 'ALL' ? valuesBsp : values;
       var exportValuesAdj = genMode === 'ALL' ? valuesAdj : values;
-      const iepPdfHtml = buildDocExportPdfHtml(exportValuesIep, 'iep');
-      const bspPdfHtml = buildDocExportPdfHtml(exportValuesBsp, 'bsp');
-      const classroomPdfHtml = buildDocExportPdfHtml(exportValuesAdj, 'classroom');
+
+      clearIsolatedExportSnapshots();
+      if (genMode === 'ALL') {
+        captureIsolatedExportSnapshot(form, exportValuesIep, 'iep', 'IEP');
+        captureIsolatedExportSnapshot(form, exportValuesBsp, 'bsp', 'BSP');
+        captureIsolatedExportSnapshot(form, exportValuesAdj, 'classroom', 'Adjustments');
+      } else {
+        if (selectedDocs.iep) {
+          captureIsolatedExportSnapshot(form, exportValuesIep, 'iep', 'IEP');
+        }
+        if (selectedDocs.bsp) {
+          captureIsolatedExportSnapshot(form, exportValuesBsp, 'bsp', 'BSP');
+        }
+        if (selectedDocs.classroom) {
+          captureIsolatedExportSnapshot(form, exportValuesAdj, 'classroom', 'Adjustments');
+        }
+      }
 
       const output = document.getElementById('output');
       const generateMode = genMode || getSelectedMode();
@@ -7876,46 +8021,32 @@
         (exportValuesAdj && exportValuesAdj.name) ||
         values.name
       );
-      const docStyles = getPdfDocumentStyles();
+
+      function exportDocActionsHtml(wordBtnId, wordLabel) {
+        return '<div class="export-doc-actions">' +
+          '<button type="button" class="btn btn-accent" id="' + wordBtnId + '">' + wordLabel + '</button>' +
+          '</div>';
+      }
 
       var exportPanelHtml = '<div class="panel-card no-print" style="margin-top:0">' +
         '<h3>' + (generateMode === 'ALL' ? 'Your complete student profile' : 'Download documents') + '</h3>';
-      var isElectronApp = !!(window.electronAPI && window.electronAPI.isElectron);
-      function exportDocActionsHtml(wordBtnId, wordLabel, printBtnId, printLabel, nativePdfBtnId) {
-        var html = '<div class="export-doc-actions">' +
-          '<button type="button" class="btn btn-accent" id="' + wordBtnId + '">' + wordLabel + '</button>' +
-          '<button type="button" class="btn btn-secondary" id="' + printBtnId + '">' + printLabel + '</button>';
-        if (isElectronApp && nativePdfBtnId) {
-          html += '<button type="button" class="btn btn-secondary" id="' + nativePdfBtnId + '">📄 Save PDF</button>';
-        }
-        return html + '</div>';
-      }
-      var printPdfLabel = '🖨️ Print / Save as PDF';
 
       if (generateMode === 'ALL') {
-        exportPanelHtml += '<p class="export-note" id="pdfExportStatus">Generating three separate Word documents: IEP, BSP, and Adjustments…</p>' +
-          '<p class="export-note" style="margin-top:0.35rem">' +
-          (isElectronApp
-            ? 'Use <strong>Save PDF</strong> for high-quality exports, or Print for the system dialog.'
-            : 'For PDF, use your browser&rsquo;s print dialog (Save as PDF) on each document below.') +
-          '</p>' +
-          exportDocActionsHtml('dlWordIep', 'Download ' + baseName + '_IEP.doc', 'printDocIep', printPdfLabel + ' (IEP)', 'savePdfDocIep') +
-          exportDocActionsHtml('dlWordBsp', 'Download ' + baseName + '_BSP.doc', 'printDocBsp', printPdfLabel + ' (BSP)', 'savePdfDocBsp') +
-          exportDocActionsHtml('dlWordClassroom', 'Download ' + baseName + '_Adjustments.doc', 'printDocClassroom', printPdfLabel + ' (Adjustments)', 'savePdfDocClassroom');
+        exportPanelHtml += '<p class="export-note" id="wordExportStatus">Generating three separate Word documents: IEP, BSP, and Adjustments…</p>' +
+          '<p class="export-note" style="margin-top:0.35rem">Use <strong>Generate Word</strong> below to download any document again individually.</p>' +
+          exportDocActionsHtml('dlWordIep', 'Generate Word — IEP') +
+          exportDocActionsHtml('dlWordBsp', 'Generate Word — BSP') +
+          exportDocActionsHtml('dlWordClassroom', 'Generate Word — Classroom Adjustments');
       } else {
-        exportPanelHtml += '<p class="export-note">' +
-          (isElectronApp
-            ? 'Download Word (.doc), <strong>Save PDF</strong> (native), or use Print.'
-            : 'Download Word (.doc) or use your browser&rsquo;s high-quality print engine to save as PDF.') +
-          '</p>';
+        exportPanelHtml += '<p class="export-note">Download your plan as a Word (.doc) file.</p>';
         if (selectedDocs.bsp) {
-          exportPanelHtml += exportDocActionsHtml('dlWordBsp', 'BSP Word (.doc)', 'printDocBsp', printPdfLabel, 'savePdfDocBsp');
+          exportPanelHtml += exportDocActionsHtml('dlWordBsp', 'Generate Word — BSP');
         }
         if (selectedDocs.iep) {
-          exportPanelHtml += exportDocActionsHtml('dlWordIep', 'IEP Word (.doc)', 'printDocIep', printPdfLabel, 'savePdfDocIep');
+          exportPanelHtml += exportDocActionsHtml('dlWordIep', 'Generate Word — IEP');
         }
         if (selectedDocs.classroom) {
-          exportPanelHtml += exportDocActionsHtml('dlWordClassroom', 'Adjustments Word (.doc)', 'printDocClassroom', printPdfLabel, 'savePdfDocClassroom');
+          exportPanelHtml += exportDocActionsHtml('dlWordClassroom', 'Generate Word — Classroom Adjustments');
         }
       }
       exportPanelHtml += '</div>';
@@ -7949,61 +8080,35 @@
         studentName: (exportValuesIep && exportValuesIep.name) || (exportValuesBsp && exportValuesBsp.name) || values.name
       };
 
-      function freshExportHtml(exportKind, scrapeMode) {
-        prepareFormForWordExport(form, scrapeMode);
-        var freshValues = getVisibleData(form, scrapeMode);
-        if (!freshValues) return '';
-        return buildDocExportWordHtml(freshValues, exportKind);
-      }
-
       function bindDlWordButton(btnId, exportKind, filename, documentType, scrapeMode) {
         var btn = document.getElementById(btnId);
         if (!btn) return;
-        btn.onclick = function () {
-          var html = freshExportHtml(exportKind, scrapeMode);
-          if (!html) {
-            alert('Could not read form data for this document.');
-            return;
+        btn.disabled = false;
+        btn.onclick = async function () {
+          try {
+            var html = getIsolatedExportHtml(exportKind, form, scrapeMode);
+            if (!html) {
+              alert('Could not read form data for this document.');
+              return;
+            }
+            await downloadWordBlobFromHtml(html, filename, getWordDocumentStyles(), {
+              documentType: documentType,
+              studentName: wordExportMeta.studentName
+            });
+          } catch (err) {
+            alert('Could not create Word document: ' + (err && err.message ? err.message : String(err)));
           }
-          downloadWordBlobFromHtml(html, filename, getWordDocumentStyles(), {
-            documentType: documentType,
-            studentName: wordExportMeta.studentName
-          }).catch(function (err) {
-            alert('Could not create Word document: ' + (err.message || err));
-          });
-        };
-      }
-
-      function bindPrintDocButton(btnId, docKey) {
-        var btn = document.getElementById(btnId);
-        if (!btn) return;
-        btn.onclick = function () {
-          printDocumentSection(docKey);
-        };
-      }
-
-      function bindNativePdfButton(btnId, docKey, suggestedFilename) {
-        var btn = document.getElementById(btnId);
-        if (!btn) return;
-        btn.onclick = function () {
-          saveDocumentAsNativePdf(docKey, suggestedFilename);
         };
       }
 
       if (selectedDocs.bsp || generateMode === 'ALL') {
         bindDlWordButton('dlWordBsp', 'bsp', baseName + '_BSP', 'Behaviour Support Plan (BSP)', 'BSP');
-        bindPrintDocButton('printDocBsp', 'bsp');
-        bindNativePdfButton('savePdfDocBsp', 'bsp', baseName + '_BSP.pdf');
       }
       if (selectedDocs.iep || generateMode === 'ALL') {
         bindDlWordButton('dlWordIep', 'iep', baseName + '_IEP', 'Individual Education Plan (IEP)', 'IEP');
-        bindPrintDocButton('printDocIep', 'iep');
-        bindNativePdfButton('savePdfDocIep', 'iep', baseName + '_IEP.pdf');
       }
       if (selectedDocs.classroom || generateMode === 'ALL') {
         bindDlWordButton('dlWordClassroom', 'classroom', baseName + '_Adjustments', 'Classroom Adjustments', 'Adjustments');
-        bindPrintDocButton('printDocClassroom', 'classroom');
-        bindNativePdfButton('savePdfDocClassroom', 'classroom', baseName + '_Adjustments.pdf');
       }
 
       try {
@@ -8012,9 +8117,9 @@
           studentName: wordExportMeta.studentName
         });
         if (genMode === 'ALL') {
-          var statusEl = document.getElementById('pdfExportStatus');
+          var statusEl = document.getElementById('wordExportStatus');
           if (statusEl) {
-            statusEl.textContent = 'Three .doc files downloaded: ' + baseName + '_IEP.doc, ' + baseName + '_BSP.doc, and ' + baseName + '_Adjustments.doc.';
+            statusEl.textContent = 'Three .doc files ready: ' + baseName + '_IEP.doc, ' + baseName + '_BSP.doc, and ' + baseName + '_Adjustments.doc. Use Generate Word above to save any document again.';
           }
         }
       } catch (downloadErr) {
