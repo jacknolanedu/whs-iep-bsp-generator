@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>WHS IEP/BSP Generator</title>
+  <title>Generate4U</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
@@ -66,6 +66,7 @@
     .launchpad__backdrop {
       position: absolute;
       inset: 0;
+      pointer-events: none;
       background:
         radial-gradient(ellipse 80% 60% at 20% 10%, rgba(10, 122, 62, 0.35), transparent 55%),
         radial-gradient(ellipse 70% 50% at 90% 80%, rgba(242, 183, 5, 0.2), transparent 50%),
@@ -81,6 +82,7 @@
     }
     .launchpad__inner {
       position: relative;
+      z-index: 1;
       width: min(920px, 100%);
       flex-shrink: 0;
       animation: launchpadEnter 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -227,10 +229,6 @@
     .launchpad__card[data-launch="iep"] .launchpad__card-icon { color: #7dd3fc; }
     .launchpad__card[data-launch="bsp"] .launchpad__card-icon { color: #fcd34d; }
     .launchpad__card[data-launch="classroom"] .launchpad__card-icon { color: #86efac; }
-    .launchpad__card[data-launch="all"] .launchpad__card-icon {
-      color: var(--accent);
-      background: rgba(242, 183, 5, 0.2);
-    }
     .launchpad__card-title {
       font-size: 1.1rem;
       font-weight: 600;
@@ -250,102 +248,31 @@
       letter-spacing: 0.06em;
       color: var(--accent);
     }
-    .launchpad__card--all {
-      grid-column: 1 / -1;
-      flex-direction: row;
-      flex-wrap: wrap;
-      align-items: center;
-      padding: 1.1rem 1.25rem;
-      border: 2px solid rgba(14, 168, 90, 0.75);
-      background: #1a202c;
-      opacity: 1;
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      box-shadow:
-        0 6px 24px rgba(0, 0, 0, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.06);
-    }
-    .launchpad__card--all:hover {
-      border-color: #0ea85a;
-      background: #1e293b;
-      box-shadow:
-        0 10px 32px rgba(0, 0, 0, 0.45),
-        0 0 0 1px rgba(14, 168, 90, 0.4),
-        inset 0 1px 0 rgba(255, 255, 255, 0.08);
-    }
-    .launchpad__card--all.launchpad__card--selected {
-      border-color: var(--accent);
-      background: #1e293b;
-      box-shadow:
-        0 0 0 2px rgba(242, 183, 5, 0.5),
-        0 10px 32px rgba(0, 0, 0, 0.45);
-    }
-    .launchpad__card--all .launchpad__card-icon {
-      margin-bottom: 0;
-      margin-right: 0.75rem;
-      background: linear-gradient(135deg, var(--primary) 0%, #0ea85a 100%);
-      border: 2px solid rgba(255, 255, 255, 0.25);
-      color: #fff;
-      width: 2.75rem;
-      height: 2.75rem;
-      font-size: 0.65rem;
-      box-shadow: 0 0 14px rgba(10, 122, 62, 0.55);
-    }
-    .launchpad__card--all .launchpad__card-body {
-      flex: 1;
-      min-width: 200px;
-    }
-    .launchpad__card--all .launchpad__card-title {
-      color: #ffffff;
-      font-weight: 600;
-      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.35);
-    }
-    .launchpad__card--all .launchpad__card-desc {
-      color: #e2e8f0;
-      font-weight: 400;
-    }
-    .launchpad__card-tag--primary {
-      margin-top: 0;
-      margin-left: auto;
-      padding: 0.35rem 0.85rem;
-      border-radius: 999px;
-      background: linear-gradient(135deg, var(--primary) 0%, #0ea85a 100%);
-      color: #ffffff;
-      font-weight: 700;
-      letter-spacing: 0.07em;
-      border: 2px solid rgba(255, 255, 255, 0.35);
-      box-shadow:
-        0 0 14px rgba(10, 122, 62, 0.7),
-        0 0 0 1px rgba(14, 168, 90, 0.85),
-        0 2px 10px rgba(0, 0, 0, 0.3);
-    }
-    .launchpad__card--all:hover .launchpad__card-tag--primary {
-      box-shadow:
-        0 0 18px rgba(14, 168, 90, 0.85),
-        0 0 0 1px rgba(255, 255, 255, 0.4),
-        0 2px 12px rgba(0, 0, 0, 0.35);
-    }
-    /* IEP, BSP, ADJ cards only — slightly smaller to fit smaller screens */
-    .launchpad__card:not(.launchpad__card--all) {
+    .launchpad__card {
       padding: 1rem 1.1rem 1.05rem;
       gap: 0.35rem;
     }
-    .launchpad__card:not(.launchpad__card--all) .launchpad__card-icon {
+    .launchpad__card .launchpad__card-icon {
       width: 2.15rem;
       height: 2.15rem;
       font-size: 0.62rem;
       margin-bottom: 0.05rem;
     }
-    .launchpad__card:not(.launchpad__card--all) .launchpad__card-title {
+    .launchpad__card .launchpad__card-title {
       font-size: 1rem;
     }
-    .launchpad__card:not(.launchpad__card--all) .launchpad__card-desc {
+    .launchpad__card .launchpad__card-desc {
       font-size: 0.78rem;
       line-height: 1.4;
     }
-    .launchpad__card:not(.launchpad__card--all) .launchpad__card-tag {
+    .launchpad__card .launchpad__card-tag {
       margin-top: 0.2rem;
       font-size: 0.68rem;
+    }
+    @media (min-width: 720px) {
+      .launchpad__grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
 
     .app-main {
@@ -578,6 +505,103 @@
       margin-bottom: 2rem;
     }
 
+    .app-page-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 0.65rem 1rem;
+      margin-bottom: 0.35rem;
+    }
+    .app-page-header__brand {
+      flex: 1 1 220px;
+      min-width: 0;
+    }
+    .app-page-header__brand h1 {
+      margin-bottom: 0.2rem;
+    }
+    .app-page-header__brand .subtitle {
+      margin-bottom: 0.75rem;
+    }
+    .app-page-header__brand .launchpad-badge {
+      margin-bottom: 0.5rem;
+    }
+    .progress-controls {
+      display: inline-flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.45rem;
+      flex-shrink: 0;
+      margin-top: 0.15rem;
+    }
+    .btn-save-progress,
+    .btn-load-progress,
+    .progress-controls .btn-generate-all {
+      padding: 0.45rem 0.85rem;
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      line-height: 1.2;
+      color: var(--primary-dark);
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      transition: border-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+      white-space: nowrap;
+    }
+    .progress-controls .btn-generate-all {
+      color: #fff;
+      background: var(--primary-dark);
+      border-color: var(--primary-dark);
+    }
+    .progress-controls .btn-generate-all:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+    button.launchpad__enter-full-suite.launchpad__full-suite {
+      display: block;
+      width: 100%;
+      margin-top: 1rem;
+      padding: 1.1rem 1.25rem;
+      border-radius: 14px;
+      border: 2px solid rgba(14, 168, 90, 0.85);
+      font-family: inherit;
+      text-align: left;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+    .launchpad__full-suite-title {
+      display: block;
+      margin: 0 0 0.65rem 0;
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #ffffff !important;
+    }
+    .launchpad__full-suite-action {
+      display: inline-block;
+      padding: 0.55rem 1.25rem;
+      border-radius: 999px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #1a202c !important;
+      background: #f2b705 !important;
+    }
+    .btn-save-progress:hover,
+    .btn-load-progress:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      background: rgba(10, 122, 62, 0.06);
+      box-shadow: var(--shadow-lg);
+    }
+    .btn-save-progress:focus-visible,
+    .btn-load-progress:focus-visible,
+    .progress-controls .btn-generate-all:focus-visible {
+      outline: 2px solid var(--primary-light);
+      outline-offset: 2px;
+    }
+
     /* Tabs */
     .tabs {
       display: flex;
@@ -783,8 +807,16 @@
       color: var(--primary-dark);
       white-space: nowrap;
     }
-    #generatePlanBtn {
-      position: static;
+    .tab-export-hooks {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
     }
     .validation-summary {
       padding: 0.85rem 1rem;
@@ -1187,6 +1219,273 @@
       break-inside: avoid;
     }
 
+    /* BSP SMART goals — mirrors IEP goal generator layout */
+    .bsp-goal-tabs {
+      display: flex;
+      gap: 0.35rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+      padding: 0.25rem;
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+    }
+    .bsp-goal-tab-btn {
+      flex: 1;
+      min-width: 120px;
+      padding: 0.6rem 0.85rem;
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .bsp-goal-tab-btn:hover {
+      color: var(--primary);
+      background: rgba(217, 119, 6, 0.08);
+    }
+    .bsp-goal-tab-btn.active {
+      color: #92400e;
+      background: #fef3c7;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+    }
+    .bsp-goal-panel {
+      display: none;
+      animation: fadeIn 0.2s ease;
+    }
+    .bsp-goal-panel.active {
+      display: block;
+    }
+    .bsp-goal-panel.smart-goal-block {
+      padding: 1.25rem 1.35rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 0;
+    }
+    .bsp-goal-panel--1 {
+      background: #fffbeb;
+      border: 1px solid #fcd34d;
+      border-left: 4px solid #d97706;
+    }
+    .bsp-goal-panel--1 h4 { color: #92400e; }
+    .bsp-goal-panel--2 {
+      background: #fef9e8;
+      border: 1px solid #f0d878;
+      border-left: 4px solid #ca8a04;
+    }
+    .bsp-goal-panel--2 h4 { color: #854d0e; }
+    .bsp-goal-panel--3 {
+      background: #e8f7ed;
+      border: 1px solid #b8e6c8;
+      border-left: 4px solid #0a7a3e;
+    }
+    .bsp-goal-panel--3 h4 { color: #0a5c30; }
+    .bsp-goal-data-input {
+      background: rgba(255, 255, 255, 0.65);
+      padding: 1rem 1.1rem;
+      border-radius: var(--radius-sm);
+      margin-bottom: 1rem;
+      border: 1px solid rgba(0, 0, 0, 0.06);
+    }
+    .bsp-goal-data-input h5 {
+      margin: 0 0 0.85rem 0;
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: inherit;
+      opacity: 0.9;
+    }
+    .bsp-goal-data-input label {
+      display: block;
+      margin-top: 0.75rem;
+    }
+    .bsp-goal-data-input label:first-of-type {
+      margin-top: 0;
+    }
+    .bsp-goal-output {
+      margin-top: 1rem;
+    }
+    .bsp-goal-output[hidden] {
+      display: none;
+    }
+    .bsp-goals-results-host {
+      margin: 1.35rem 0 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+    .bsp-goals-results-intro {
+      margin: 0 0 0.25rem 0;
+    }
+    .bsp-goals-results-heading {
+      margin: 0 0 0.35rem 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+    }
+    .bsp-goals-results-intro .example {
+      margin: 0;
+      line-height: 1.45;
+    }
+    .bsp-goal-result-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 0;
+      box-shadow: 0 1px 4px rgb(15 23 42 / 0.06);
+      overflow: hidden;
+    }
+    .bsp-goal-result-card[hidden] {
+      display: none;
+    }
+    .bsp-goal-result-card--primary,
+    .bsp-goal-result-card--targeted {
+      border-left: 4px solid #d97706;
+    }
+    .bsp-goal-result-card--secondary {
+      border-left: 4px solid #ea580c;
+    }
+    .bsp-goal-result-card--strength {
+      border-left: 4px solid #0a7a3e;
+    }
+    .bsp-goal-result-header {
+      padding: 0.95rem 1.15rem 0.75rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .bsp-goal-result-card--primary .bsp-goal-result-header,
+    .bsp-goal-result-card--targeted .bsp-goal-result-header {
+      background: rgba(217, 119, 6, 0.08);
+    }
+    .bsp-goal-result-card--secondary .bsp-goal-result-header {
+      background: rgba(234, 88, 12, 0.08);
+    }
+    .bsp-goal-result-card--strength .bsp-goal-result-header {
+      background: rgba(10, 122, 62, 0.08);
+    }
+    .bsp-goal-result-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #fff;
+      padding: 0.15rem 0.45rem;
+      border-radius: 3px;
+      margin-bottom: 0.45rem;
+    }
+    .bsp-goal-result-card--primary .bsp-goal-result-badge,
+    .bsp-goal-result-card--targeted .bsp-goal-result-badge {
+      background: #d97706;
+    }
+    .bsp-goal-result-card--secondary .bsp-goal-result-badge {
+      background: #ea580c;
+    }
+    .bsp-goal-result-card--strength .bsp-goal-result-badge {
+      background: #0a7a3e;
+    }
+    .bsp-goal-result-title {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: var(--text);
+    }
+    .bsp-goal-result-card--primary .bsp-goal-result-title,
+    .bsp-goal-result-card--targeted .bsp-goal-result-title {
+      color: #92400e;
+    }
+    .bsp-goal-result-card--secondary .bsp-goal-result-title {
+      color: #9a3412;
+    }
+    .bsp-goal-result-card--strength .bsp-goal-result-title {
+      color: #0a5c30;
+    }
+    .bsp-goal-result-subtitle {
+      margin: 0.35rem 0 0;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      color: var(--text-muted);
+    }
+    .bsp-goal-result-body {
+      margin: 0;
+      padding: 1rem 1.15rem 1.1rem;
+    }
+    .bsp-goal-result-card--primary .bsp-goal-result-body,
+    .bsp-goal-result-card--targeted .bsp-goal-result-body {
+      background: rgba(217, 119, 6, 0.04);
+      border-top: 2px solid rgba(217, 119, 6, 0.35);
+    }
+    .bsp-goal-result-card--secondary .bsp-goal-result-body {
+      background: rgba(234, 88, 12, 0.04);
+      border-top: 2px solid rgba(234, 88, 12, 0.35);
+    }
+    .bsp-goal-result-card--strength .bsp-goal-result-body {
+      background: rgba(10, 122, 62, 0.04);
+      border-top: 2px solid rgba(10, 122, 62, 0.35);
+    }
+    .bsp-goal-compiled-card {
+      margin-top: 0.25rem;
+    }
+    .bsp-goal-compiled-section {
+      margin: 0;
+      padding: 0;
+      border-top: none;
+      background: transparent;
+    }
+    .bsp-goal-compiled-output {
+      width: 100%;
+      min-height: 3.5rem;
+      margin: 0;
+      padding: 0.65rem 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: #fff;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 600;
+      line-height: 1.6;
+      color: var(--text);
+      resize: none;
+      box-shadow: inset 0 1px 2px rgb(15 23 42 / 0.04);
+    }
+    .bsp-goal-tab-btn[data-bsp-goal="3"].active {
+      color: #0a5c30;
+      background: #d1fae5;
+    }
+    .bsp-goal-panel--1 .goal-smart-step { border-left-color: rgba(217, 119, 6, 0.35); }
+    .bsp-goal-panel--2 .goal-smart-step { border-left-color: rgba(202, 138, 4, 0.35); }
+    .bsp-goal-panel--3 .goal-smart-step { border-left-color: rgba(10, 122, 62, 0.35); }
+    .bsp-smart-fields-details {
+      margin-top: 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.5);
+      padding: 0.5rem 0.75rem 0.75rem;
+    }
+    .bsp-smart-fields-summary {
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      list-style: none;
+      user-select: none;
+    }
+    .bsp-smart-fields-summary::-webkit-details-marker {
+      display: none;
+    }
+    .bsp-smart-fields-details[open] .bsp-smart-fields-summary {
+      margin-bottom: 0.65rem;
+      color: var(--primary-dark);
+    }
+    .bsp-smart-fields-details .iep-goal-result-card {
+      margin-top: 0.35rem;
+      box-shadow: none;
+      border-style: dashed;
+    }
+
     .btn-suggest {
       background: var(--primary-light);
       color: white;
@@ -1445,6 +1744,10 @@
     .export-doc-actions .btn {
       flex: 0 1 auto;
     }
+    #output > .panel-card.no-print {
+      position: relative;
+      z-index: 2600;
+    }
 
     @media print {
       body {
@@ -1562,43 +1865,18 @@
           <span class="launchpad__card-desc">DIP strategies and differentiated supports for classroom teachers.</span>
           <span class="launchpad__card-tag">Adjustments</span>
         </button>
-        <button type="button" class="launchpad__card launchpad__card--all" data-launch="all" aria-label="Generate all documents: IEP, BSP, and Adjustments">
-          <span class="launchpad__card-icon" aria-hidden="true">ALL</span>
-          <span class="launchpad__card-body">
-            <span class="launchpad__card-title">Generate All Documents</span>
-            <span class="launchpad__card-desc">Generates a comprehensive profile including IEP, BSP, and Adjustments.</span>
-          </span>
-          <span class="launchpad__card-tag launchpad__card-tag--primary">Full suite</span>
-        </button>
       </div>
-      </div>
-    </div>
-  </div>
-
-  <div id="genProgressOverlay" class="gen-progress-overlay gen-progress-overlay--hidden no-print" role="dialog" aria-modal="true" aria-labelledby="genProgressTitle" aria-hidden="true">
-    <div class="gen-progress-backdrop" aria-hidden="true"></div>
-    <div class="gen-progress-card" id="genProgressCard">
-      <h2 id="genProgressTitle">Generation progress</h2>
-      <p class="gen-progress-sub" id="genProgressSubtitle">Preparing your three Word documents…</p>
-      <div class="gen-progress-bar-wrap" id="genProgressBarWrap">
-        <div class="gen-progress-bar" id="genProgressBar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
-      </div>
-      <ul class="gen-progress-steps" id="genProgressSteps">
-        <li data-step="iep" id="genStepIep"><span class="gen-step-icon" aria-hidden="true"></span><span>Individual Education Plan (IEP)</span></li>
-        <li data-step="bsp" id="genStepBsp"><span class="gen-step-icon" aria-hidden="true"></span><span>Behaviour Support Plan (BSP)</span></li>
-        <li data-step="classroom" id="genStepClassroom"><span class="gen-step-icon" aria-hidden="true"></span><span>Classroom Adjustments (DIP)</span></li>
-      </ul>
-      <div id="genProgressSuccess" class="gen-progress-success" hidden>
-        <p class="gen-progress-success-msg" id="genProgressSuccessMsg">Success! 3 documents have been generated and downloaded.</p>
-        <div id="genProgressManual" class="gen-progress-manual" hidden>
-          <p>If a download didn't start automatically, use these links:</p>
-          <div class="gen-progress-manual-btns">
-            <a href="#" id="manualDlIep" download>Download IEP</a>
-            <a href="#" id="manualDlBsp" download>Download BSP</a>
-            <a href="#" id="manualDlClassroom" download>Download Adjustments</a>
-          </div>
-        </div>
-        <button type="button" class="btn btn-accent" id="genProgressDoneBtn">Done</button>
+      <button
+        type="button"
+        class="launchpad__enter-full-suite launchpad__full-suite no-print"
+        id="btn-enter-full-suite"
+        data-launch="all"
+        aria-label="Open Full Suite workspace for IEP, BSP, and Classroom Adjustments data entry"
+        style="background: #1a202c !important; color: #ffffff !important; opacity: 1 !important;"
+      >
+        <span class="launchpad__full-suite-title">Full Suite (IEP, BSP &amp; Adjustments)</span>
+        <span class="launchpad__full-suite-action">Open Full Suite Workspace</span>
+      </button>
       </div>
     </div>
   </div>
@@ -1606,9 +1884,23 @@
   <div id="appMain" class="app-main" aria-hidden="true">
     <button type="button" class="start-over-btn no-print" id="startOverBtn" title="Return to plan selection">↺ Start Over</button>
   <div class="container">
-    <h1 class="no-print">WHS IEP/BSP Generator</h1>
-    <p class="launchpad-badge no-print" id="launchpadBadge" hidden></p>
-    <p class="subtitle no-print">Complete the form across tabs, then generate your plan documents and download as Word.</p>
+    <header class="app-page-header no-print">
+      <div class="app-page-header__brand">
+        <h1>WHS IEP/BSP Generator</h1>
+        <p class="launchpad-badge" id="launchpadBadge" hidden></p>
+        <p class="subtitle">Complete the form across tabs, then use <strong>Export Full Suite</strong> to download your Word documents.</p>
+      </div>
+      <div class="progress-controls" role="group" aria-label="Local progress and export">
+        <button type="button" class="btn-save-progress" id="saveProgressBtn">Save Progress</button>
+        <button type="button" class="btn-load-progress" id="loadProgressBtn">Load Progress</button>
+        <button
+          type="button"
+          class="btn-generate-all"
+          id="generateAllHeaderBtn"
+          aria-label="Generate IEP, BSP, and Classroom Adjustments Word documents sequentially"
+        >Full Suite</button>
+      </div>
+    </header>
 
     <div class="doc-picker no-print" id="docPicker">
       <div class="doc-picker-header">
@@ -1616,13 +1908,6 @@
         <p>Choose which plans to complete and export. Unchecked plans are hidden and their form fields are not required.</p>
       </div>
       <div class="doc-picker-grid">
-        <label class="doc-picker-card doc-picker-card--all">
-          <input type="checkbox" id="docSelectAll">
-          <span class="doc-picker-card-text">
-            <strong>Select All</strong>
-            <small>Individual Education Plan, Behaviour Support Plan, and Classroom Adjustments</small>
-          </span>
-        </label>
         <label class="doc-picker-card">
           <input type="checkbox" class="doc-check" id="docCheckIep" data-doc="iep">
           <span class="doc-picker-card-text">
@@ -1961,83 +2246,196 @@
       <!-- Tab 4: BSP Goals -->
       <div id="tab-bsp" class="tab-panel" data-doc-form="bsp" role="tabpanel">
         <div class="panel-card">
-    <h3>SMART Goals (BSP)</h3>
+          <h3>BSP SMART Goals</h3>
+          <div class="teacher-guidance-box" role="note">
+            <span class="guidance-title">Teacher Guidance</span>
+            <ul>
+              <li>Complete <strong>Behaviours</strong> and <strong>Student Voice</strong> first, then generate the three BSP goals below.</li>
+              <li><strong>Goals 1 &amp; 2</strong> target the first and second behaviours of concern; <strong>Goal 3</strong> builds on documented positive behaviours and core assets.</li>
+            </ul>
+          </div>
           <div class="suggestions-box">
             <h4>Need ideas?</h4>
-            <p>Fill in the <strong>Student Voice</strong> tab (and Details, Behaviours) first, then click below to generate goal suggestions based on the student's challenges, strengths and behaviours of concern (or positive behaviours only), and triggers.</p>
-            <button type="button" class="btn btn-suggest" id="suggestGoalsBtn">Generate goal suggestions</button>
+            <p>Click below to generate three polished SMART goal paragraphs from behaviours of concern, student voice, and documented strengths.</p>
+            <button type="button" class="btn btn-suggest" id="suggestGoalsBtn">✨ Generate goal suggestions</button>
           </div>
 
-          <div class="smart-goal-block">
-            <h4>Goal #1</h4>
-            <div class="smart-field">
-              <label>Specific — What exactly will the student do or achieve?</label>
-              <input type="text" name="bsp1_specific" data-doc-required="bsp" placeholder="E.g. Remain on task during whole-class instruction" required>
+          <div class="bsp-goals-results-host iep-goal-result-host" aria-label="BSP generated SMART goals">
+            <div class="bsp-goals-results-intro no-print">
+              <h4 class="bsp-goals-results-heading">Generated BSP Goals</h4>
+              <p class="example">Review all three compiled paragraphs before export. Edit SMART components in each goal panel below if needed.</p>
             </div>
-            <div class="smart-field">
-              <label>Measurable — How will we know? (evidence, criteria)</label>
-              <input type="text" name="bsp1_measurable" placeholder="E.g. On task for 80% of observed 10-min blocks">
-            </div>
-            <div class="smart-field">
-              <label>Achievable — What supports make this realistic?</label>
-              <input type="text" name="bsp1_achievable" placeholder="E.g. Movement break pass, teacher proximity">
-            </div>
-            <div class="smart-field">
-              <label>Relevant — Why does this matter for the student?</label>
-              <input type="text" name="bsp1_relevant" placeholder="E.g. Supports learning and reduces escalation">
-            </div>
-            <div class="smart-field">
-              <label>Time-bound — By when?</label>
-              <input type="text" name="bsp1_timebound" placeholder="E.g. By end of Term 2">
-            </div>
+
+            <article class="bsp-goal-result-card bsp-goal-result-card--primary iep-goal-result-card" id="bsp1_compiledPreview" role="region" aria-label="Goal 1 Primary Targeted Support" hidden>
+              <header class="bsp-goal-result-header">
+                <span class="bsp-goal-result-badge">Goal 1</span>
+                <h4 class="bsp-goal-result-title">Primary Targeted Support</h4>
+                <p class="bsp-goal-result-subtitle">Addressing the first isolated behavior of concern</p>
+              </header>
+              <div class="bsp-goal-result-body goal-result-section goal-compiled-section">
+                <div class="goal-compiled-output bsp-goal-compiled-output iep-goal-result-field" data-bsp-compiled-text role="status" aria-live="polite"></div>
+              </div>
+            </article>
+
+            <article class="bsp-goal-result-card bsp-goal-result-card--secondary iep-goal-result-card" id="bsp2_compiledPreview" role="region" aria-label="Goal 2 Secondary Targeted Support" hidden>
+              <header class="bsp-goal-result-header">
+                <span class="bsp-goal-result-badge">Goal 2</span>
+                <h4 class="bsp-goal-result-title">Secondary Targeted Support</h4>
+                <p class="bsp-goal-result-subtitle">Addressing the second isolated behavior of concern</p>
+              </header>
+              <div class="bsp-goal-result-body goal-result-section goal-compiled-section">
+                <div class="goal-compiled-output bsp-goal-compiled-output iep-goal-result-field" data-bsp-compiled-text role="status" aria-live="polite"></div>
+              </div>
+            </article>
+
+            <article class="bsp-goal-result-card bsp-goal-result-card--strength iep-goal-result-card" id="bsp3_compiledPreview" role="region" aria-label="Goal 3 Strength-Based Excellence" hidden>
+              <header class="bsp-goal-result-header">
+                <span class="bsp-goal-result-badge">Goal 3</span>
+                <h4 class="bsp-goal-result-title">Strength-Based Excellence</h4>
+                <p class="bsp-goal-result-subtitle">Building on the student's positive behaviors and core assets</p>
+              </header>
+              <div class="bsp-goal-result-body goal-result-section goal-compiled-section">
+                <div class="goal-compiled-output bsp-goal-compiled-output iep-goal-result-field" data-bsp-compiled-text role="status" aria-live="polite"></div>
+              </div>
+            </article>
           </div>
 
-          <div class="smart-goal-block">
-            <h4>Goal #2 (optional)</h4>
-            <div class="smart-field">
-              <label>Specific</label>
-              <input type="text" name="bsp2_specific" placeholder="What exactly will the student do?">
-            </div>
-            <div class="smart-field">
-              <label>Measurable</label>
-              <input type="text" name="bsp2_measurable" placeholder="How will we know?">
-            </div>
-            <div class="smart-field">
-              <label>Achievable</label>
-              <input type="text" name="bsp2_achievable" placeholder="What supports?">
-            </div>
-            <div class="smart-field">
-              <label>Relevant</label>
-              <input type="text" name="bsp2_relevant" placeholder="Why does it matter?">
-            </div>
-            <div class="smart-field">
-              <label>Time-bound</label>
-              <input type="text" name="bsp2_timebound" placeholder="By when?">
-            </div>
+          <div class="bsp-goal-tabs" role="tablist" aria-label="BSP SMART goal areas">
+            <button type="button" class="bsp-goal-tab-btn active" data-bsp-goal="1" role="tab" aria-selected="true">Goal 1 <span class="example">— Primary</span></button>
+            <button type="button" class="bsp-goal-tab-btn" data-bsp-goal="2" role="tab" aria-selected="false">Goal 2 <span class="example">— Secondary</span></button>
+            <button type="button" class="bsp-goal-tab-btn" data-bsp-goal="3" role="tab" aria-selected="false">Goal 3 <span class="example">— Strengths</span></button>
           </div>
 
-          <div class="smart-goal-block">
-            <h4>Goal #3 (optional)</h4>
-            <div class="smart-field">
-              <label>Specific</label>
-              <input type="text" name="bsp3_specific" placeholder="What exactly will the student do?">
+          <div id="bsp-goal-1" class="bsp-goal-panel active smart-goal-block bsp-goal-panel--1" role="tabpanel">
+            <h4>Goal 1: Primary Targeted Support</h4>
+            <div class="bsp-goal-data-input iep-goal-data-input">
+              <h5>Data Input</h5>
+              <p class="example" style="margin:0 0 0.75rem 0">Primary behaviour of concern is taken from the <strong>Behaviours</strong> tab. Add triggers and student voice hooks below.</p>
+              <label>Behaviours Observed / Triggers <span class="example">(optional context)</span>
+                <textarea name="bsp1_behavioursTriggers" rows="2" placeholder="e.g., Morning transitions and refusal to enter the classroom."></textarea>
+              </label>
+              <label>Student Voice &amp; Interests / De-escalation Hooks
+                <textarea name="bsp1_studentVoice" rows="3" placeholder="e.g., Loves playing basketball — use for morning staff check-in mentor connection."></textarea>
+              </label>
+              <label>Target Replacement Behaviour <span class="example">(SMART goal outcome)</span>
+                <textarea name="bsp1_targetReplacement" rows="2" placeholder="E.g. Attend all scheduled core classes daily"></textarea>
+              </label>
             </div>
-            <div class="smart-field">
-              <label>Measurable</label>
-              <input type="text" name="bsp3_measurable" placeholder="How will we know?">
+            <details class="bsp-smart-fields-details no-print">
+              <summary class="bsp-smart-fields-summary">Edit SMART components</summary>
+              <div class="iep-goal-result-card" role="region" aria-label="BSP Goal 1 SMART components">
+                <div class="iep-goal-result-smart">
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Specific</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp1_specific" data-doc-required="bsp" placeholder="Auto-filled compiled goal paragraph" required>
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Measurable</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp1_measurable" placeholder="Evidence and criteria">
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Achievable</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp1_achievable" placeholder="Staff supports and strategies">
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Relevant</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp1_relevant" placeholder="Why this goal matters">
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Time-bound</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp1_timebound" placeholder="Review timeline">
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div id="bsp-goal-2" class="bsp-goal-panel smart-goal-block bsp-goal-panel--2" role="tabpanel">
+            <h4>Goal 2: Secondary Targeted Support</h4>
+            <div class="bsp-goal-data-input iep-goal-data-input">
+              <h5>Data Input</h5>
+              <p class="example" style="margin:0 0 0.75rem 0">Second behaviour of concern is taken from the <strong>Behaviours</strong> tab. If only one is checked, a baseline regulation goal is generated.</p>
+              <label>Behaviours Observed / Triggers <span class="example">(optional context)</span>
+                <textarea name="bsp2_behavioursTriggers" rows="2" placeholder="e.g., Disrupting others' learning during whole-class instruction."></textarea>
+              </label>
+              <label>Student Voice &amp; Interests / Support Hooks
+                <textarea name="bsp2_studentVoice" rows="3" placeholder="e.g., Enjoys drawing — use as a 5-minute creative cool-down reward after task completion."></textarea>
+              </label>
+              <label>Target Replacement Behaviour <span class="example">(SMART goal outcome)</span>
+                <textarea name="bsp2_targetReplacement" rows="2" placeholder="E.g. Maintain focus on assigned tasks for 20-minute intervals"></textarea>
+              </label>
             </div>
-            <div class="smart-field">
-              <label>Achievable</label>
-              <input type="text" name="bsp3_achievable" placeholder="What supports?">
+            <details class="bsp-smart-fields-details no-print">
+              <summary class="bsp-smart-fields-summary">Edit SMART components</summary>
+              <div class="iep-goal-result-card" role="region" aria-label="BSP Goal 2 SMART components">
+                <div class="iep-goal-result-smart">
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Specific</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp2_specific" placeholder="Auto-filled compiled goal paragraph">
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Measurable</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp2_measurable" placeholder="Evidence and criteria">
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Achievable</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp2_achievable" placeholder="Staff supports and strategies">
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Relevant</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp2_relevant" placeholder="Why this goal matters">
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Time-bound</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp2_timebound" placeholder="Review timeline">
+                  </div>
+                </div>
+              </div>
+            </details>
+          </div>
+
+          <div id="bsp-goal-3" class="bsp-goal-panel smart-goal-block bsp-goal-panel--3" role="tabpanel">
+            <h4>Goal 3: Strength-Based Excellence</h4>
+            <div class="bsp-goal-data-input iep-goal-data-input">
+              <h5>Data Input</h5>
+              <p class="example" style="margin:0 0 0.75rem 0">Strength focus is drawn from positive behaviours and <strong>Likes, interests &amp; strengths</strong> on the Details tab.</p>
+              <label>Documented Strengths / Context <span class="example">(optional)</span>
+                <textarea name="bsp3_behavioursTriggers" rows="2" placeholder="e.g., Exceptional baseline strength in hands-on tasks and leadership."></textarea>
+              </label>
+              <label>Student Voice &amp; Interests
+                <textarea name="bsp3_studentVoice" rows="3" placeholder="e.g., Enjoys leading group projects and helping peers with practical tasks."></textarea>
+              </label>
+              <label>Strength Extension Target <span class="example">(SMART goal outcome)</span>
+                <textarea name="bsp3_targetReplacement" rows="2" placeholder="E.g. Maintain and extend leadership in peer-group projects"></textarea>
+              </label>
             </div>
-            <div class="smart-field">
-              <label>Relevant</label>
-              <input type="text" name="bsp3_relevant" placeholder="Why does it matter?">
-            </div>
-            <div class="smart-field">
-              <label>Time-bound</label>
-              <input type="text" name="bsp3_timebound" placeholder="By when?">
-            </div>
+            <details class="bsp-smart-fields-details no-print">
+              <summary class="bsp-smart-fields-summary">Edit SMART components</summary>
+              <div class="iep-goal-result-card" role="region" aria-label="BSP Goal 3 SMART components">
+                <div class="iep-goal-result-smart">
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Specific</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp3_specific" placeholder="Auto-filled compiled goal paragraph">
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Measurable</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp3_measurable" placeholder="Evidence and criteria">
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Achievable</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp3_achievable" placeholder="Staff supports and strategies">
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Relevant</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp3_relevant" placeholder="Why this goal matters">
+                  </div>
+                  <div class="goal-smart-step">
+                    <p class="iep-goal-result-label"><strong>Time-bound</strong></p>
+                    <input type="text" class="iep-goal-result-field" name="bsp3_timebound" placeholder="Review timeline">
+                  </div>
+                </div>
+              </div>
+            </details>
           </div>
         </div>
       </div>
@@ -2247,15 +2645,14 @@
         </div>
       </div>
 
+      <div class="tab-export-hooks no-print" aria-hidden="true">
+        <button type="button" id="generateWordIep" data-export-mode="IEP" tabindex="-1">Generate IEP</button>
+        <button type="button" id="generateWordBsp" data-export-mode="BSP" tabindex="-1">Generate BSP</button>
+        <button type="button" id="generateWordClassroom" data-export-mode="Adjustments" tabindex="-1">Generate Classroom Adjustments</button>
+      </div>
+
       <div class="form-actions plan-form-footer" id="formActions">
         <div id="formValidationSummary" class="validation-summary" role="alert" aria-live="polite" hidden></div>
-        <div class="btn-row form-actions-row">
-          <label class="form-actions-compact-all" for="fixedDocSelectAll">
-            <input type="checkbox" id="fixedDocSelectAll">
-            <span>All Documents</span>
-          </label>
-          <button type="button" class="btn btn-accent" id="generatePlanBtn">Download Word document</button>
-        </div>
       </div>
   </form>
 
@@ -4345,27 +4742,87 @@
       return cleanWordExportText(out.replace(/\s+/g, ' ').trim());
     }
 
+    // Executive IEP palette — shared across Word export HTML/CSS.
+    var WORD_EXPORT_THEME = {
+      primary: '#1A365D',
+      secondary: '#2C7A7B',
+      bodyText: '#2D3748',
+      softFill: '#F7FAFC',
+      calloutFill: '#EDF2F7',
+      gridBorder: '#E2E8F0',
+      footerMuted: '#94A3B8'
+    };
+
+    /** Layout geometry — mirrors docx spacing (twips) and A4 margin standards. */
+    var WORD_EXPORT_LAYOUT = {
+      pageMarginCm: 2.54,
+      paraSpaceBeforeTwips: 180,
+      paraSpaceAfterTwips: 120,
+      footerFontPt: 9
+    };
+
+    function wordTwipsToPt(twips) {
+      return twips / 20;
+    }
+
+    /** Explicit paragraph spacing (docx space.before / space.after equivalent). */
+    function wordParagraphSpacingStyle(extra) {
+      var before = wordTwipsToPt(WORD_EXPORT_LAYOUT.paraSpaceBeforeTwips);
+      var after = wordTwipsToPt(WORD_EXPORT_LAYOUT.paraSpaceAfterTwips);
+      var style =
+        'margin-top:' + before + 'pt;margin-bottom:' + after + 'pt;' +
+        'mso-margin-top-alt:' + before + 'pt;mso-margin-bottom-alt:' + after + 'pt;' +
+        'line-height:1.25;color:' + WORD_EXPORT_THEME.bodyText + ';';
+      return extra ? style + extra : style;
+    }
+
+    /** cantSplit row protection for Word HTML tables. */
+    function wordTableRowNoSplitStyle(extra) {
+      var style = 'page-break-inside:avoid;mso-pagination:widow-orphan;';
+      return extra ? style + extra : style;
+    }
+
+    function wordTableHeaderRowStyle(extra) {
+      return wordTableRowNoSplitStyle('mso-table-header:yes;' + (extra || ''));
+    }
+
+    /** Premium-styled goal table shell — content rows supplied by existing generators unchanged. */
     function buildWordSmartGoalTable(title, rows) {
       rows = (rows || []).filter(function (row) {
         return row && row.label && wordSectionHasContent(row.value);
       });
       if (!rows.length) return '';
-      var thead = '<thead><tr><th colspan="2">' + escapeHtml(title || 'Learning Goal') + '</th></tr></thead>';
+      var theme = WORD_EXPORT_THEME;
+      var tableStyle =
+        'width:100%;border-collapse:collapse;margin:14px 0 18px 0;border:1px solid ' + theme.gridBorder + ';';
+      var titleThStyle =
+        'background:' + theme.primary + ';color:#ffffff;font-weight:bold;font-size:11pt;padding:12pt 10pt;' +
+        'border:1px solid ' + theme.gridBorder + ';font-family:Calibri,Arial,sans-serif;text-align:left;line-height:1.25;';
+      var labelTdStyle =
+        'width:28%;font-weight:bold;background:' + theme.softFill + ';color:' + theme.primary +
+        ';padding:12pt 10pt;border:1px solid ' + theme.gridBorder +
+        ';font-size:11pt;line-height:1.25;vertical-align:top;font-family:Calibri,Arial,sans-serif;';
+      var valueTdStyle =
+        'padding:12pt 10pt;border:1px solid ' + theme.gridBorder + ';color:' + theme.bodyText +
+        ';font-size:11pt;line-height:1.25;vertical-align:top;font-family:Calibri,Arial,sans-serif;';
+      var thead =
+        '<thead><tr style="' + wordTableHeaderRowStyle() + '">' +
+        '<th colspan="2" style="' + titleThStyle + '">' + escapeHtml(title || 'Learning Goal') + '</th></tr></thead>';
       var tbody = '<tbody>' + rows.map(function (row) {
         var labelText = String(row.label || '');
         var labelNorm = labelText.toLowerCase().replace(/[\s-]+/g, ' ').trim();
         var isLongTerm = !!row.longTerm || labelNorm.indexOf('long term goal') >= 0;
-        var rowClass = isLongTerm ? ' class="goal-long-term-row"' : '';
         var labelCellClass = 'goal-label' + (isLongTerm ? ' goal-long-term-label' : '');
         var labelHtml = isLongTerm
           ? '<strong>' + escapeHtml(labelText) + '</strong>'
           : escapeHtml(labelText);
-        var valueHtml = wordTextToParagraphsHtml(row.value) ||
-          '<p class="word-para">' + escapeHtml(cleanWordExportText(row.value)) + '</p>';
-        return '<tr' + rowClass + '><td class="' + labelCellClass + '">' + labelHtml + '</td><td class="word-goal-value">' +
-          valueHtml + '</td></tr>';
+        var valueHtml = wordTableCellParagraphsHtml(row.value);
+        return '<tr style="' + wordTableRowNoSplitStyle() + '">' +
+          '<td class="' + labelCellClass + '" style="' + labelTdStyle + '">' + labelHtml + '</td>' +
+          '<td class="word-goal-value" style="' + valueTdStyle + '">' + valueHtml + '</td></tr>';
       }).join('') + '</tbody>';
-      return '<table class="word-goal-table" border="1" cellpadding="8" cellspacing="0" style="width:100%;border-collapse:collapse;border:2px solid #33475b;margin-bottom:20px;">' + thead + tbody + '</table>';
+      return '<table class="word-goal-table word-protected-table" border="0" cellpadding="0" cellspacing="0" style="' + tableStyle + 'mso-table-header:yes;">' +
+        thead + tbody + '</table>';
     }
 
     function formatBspSmartGoalWordHtml(g, index, values) {
@@ -4603,7 +5060,6 @@
 
     function modeIncludesDocument(mode, docKey) {
       if (!mode) return false;
-      if (mode === 'ALL') return true;
       if (mode === 'IEP' && docKey === 'iep') return true;
       if (mode === 'BSP' && docKey === 'bsp') return true;
       if (mode === 'Adjustments' && docKey === 'classroom') return true;
@@ -5164,10 +5620,37 @@
       if (opts.preserveLineBreaks) {
         return out.replace(/[ \t]+\n/g, '\n').replace(/\n[ \t]+/g, '\n').trim();
       }
-      return out.replace(/\s{2,}/g, ' ').trim();
+      return out.replace(/\n+/g, ' ').replace(/\s{2,}/g, ' ').trim();
     }
 
-    /** Multi-line textarea → plain <p> paragraphs (letter/report style, no boxes). */
+    /** Table-cell copy — never emit raw newlines; always native paragraph spacing. */
+    function wordTableCellParagraphsHtml(text) {
+      if (!wordSectionHasContent(text)) {
+        return '<p class="word-para word-table-cell-para" style="' +
+          wordParagraphSpacingStyle('margin-top:0;margin-bottom:0;') + '">—</p>';
+      }
+      var cleaned = cleanWordExportText(text, { preserveLineBreaks: true });
+      var lines = cleaned.split(/\n+/).map(function (line) {
+        return line.replace(/\s+/g, ' ').trim();
+      }).filter(function (line) {
+        return line && line !== '—' && line !== '-' && line !== '–';
+      });
+      if (!lines.length) {
+        var flat = cleanWordExportText(text);
+        return '<p class="word-para word-table-cell-para" style="' +
+          wordParagraphSpacingStyle('margin-top:0;margin-bottom:0;') + '">' +
+          escapeHtml(flat) + '</p>';
+      }
+      return lines.map(function (line, index) {
+        line = line.replace(/\b([A-Za-z][A-Za-z\s\/-]*)\s+Input\s*:/g, '$1:');
+        var style = index === 0
+          ? wordParagraphSpacingStyle('margin-top:0;')
+          : wordParagraphSpacingStyle();
+        return '<p class="word-para word-table-cell-para" style="' + style + '">' + escapeHtml(line) + '</p>';
+      }).join('');
+    }
+
+    /** Multi-line textarea → spaced <p> paragraphs (no raw blank-line gaps). */
     function wordTextToParagraphsHtml(text) {
       var cleaned = cleanWordExportText(text, { preserveLineBreaks: true });
       if (!cleaned) return '';
@@ -5177,17 +5660,20 @@
         return line && line !== '—' && line !== '-' && line !== '–';
       });
       if (!lines.length) return '';
-      return lines.map(function (line) {
+      var paraStyle = wordParagraphSpacingStyle();
+      return lines.map(function (line, index) {
         line = line.replace(/\b([A-Za-z][A-Za-z\s\/-]*)\s+Input\s*:/g, '$1:');
-        return '<p class="word-para">' + escapeHtml(line) + '</p>';
+        var style = index === 0 ? wordParagraphSpacingStyle('margin-top:0;') : paraStyle;
+        return '<p class="word-para" style="' + style + '">' + escapeHtml(line) + '</p>';
       }).join('');
     }
 
     /** Checkbox/list items as plain paragraphs for Word (not bordered lists). */
     function wordListToParagraphsHtml(items) {
       if (!items || !items.length) return '';
-      return items.filter(wordSectionHasContent).map(function (item) {
-        return '<p class="word-para">' + escapeHtml(cleanWordExportText(item)) + '</p>';
+      return items.filter(wordSectionHasContent).map(function (item, index) {
+        var style = index === 0 ? wordParagraphSpacingStyle('margin-top:0;') : wordParagraphSpacingStyle();
+        return '<p class="word-para" style="' + style + '">' + escapeHtml(cleanWordExportText(item)) + '</p>';
       }).join('');
     }
 
@@ -5200,8 +5686,9 @@
         return cleanWordExportText(s);
       }).filter(wordSectionHasContent);
       if (items.length <= 1) return wordTextToParagraphsHtml(val) || '';
-      return items.map(function (item) {
-        return '<p class="word-para">' + escapeHtml(item) + '</p>';
+      return items.map(function (item, index) {
+        var style = index === 0 ? wordParagraphSpacingStyle('margin-top:0;') : wordParagraphSpacingStyle();
+        return '<p class="word-para" style="' + style + '">' + escapeHtml(item) + '</p>';
       }).join('');
     }
 
@@ -5250,6 +5737,25 @@
         });
       });
       IEP_GOAL_AREAS.forEach(syncIepGoalLevelFromDashboard);
+    }
+
+    function switchBspGoalTab(tabKey) {
+      document.querySelectorAll('.bsp-goal-tab-btn').forEach(function (btn) {
+        var active = btn.dataset.bspGoal === String(tabKey);
+        btn.classList.toggle('active', active);
+        btn.setAttribute('aria-selected', active ? 'true' : 'false');
+      });
+      document.querySelectorAll('.bsp-goal-panel').forEach(function (panel) {
+        panel.classList.toggle('active', panel.id === 'bsp-goal-' + tabKey);
+      });
+    }
+
+    function initBspGoalTabs() {
+      document.querySelectorAll('.bsp-goal-tab-btn').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          switchBspGoalTab(btn.dataset.bspGoal);
+        });
+      });
     }
 
     function initYearLevelSelect() {
@@ -5313,127 +5819,54 @@
       };
     }
 
-    var GENERATE_BTN_LABEL_DEFAULT = 'Download Word document';
-    var GENERATE_BTN_LABEL_ALL = 'Download all Word documents';
-    var GENERATE_BTN_LABEL_BY_MODE = {
-      IEP: 'Download IEP Word document',
-      BSP: 'Download BSP Word document',
-      Adjustments: 'Download Adjustments Word document'
-    };
-
     var WORD_DOC_TYPE_LABELS = {
       IEP: 'Individual Education Plan (IEP)',
       BSP: 'Behaviour Support Plan (BSP)',
       Adjustments: 'Classroom Adjustments'
     };
+    window.WORD_DOC_TYPE_LABELS = WORD_DOC_TYPE_LABELS;
 
-    /** @type {'IEP'|'BSP'|'Adjustments'|'ALL'|null} */
+    /** @type {'IEP'|'BSP'|'Adjustments'|null} */
     var selectedMode = null;
 
     var MODE_DOC_SELECTION = {
       IEP: { iep: true, bsp: false, classroom: false },
       BSP: { iep: false, bsp: true, classroom: false },
-      Adjustments: { iep: false, bsp: false, classroom: true },
-      ALL: { iep: true, bsp: true, classroom: true }
+      Adjustments: { iep: false, bsp: false, classroom: true }
     };
 
     var LAUNCH_TO_MODE = {
       iep: 'IEP',
       bsp: 'BSP',
       classroom: 'Adjustments',
-      all: 'ALL'
+      all: null
     };
+
+    var FULL_SUITE_DOC_SELECTION = { iep: true, bsp: true, classroom: true };
 
     var MODE_TO_LAUNCH = {
       IEP: 'iep',
       BSP: 'bsp',
-      Adjustments: 'classroom',
-      ALL: 'all'
+      Adjustments: 'classroom'
     };
 
     var MODE_LABELS = {
       IEP: 'Individual Education Plan (IEP)',
       BSP: 'Behaviour Support Plan (BSP)',
-      Adjustments: 'Classroom Adjustments',
-      ALL: 'All documents (IEP, BSP & Adjustments)'
+      Adjustments: 'Classroom Adjustments'
     };
 
     function getSelectedMode() {
       if (selectedMode) return selectedMode;
       var selected = getSelectedDocuments();
-      if (selected.iep && selected.bsp && selected.classroom) return 'ALL';
       if (selected.iep && !selected.bsp && !selected.classroom) return 'IEP';
       if (selected.bsp && !selected.iep && !selected.classroom) return 'BSP';
       if (selected.classroom && !selected.iep && !selected.bsp) return 'Adjustments';
-      return null;
+      return resolveModeFromActiveTab();
     }
 
-    function isAllDocumentsMode() {
-      return getSelectedMode() === 'ALL';
-    }
-
-    function isDocumentRuleActiveForMode(rule, mode) {
-      if (!rule || !mode) return false;
-      if (mode === 'ALL') return true;
-      if (rule === 'any') return true;
-      return rule.split(',').some(function (key) {
-        var k = key.trim();
-        if (mode === 'IEP') return k === 'iep';
-        if (mode === 'BSP') return k === 'bsp';
-        if (mode === 'Adjustments') return k === 'classroom';
-        return false;
-      });
-    }
-
-    function isPanelInScopeForMode(panel, mode) {
-      if (!panel || !mode) return false;
-      var rule = panel.getAttribute('data-doc-form');
-      if (!rule) return true;
-      return isDocumentRuleActiveForMode(rule, mode);
-    }
-
-    function modeRequiresFunctionalBehaviour(mode) {
-      return mode === 'BSP' || mode === 'ALL';
-    }
-
-    function setDocumentSelection(opts) {
-      var iep = document.getElementById('docCheckIep');
-      var bsp = document.getElementById('docCheckBsp');
-      var classroom = document.getElementById('docCheckClassroom');
-      var selectAll = document.getElementById('docSelectAll');
-      var fixedSelectAll = document.getElementById('fixedDocSelectAll');
-      if (iep) iep.checked = !!opts.iep;
-      if (bsp) bsp.checked = !!opts.bsp;
-      if (classroom) classroom.checked = !!opts.classroom;
-      if (selectAll) {
-        selectAll.checked = !!(opts.iep && opts.bsp && opts.classroom);
-      }
-      if (fixedSelectAll) {
-        fixedSelectAll.checked = !!(opts.iep && opts.bsp && opts.classroom);
-      }
-      updateDocumentVisibility();
-      syncSelectedModeFromDocuments();
-    }
-
-    function syncSelectedModeFromDocuments() {
-      var selected = getSelectedDocuments();
-      if (selected.iep && selected.bsp && selected.classroom) {
-        selectedMode = 'ALL';
-      } else if (selected.iep && !selected.bsp && !selected.classroom) {
-        selectedMode = 'IEP';
-      } else if (selected.bsp && !selected.iep && !selected.classroom) {
-        selectedMode = 'BSP';
-      } else if (selected.classroom && !selected.iep && !selected.bsp) {
-        selectedMode = 'Adjustments';
-      } else if (!selected.iep && !selected.bsp && !selected.classroom) {
-        selectedMode = null;
-      }
-    }
-
-    function resolveGenerateExportMode(form) {
-      var mode = getSelectedMode();
-      if (mode) return mode;
-      form = form || document.getElementById('planForm');
+    function resolveModeFromActiveTab() {
+      var form = document.getElementById('planForm');
       if (!form) return null;
       var panel = form.querySelector('.tab-panel.active');
       if (!panel) return null;
@@ -5445,31 +5878,96 @@
       return null;
     }
 
-    function ensureGenerateButtonPlacement() {
-      var form = document.getElementById('planForm');
-      var actions = document.getElementById('formActions');
-      if (!form || !actions) return;
-      if (form.lastElementChild !== actions) {
-        form.appendChild(actions);
+    function isAllDocumentsMode() {
+      var selected = getSelectedDocuments();
+      return !!(selected.iep && selected.bsp && selected.classroom);
+    }
+
+    function isDocumentRuleActiveForSelection(rule) {
+      if (!rule) return false;
+      if (rule === 'any') return true;
+      var selected = getSelectedDocuments();
+      return rule.split(',').some(function (key) {
+        var k = key.trim();
+        if (k === 'iep') return selected.iep;
+        if (k === 'bsp') return selected.bsp;
+        if (k === 'classroom') return selected.classroom;
+        return false;
+      });
+    }
+
+    function isDocumentRuleActiveForMode(rule, mode) {
+      if (!rule) return false;
+      if (rule === 'any') return true;
+      if (isAllDocumentsMode()) {
+        return isDocumentRuleActiveForSelection(rule);
+      }
+      if (!mode) return false;
+      return rule.split(',').some(function (key) {
+        var k = key.trim();
+        if (mode === 'IEP') return k === 'iep';
+        if (mode === 'BSP') return k === 'bsp';
+        if (mode === 'Adjustments') return k === 'classroom';
+        return false;
+      });
+    }
+
+    function isPanelInScopeForMode(panel, mode) {
+      if (!panel) return false;
+      var rule = panel.getAttribute('data-doc-form');
+      if (!rule) return true;
+      if (mode) {
+        return isDocumentRuleActiveForMode(rule, mode);
+      }
+      if (isAllDocumentsMode()) {
+        return isDocumentRuleActiveForSelection(rule);
+      }
+      return false;
+    }
+
+    function modeRequiresFunctionalBehaviour(mode) {
+      return mode === 'BSP';
+    }
+
+    function setDocumentSelection(opts) {
+      var iep = document.getElementById('docCheckIep');
+      var bsp = document.getElementById('docCheckBsp');
+      var classroom = document.getElementById('docCheckClassroom');
+      if (iep) iep.checked = !!opts.iep;
+      if (bsp) bsp.checked = !!opts.bsp;
+      if (classroom) classroom.checked = !!opts.classroom;
+      updateDocumentVisibility();
+      syncSelectedModeFromDocuments();
+    }
+
+    function syncSelectedModeFromDocuments() {
+      var selected = getSelectedDocuments();
+      if (selected.iep && !selected.bsp && !selected.classroom) {
+        selectedMode = 'IEP';
+      } else if (selected.bsp && !selected.iep && !selected.classroom) {
+        selectedMode = 'BSP';
+      } else if (selected.classroom && !selected.iep && !selected.bsp) {
+        selectedMode = 'Adjustments';
+      } else if (selected.iep && selected.bsp && selected.classroom) {
+        selectedMode = null;
+      } else if (!selected.iep && !selected.bsp && !selected.classroom) {
+        selectedMode = null;
       }
     }
 
-    function updateGenerateButtonLabel() {
-      var btn = document.getElementById('generatePlanBtn');
-      if (!btn) return;
-      var mode = resolveGenerateExportMode();
-      if (mode === 'ALL') {
-        btn.textContent = GENERATE_BTN_LABEL_ALL;
-      } else if (mode && GENERATE_BTN_LABEL_BY_MODE[mode]) {
-        btn.textContent = GENERATE_BTN_LABEL_BY_MODE[mode];
-      } else {
-        btn.textContent = GENERATE_BTN_LABEL_DEFAULT;
-      }
+    function resolveGenerateExportMode(form, explicitMode) {
+      if (explicitMode) return explicitMode;
+      return getSelectedMode();
     }
 
     function updateLaunchpadBadge() {
       var badge = document.getElementById('launchpadBadge');
       if (!badge) return;
+      if (isAllDocumentsMode()) {
+        badge.textContent = 'Creating: IEP, BSP & Classroom Adjustments';
+        badge.hidden = false;
+        return;
+      }
       var mode = getSelectedMode();
       if (!mode) {
         badge.hidden = true;
@@ -5480,10 +5978,11 @@
     }
 
     function syncLaunchpadCardHighlight() {
+      var launchKey = MODE_TO_LAUNCH[selectedMode];
       document.querySelectorAll('.launchpad__card').forEach(function (btn) {
         btn.classList.toggle(
           'launchpad__card--current',
-          btn.getAttribute('data-launch') === MODE_TO_LAUNCH[selectedMode]
+          btn.getAttribute('data-launch') === launchKey
         );
       });
     }
@@ -5531,7 +6030,27 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    /**
+     * Open the main workspace with all three document types enabled (no Word export).
+     */
+    function applyFullSuiteWorkspaceEntry() {
+      selectedMode = null;
+      setDocumentSelection(FULL_SUITE_DOC_SELECTION);
+      updateDocumentVisibility();
+
+      if (typeof switchTab === 'function') {
+        switchTab('details');
+      }
+
+      dismissLaunchpad();
+    }
+
     function applyLaunchpadChoice(choice) {
+      if (choice === 'all') {
+        applyFullSuiteWorkspaceEntry();
+        return;
+      }
+
       var mode = LAUNCH_TO_MODE[choice];
       var map = MODE_DOC_SELECTION[mode];
       if (!mode || !map) return;
@@ -5540,20 +6059,15 @@
       var iep = document.getElementById('docCheckIep');
       var bsp = document.getElementById('docCheckBsp');
       var classroom = document.getElementById('docCheckClassroom');
-      var selectAll = document.getElementById('docSelectAll');
-      var fixedSelectAll = document.getElementById('fixedDocSelectAll');
       if (iep) iep.checked = !!map.iep;
       if (bsp) bsp.checked = !!map.bsp;
       if (classroom) classroom.checked = !!map.classroom;
-      if (selectAll) selectAll.checked = mode === 'ALL';
-      if (fixedSelectAll) fixedSelectAll.checked = mode === 'ALL';
       updateDocumentVisibility();
 
       if (typeof switchTab === 'function') {
         switchTab(getFirstAvailableTabId());
       }
 
-      updateGenerateButtonLabel();
       dismissLaunchpad();
     }
 
@@ -5565,6 +6079,10 @@
           document.querySelectorAll('.launchpad__card').forEach(function (b) {
             b.classList.remove('launchpad__card--selected');
           });
+          var entryBtn = document.getElementById('btn-enter-full-suite');
+          if (entryBtn) {
+            entryBtn.classList.remove('launchpad__card--selected');
+          }
           btn.classList.add('launchpad__card--selected');
           var choice = btn.getAttribute('data-launch');
           window.setTimeout(function () {
@@ -5573,20 +6091,43 @@
         });
       });
 
+      var fullSuiteEntry = document.getElementById('btn-enter-full-suite');
+      if (fullSuiteEntry) {
+        fullSuiteEntry.addEventListener('click', function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          document.querySelectorAll('.launchpad__card').forEach(function (b) {
+            b.classList.remove('launchpad__card--selected');
+          });
+          fullSuiteEntry.classList.add('launchpad__card--selected');
+          window.setTimeout(function () {
+            applyFullSuiteWorkspaceEntry();
+          }, 180);
+        });
+      }
+
       var startOver = document.getElementById('startOverBtn');
       if (startOver) {
         startOver.addEventListener('click', showLaunchpad);
       }
     }
 
+    window.applyFullSuiteWorkspaceEntry = applyFullSuiteWorkspaceEntry;
+    window.isAllDocumentsMode = isAllDocumentsMode;
+    window.setDocumentSelection = setDocumentSelection;
+    window.dismissLaunchpad = dismissLaunchpad;
+
     function updateFormRequiredFields() {
       var mode = getSelectedMode();
+      var allDocs = isAllDocumentsMode();
       var form = document.getElementById('planForm');
       if (!form) return;
 
       form.querySelectorAll('[data-doc-required]').forEach(function (el) {
         var rule = el.getAttribute('data-doc-required');
-        el.required = isDocumentRuleActiveForMode(rule, mode);
+        el.required = allDocs
+          ? isDocumentRuleActiveForSelection(rule)
+          : isDocumentRuleActiveForMode(rule, mode);
       });
 
       form.querySelectorAll('[data-doc-form]').forEach(function (panel) {
@@ -5607,7 +6148,7 @@
       if (el.classList.contains('iep-goal-generated-store')) return false;
       if (el.getAttribute('aria-hidden') === 'true') return false;
       if (el.classList.contains('tab-btn')) return false;
-      if (el.id === 'generatePlanBtn') return false;
+      if (el.classList && el.classList.contains('btn-generate-word')) return false;
       return true;
     }
 
@@ -5708,40 +6249,10 @@
       return { iep: hasIep, bsp: hasBsp, adjustments: hasDip };
     }
 
-    function getAllModeDocumentMismatchMessage(form) {
-      if (getSelectedMode() !== 'ALL') return null;
-
-      var status = getDocumentSectionFillStatus(form);
-      var filled = [];
-      var empty = [];
-      if (status.iep) filled.push('iep'); else empty.push('iep');
-      if (status.bsp) filled.push('bsp'); else empty.push('bsp');
-      if (status.adjustments) filled.push('adjustments'); else empty.push('adjustments');
-
-      if (!filled.length || !empty.length) return null;
-
-      if (filled.length === 1 && filled[0] === 'iep' && empty.indexOf('bsp') >= 0 && empty.indexOf('adjustments') >= 0) {
-        return "You are in 'All Documents' mode. Please complete the BSP and DIP tabs, or switch to 'IEP Only' mode to generate just that document.";
-      }
-      if (filled.length === 1 && filled[0] === 'bsp' && empty.indexOf('iep') >= 0 && empty.indexOf('adjustments') >= 0) {
-        return "You are in 'All Documents' mode. Please complete the IEP and DIP tabs, or switch to 'BSP Only' mode to generate just that document.";
-      }
-      if (filled.length === 1 && filled[0] === 'adjustments' && empty.indexOf('iep') >= 0 && empty.indexOf('bsp') >= 0) {
-        return "You are in 'All Documents' mode. Please complete the IEP and BSP tabs, or switch to 'Adjustments Only' mode to generate just that document.";
-      }
-
-      var emptyLabels = empty.map(function (k) {
-        if (k === 'adjustments') return 'DIP';
-        return k.toUpperCase();
-      });
-      return "You are in 'All Documents' mode. Please complete the " + emptyLabels.join(' and ') +
-        " tabs, or use Start Over to choose a single document type for what you have filled in so far.";
-    }
-
-    function collectMissingRequiredFields() {
+    function collectMissingRequiredFields(exportMode) {
       updateFormRequiredFields();
       var form = document.getElementById('planForm');
-      var mode = getSelectedMode();
+      var mode = exportMode || getSelectedMode();
       if (!form || !mode) return [];
 
       var missing = [];
@@ -5766,13 +6277,13 @@
       return missing;
     }
 
-    function validateBeforeGenerate(form) {
+    function validateBeforeGenerate(form, exportMode) {
       form = form || document.getElementById('planForm');
-      var mode = resolveGenerateExportMode(form);
+      var mode = resolveGenerateExportMode(form, exportMode);
       if (!mode) {
         return {
           ok: false,
-          alertMessage: 'Please choose what you are creating from the Launchpad (IEP, BSP, Adjustments, or All), or open a document tab.',
+          alertMessage: 'Please choose what you are creating from the Launchpad (IEP, BSP, or Adjustments), or use Export Full Suite when your form is ready.',
           scrollToLaunchpad: true
         };
       }
@@ -5780,20 +6291,15 @@
       updateFormRequiredFields();
       updateFormFieldDisabledState();
 
-      var allModeMessage = getAllModeDocumentMismatchMessage(form);
-      if (allModeMessage) {
-        return { ok: false, alertMessage: allModeMessage };
-      }
-
       var detailsMissing = validateSharedDetailsTab(form);
       if (detailsMissing.length) {
-        renderFormValidationSummary();
+        renderFormValidationSummary(exportMode);
         return { ok: false, missing: detailsMissing, mode: mode };
       }
 
-      var missing = collectMissingRequiredFields();
+      var missing = collectMissingRequiredFields(exportMode);
       if (missing.length) {
-        renderFormValidationSummary();
+        renderFormValidationSummary(exportMode);
         return { ok: false, missing: missing, mode: mode };
       }
 
@@ -5812,11 +6318,11 @@
       return { ok: true, mode: mode };
     }
 
-    function renderFormValidationSummary() {
+    function renderFormValidationSummary(exportMode) {
       var box = document.getElementById('formValidationSummary');
       if (!box) return;
 
-      var missing = collectMissingRequiredFields();
+      var missing = collectMissingRequiredFields(exportMode);
       if (!missing.length) {
         box.hidden = true;
         box.innerHTML = '';
@@ -5864,12 +6370,15 @@
 
     function updateFormTabVisibility() {
       var mode = getSelectedMode();
+      var allDocs = isAllDocumentsMode();
       var form = document.getElementById('planForm');
       if (!form) return;
 
       form.querySelectorAll('[data-doc-form]').forEach(function (el) {
         var rule = el.getAttribute('data-doc-form');
-        var active = isDocumentRuleActiveForMode(rule, mode);
+        var active = allDocs
+          ? isDocumentRuleActiveForSelection(rule)
+          : isDocumentRuleActiveForMode(rule, mode);
         el.classList.toggle('tab-doc-inactive', !active);
         if (el.classList.contains('tab-btn')) {
           el.setAttribute('aria-hidden', active ? 'false' : 'true');
@@ -5885,7 +6394,7 @@
 
     function updateDocumentVisibility() {
       var selected = getSelectedDocuments();
-      var allDocs = isAllDocumentsMode();
+      var allDocs = !!(selected.iep && selected.bsp && selected.classroom);
 
       document.body.classList.toggle('mode-all-documents', allDocs);
 
@@ -5898,50 +6407,13 @@
       updateFormRequiredFields();
       updateFormTabVisibility();
       updateFormFieldDisabledState();
-      ensureGenerateButtonPlacement();
-      updateGenerateButtonLabel();
       updateLaunchpadBadge();
       renderFormValidationSummary();
     }
 
-    function syncSelectAllCheckbox() {
-      var checks = document.querySelectorAll('.doc-check');
-      var selectAll = document.getElementById('docSelectAll');
-      var fixedSelectAll = document.getElementById('fixedDocSelectAll');
-      if (!selectAll || !checks.length) return;
-      var allChecked = Array.prototype.every.call(checks, function (cb) { return cb.checked; });
-      selectAll.checked = allChecked;
-      if (fixedSelectAll) fixedSelectAll.checked = allChecked;
-    }
-
     (function initDocumentPicker() {
-      var selectAll = document.getElementById('docSelectAll');
-      var fixedSelectAll = document.getElementById('fixedDocSelectAll');
-      if (!selectAll && !fixedSelectAll) return;
-
-      function setAllDocuments(on) {
-        document.querySelectorAll('.doc-check').forEach(function (cb) {
-          cb.checked = on;
-        });
-        if (selectAll) selectAll.checked = on;
-        if (fixedSelectAll) fixedSelectAll.checked = on;
-        updateDocumentVisibility();
-      }
-
-      if (selectAll) {
-        selectAll.addEventListener('change', function () {
-          setAllDocuments(selectAll.checked);
-        });
-      }
-      if (fixedSelectAll) {
-        fixedSelectAll.addEventListener('change', function () {
-          setAllDocuments(fixedSelectAll.checked);
-        });
-      }
-
       document.querySelectorAll('.doc-check').forEach(function (cb) {
         cb.addEventListener('change', function () {
-          syncSelectAllCheckbox();
           updateDocumentVisibility();
         });
       });
@@ -5954,6 +6426,7 @@
     initLearningLevelSelects();
     initIepFocusAreaSelects();
     initIepGoalTabs();
+    initBspGoalTabs();
     initTargetCurriculumListeners();
     initSuggestSmartGoalButtons();
 
@@ -6023,8 +6496,6 @@
       tabPanel.classList.add('active');
       updateFormFieldDisabledState();
       renderFormValidationSummary();
-      updateGenerateButtonLabel();
-      ensureGenerateButtonPlacement();
     }
 
     function initMainTabNavigation() {
@@ -6196,6 +6667,17 @@
           form['bsp' + i + '_achievable'].value = s.achievable;
           form['bsp' + i + '_relevant'].value = s.relevant;
           form['bsp' + i + '_timebound'].value = s.timebound;
+          if (form['bsp' + i + '_targetReplacement']) {
+            form['bsp' + i + '_targetReplacement'].value = s.specific;
+          }
+          if (form['bsp' + i + '_behavioursTriggers']) {
+            const triggerText = triggers || (behaviours.length ? behaviours.join('; ') : '');
+            if (triggerText) form['bsp' + i + '_behavioursTriggers'].value = triggerText;
+          }
+          if (form['bsp' + i + '_studentVoice']) {
+            const voiceText = [strengths, challenges].filter(Boolean).join('\n\n');
+            if (voiceText) form['bsp' + i + '_studentVoice'].value = voiceText;
+          }
         }
       });
     });
@@ -6271,50 +6753,61 @@
 
     // Shared professional Word export CSS for IEP, BSP, and Classroom Adjustments.
     var WORD_EXPORT_PROFESSIONAL_CSS =
-        'body{margin:0;padding:0;background:#fff;font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.5;color:#1e293b;}' +
-        '@page WordSection1{size:A4 portrait;margin:1in 1in 1in 1in;mso-header-margin:1.1cm;mso-footer-margin:1cm;}' +
-        'div.WordSection1{page:WordSection1;}' +
-        '.word-doc{font-family:Calibri,Arial,sans-serif !important;font-size:11pt;line-height:1.5;color:#1e293b;padding:0;max-width:100%;margin:0;}' +
-        '.word-doc p,.word-doc li,.word-doc td,.word-doc th{margin:0 0 0.65em 0;line-height:1.5;}' +
-        '.word-doc p.word-para,.word-doc td.word-goal-value p{margin:0 0 0.75em 0;border:none !important;background:transparent !important;padding:0;}' +
-        '.word-doc p.word-para:last-child,.word-doc td.word-goal-value p:last-child{margin-bottom:0;}' +
+        'body{margin:0;padding:0;background:#fff;font-family:Calibri,Arial,sans-serif;font-size:11pt;line-height:1.25;color:#2D3748;}' +
+        '@page WordSection1{size:A4 portrait;margin-top:2.54cm;margin-right:2.54cm;margin-bottom:2.54cm;margin-left:2.54cm;mso-header-margin:1.27cm;mso-footer-margin:1.27cm;}' +
+        'div.WordSection1{page:WordSection1;margin:0;padding:0;}' +
+        '.word-doc{font-family:Calibri,Arial,sans-serif !important;font-size:11pt;line-height:1.25;color:#2D3748;padding:0;max-width:100%;margin:0;}' +
+        '.word-doc p,.word-doc li,.word-doc td,.word-doc th{line-height:1.25;}' +
+        '.word-doc p.word-para{border:none !important;background:transparent !important;padding:0;}' +
+        '.word-doc td.word-goal-value p.word-para:last-child{margin-bottom:0 !important;}' +
+        '.word-doc table thead{display:table-header-group;}' +
+        '.word-doc table tr{page-break-inside:avoid !important;mso-pagination:widow-orphan;}' +
+        '.word-doc table thead tr{mso-table-header:yes;}' +
+        '.word-doc table.word-goal-table{page-break-inside:auto;mso-table-header:yes;}' +
+        '.word-doc td.word-goal-value p.word-table-cell-para:last-child{margin-bottom:0 !important;}' +
         '.word-doc .word-narrative,.word-doc .word-section,.word-doc .section{border:none !important;background:transparent !important;box-shadow:none !important;padding:0;margin:0 0 20px 0;}' +
-        '.word-doc h1{font-family:Calibri,Arial,sans-serif;font-size:18pt;font-weight:bold;color:#0b2e4a;margin:0 0 14px 0;line-height:1.3;border:none;padding:0;}' +
-        '.word-doc h2{font-family:Calibri,Arial,sans-serif;font-size:13.5pt;font-weight:bold;color:#0b2e4a;margin:0 0 8px 0;line-height:1.35;page-break-after:avoid;}' +
+        '.word-doc h1{font-family:Calibri,Arial,sans-serif;font-size:16pt;font-weight:bold;color:#1A365D;margin:0 0 12px 0;line-height:1.25;border:none;padding:0;}' +
+        '.word-doc h2{font-family:Calibri,Arial,sans-serif;font-size:13pt;font-weight:bold;color:#1A365D;margin:0 0 8px 0;line-height:1.25;page-break-after:avoid;}' +
+        '.word-doc h3{font-family:Calibri,Arial,sans-serif;font-size:11pt;font-weight:bold;color:#2C7A7B;margin:10px 0 6px 0;line-height:1.25;}' +
         '.word-doc .word-major-section{margin-bottom:20px;border:none;background:transparent;}' +
-        '.word-doc .word-report-header{margin-bottom:20px !important;}' +
-        '.word-doc table.word-details-grid-table{margin-bottom:20px !important;}' +
-        '.word-doc table{width:100%;border-collapse:collapse;margin:14px 0;font-size:10.5pt;line-height:1.5;border:1px solid #33475b;}' +
-        '.word-doc th,.word-doc td{border:1px solid #33475b;padding:6pt;text-align:left;vertical-align:top;line-height:1.5;}' +
-        '.word-doc table.word-details-grid-table{width:100%;border:none !important;margin:0 0 14px 0;}' +
-        '.word-doc table.word-details-grid-table{border:1px solid #33475b !important;}' +
-        '.word-doc table.word-details-grid-table td{padding:6pt;vertical-align:top;}' +
-        '.word-doc td.word-details-label-cell{width:34%;font-weight:700;background:#f4f7f9;border-right:1px solid #33475b;}' +
-        '.word-doc td.word-details-value-cell{background:#fff;}' +
-        '.word-doc table.word-goal-table{width:100%;border-collapse:collapse;border:2px solid #33475b;margin:10px 0 16px 0;}' +
-        '.word-doc table.word-goal-table th,.word-doc table.word-goal-table td{border:1px solid #33475b;padding:5pt;}' +
-        '.word-doc table.word-goal-table th{background:#f4f7f9;color:#0b2e4a;font-weight:700;text-align:left;}' +
-        '.word-doc table.word-goal-table td.goal-label{width:28%;font-weight:700;background:#f4f7f9;}' +
-        '.word-doc table.word-goal-table tr.goal-long-term-row td.goal-long-term-label{font-weight:700;background:#f4f7f9;}' +
-        '.word-doc table.word-goal-table tr.goal-long-term-row td.goal-long-term-label strong{font-weight:700;}' +
-        '.word-doc .word-confidential-footer{margin-top:32px;padding-top:14px;font-family:Calibri,Arial,sans-serif;font-size:9pt;color:#94a3b8;text-align:center;line-height:1.4;}' +
+        '.word-doc .word-report-header{margin-bottom:18px !important;border-bottom:3pt solid #2C7A7B;padding-bottom:12px;}' +
+        '.word-doc table{width:100%;border-collapse:collapse;margin:14px 0;font-size:11pt;line-height:1.25;border:1px solid #E2E8F0;}' +
+        '.word-doc th,.word-doc td{border:1px solid #E2E8F0;padding:8pt;text-align:left;vertical-align:top;line-height:1.25;color:#2D3748;}' +
+        '.word-doc th{background:#F7FAFC;color:#1A365D;font-weight:bold;}' +
+        '.word-doc .word-profile-header{margin:0 0 20px 0;border-top:3pt solid #2C7A7B;padding-top:10pt;}' +
+        '.word-doc .word-profile-accent-bar{width:3pt;background:#2C7A7B;}' +
+        '.word-doc table.word-profile-metadata{width:100%;border:none !important;margin:0;}' +
+        '.word-doc table.word-profile-metadata td{border:none !important;padding:7pt 10pt;vertical-align:middle;line-height:1.25;}' +
+        '.word-doc td.word-profile-label{font-weight:bold;color:#1A365D;font-size:10pt;width:18%;white-space:nowrap;}' +
+        '.word-doc td.word-profile-value{color:#2D3748;font-size:11pt;width:32%;}' +
+        '.word-doc table.word-goal-table{border:1px solid #E2E8F0;margin:14px 0 18px 0;}' +
+        '.word-doc table.word-goal-table th{background:#1A365D;color:#ffffff;font-weight:bold;border:1px solid #E2E8F0;padding:12pt 10pt;line-height:1.25;}' +
+        '.word-doc table.word-goal-table td{border:1px solid #E2E8F0;padding:12pt 10pt;color:#2D3748;line-height:1.25;}' +
+        '.word-doc table.word-goal-table td.goal-label{background:#F7FAFC;color:#1A365D;font-weight:bold;}' +
+        '.word-doc table.word-goal-table tr.goal-long-term-row td.goal-long-term-label{font-weight:bold;background:#F7FAFC;color:#1A365D;}' +
+        '.word-doc table.word-callout-panel{width:100%;border:none !important;border-collapse:collapse;margin:0 0 20px 0;background:#EDF2F7;}' +
+        '.word-doc table.word-callout-panel td{border:none !important;border-left:3.5pt solid #1A365D !important;background:#EDF2F7;padding:14pt 16pt;vertical-align:top;}' +
+        '.word-doc table.word-details-grid-table{width:100%;border:none !important;margin:0 0 14px 0;border:1px solid #E2E8F0 !important;}' +
+        '.word-doc table.word-details-grid-table td{padding:8pt;vertical-align:top;}' +
+        '.word-doc td.word-details-label-cell{width:34%;font-weight:700;background:#F7FAFC;color:#1A365D;border-right:1px solid #E2E8F0;}' +
+        '.word-doc td.word-details-value-cell{background:#fff;color:#2D3748;}' +
+        '.word-doc .word-confidential-footer{margin-top:32px;padding-top:14px;font-family:Calibri,Arial,sans-serif;font-size:9pt;color:#94a3b8;text-align:center;line-height:1.25;}' +
         '.word-doc .table-adjustments th,.word-doc .table-adjustments td{padding:10px 12px;}' +
-        '.word-doc .learning-levels-table td,.word-doc .word-learning-levels-table td,.word-doc .word-learning-levels-table th{padding:6pt;}' +
-        '.word-doc .learning-levels-table td:first-child,.word-doc .word-learning-levels-table td:first-child{font-weight:bold;background:#f4f7f9;}' +
-        '.word-doc th{background:#f4f7f9;color:#0b2e4a;font-weight:bold;}' +
-        '.word-doc ul{margin:0.35em 0 0.85em 1.25em;line-height:1.5;padding-left:1.1em;}' +
-        '.word-doc .dip-bullets{list-style:disc;padding-left:1.25em;margin:0.35em 0;line-height:1.5;}' +
-        '.word-doc .word-report-header{background:#f3f4f6;width:100%;padding:14px 18px;margin:0 0 14px 0;box-sizing:border-box;}' +
-        '.word-doc .word-report-header .word-report-title{font-size:16pt;font-weight:800;color:#0b2e4a;line-height:1.2;text-transform:uppercase;}' +
-        '.word-doc .word-report-header .word-report-student{margin-top:6px;font-size:12pt;color:#0b2e4a;line-height:1.5;}' +
-        '.word-doc h3{font-family:Calibri,Arial,sans-serif;font-size:11.5pt;font-weight:bold;color:#0b2e4a;margin:12px 0 6px 0;line-height:1.35;}' +
-        '.word-doc .word-goal-block{margin:0 0 1.1rem 0;line-height:1.5;}' +
-        '.word-mso-header,.word-mso-header p,.word-mso-header td{font-family:Calibri,Arial,sans-serif;font-size:10pt;line-height:1.4;color:#0b2e4a;margin:0;}' +
-        '.word-mso-header .hdr-doc-type{font-weight:bold;font-size:11pt;}' +
-        '.pdf-signature-block{margin-top:28px;padding-top:16px;border-top:2px solid #e2e8f0;line-height:1.5;}' +
-        '.pdf-signature-block h2{font-size:12pt;margin:0 0 8px 0;color:#0b2e4a;font-weight:bold;}.pdf-signature-block .sig-intro{font-size:9.5pt;color:#64748b;margin:0 0 14px 0;line-height:1.5;}' +
+        '.word-doc .learning-levels-table td,.word-doc .word-learning-levels-table td,.word-doc .word-learning-levels-table th{padding:8pt;}' +
+        '.word-doc .learning-levels-table td:first-child,.word-doc .word-learning-levels-table td:first-child{font-weight:bold;background:#F7FAFC;color:#1A365D;}' +
+        '.word-doc ul{margin:0.35em 0 0.85em 1.25em;line-height:1.25;padding-left:1.1em;color:#2D3748;}' +
+        '.word-doc .dip-bullets{list-style:disc;padding-left:1.25em;margin:0.35em 0;line-height:1.25;}' +
+        '.word-doc .word-report-header{background:transparent;width:100%;padding:0;margin:0 0 14px 0;box-sizing:border-box;}' +
+        '.word-doc .word-report-header .word-report-title{font-size:24pt;font-weight:bold;color:#1A365D;line-height:1.2;text-transform:uppercase;letter-spacing:0.02em;}' +
+        '.word-doc .word-report-header .word-report-student{margin-top:8px;font-size:11pt;color:#2C7A7B;line-height:1.25;font-weight:600;}' +
+        '.word-doc .word-goal-block{margin:0 0 1.1rem 0;line-height:1.25;}' +
+        '.word-mso-header,.word-mso-header p,.word-mso-header td{font-family:Calibri,Arial,sans-serif;font-size:10pt;line-height:1.25;color:#2D3748;margin:0;}' +
+        '.word-mso-header .hdr-doc-type{font-weight:bold;font-size:11pt;color:#1A365D;}' +
+        '.word-mso-footer,.word-mso-footer p,.word-mso-footer td{font-family:Calibri,Arial,sans-serif;font-size:9pt;line-height:1.25;color:#94A3B8;margin:0;}' +
+        '.pdf-signature-block{margin-top:28px;padding-top:16px;border-top:2px solid #E2E8F0;line-height:1.25;}' +
+        '.pdf-signature-block h2{font-size:13pt;margin:0 0 8px 0;color:#1A365D;font-weight:bold;}.pdf-signature-block .sig-intro{font-size:9.5pt;color:#64748b;margin:0 0 14px 0;line-height:1.25;}' +
         '.pdf-signature-row{display:flex;align-items:flex-end;gap:12px;margin-bottom:20px;font-size:10pt;}' +
-        '.pdf-signature-row .sig-role{flex:0 0 32%;font-weight:600;}.pdf-signature-row .sig-line{flex:1;border-bottom:1px solid #334155;min-height:1.4em;}' +
+        '.pdf-signature-row .sig-role{flex:0 0 32%;font-weight:600;color:#2D3748;}.pdf-signature-row .sig-line{flex:1;border-bottom:1px solid #2C7A7B;min-height:1.4em;}' +
         '';
 
     function getWordDocumentStyles() {
@@ -6327,32 +6820,82 @@
       var docType = escapeHtml(documentType || 'Student Document');
       return '<div style="mso-element:header" id="word-doc-header" class="word-mso-header">' +
         '<table width="100%" cellpadding="0" cellspacing="0" style="border:none;border-collapse:collapse;width:100%;">' +
-        '<tr><td style="border:none;padding:0 0 4px 0;width:55%;"><strong>Student:</strong> ' + name + '</td>' +
+        '<tr style="' + wordTableRowNoSplitStyle() + '"><td style="border:none;padding:0 0 4px 0;width:55%;"><strong>Student:</strong> ' + name + '</td>' +
         '<td style="border:none;padding:0 0 4px 0;width:45%;text-align:right;"><span class="hdr-doc-type">' + docType + '</span></td></tr>' +
         '</table></div>';
     }
 
-    function getPdfDocumentStyles() {
-      return 'body{margin:0;padding:0;background:#fff;font-family:\"Segoe UI\",system-ui,sans-serif;}' +
-        '.pdf-doc{font-size:11pt;line-height:1.5;color:#1e293b;padding:24px 32px;max-width:210mm;margin:0 auto;}' +
-        '.pdf-doc h1{font-size:18pt;color:#0b2e4a;margin:0 0 4px 0;border-bottom:2px solid #0a7a3e;padding-bottom:8px;}' +
-        '.pdf-doc h2{font-size:13pt;color:#0a7a3e;margin:20px 0 8px 0;}' +
-        '.pdf-doc .meta-line{margin:4px 0;}.pdf-doc .section{margin:14px 0 18px 0;}.pdf-doc .section+.section{margin-top:18px;}.pdf-doc .section strong{display:block;margin-bottom:0.4em;}' +
-        '.pdf-doc table{width:100%;border-collapse:collapse;margin:12px 0;font-size:10pt;}.pdf-doc .table-adjustments th,.pdf-doc .table-adjustments td{padding:12px 14px;vertical-align:top;}.pdf-doc .table-adjustments td:first-child{width:22%;min-width:140px;}' +
-        '.pdf-doc th,.pdf-doc td{border:1px solid #d1d5db;padding:10px 12px;text-align:left;}' +
-        '.pdf-doc .smart-goal-table{width:100%;border-collapse:collapse;margin:10px 0 14px 0;}' +
-        '.pdf-doc .smart-goal-table td,.pdf-doc .smart-goal-table th{vertical-align:top;}' +
-        '.pdf-doc th{background:#0a7a3e;color:#fff;font-weight:600;}' +
-        '.pdf-doc tr:nth-child(even){background:#f8fafc;}' +
-        '.pdf-doc .footer{margin-top:12px;font-size:9pt;color:#64748b;}.pdf-doc ul{margin:0.5em 0;padding-left:1.25em;}.pdf-doc .dip-bullets{list-style:disc;padding-left:1.25em;margin:0.25em 0;}' +
-        '.word-export-header{margin-bottom:20px;}.pdf-doc table[border],.pdf-doc table{border-collapse:collapse;}' +
-        '.pdf-signature-block{margin-top:28px;padding-top:16px;border-top:2px solid #e2e8f0;}' +
-        '.pdf-signature-block h2{font-size:12pt;margin:0 0 8px 0;color:#0b2e4a;}.pdf-signature-block .sig-intro{font-size:9.5pt;color:#64748b;margin:0 0 14px 0;}' +
-        '.pdf-signature-row{display:flex;align-items:flex-end;gap:12px;margin-bottom:20px;font-size:10pt;}' +
-        '.pdf-signature-row .sig-role{flex:0 0 32%;font-weight:600;}.pdf-signature-row .sig-line{flex:1;border-bottom:1px solid #334155;min-height:1.4em;}' +
-        '.whs-logo-footer{margin-top:18px;display:flex;justify-content:flex-end;gap:10px;align-items:center;}' +
-        '.whs-logo-footer img{height:56px;width:auto;display:block;}' +
-        '.whs-logo-footer .brand{font-weight:700;color:#0b2e4a;font-size:10.5pt;line-height:1.2;text-align:right;}';
+    function buildWordMsoPageNumberField(fieldName) {
+      return '<!--[if supportFields]><span style="mso-element:field-begin"></span><span style="mso-spacerun:yes">&nbsp;</span>' +
+        fieldName +
+        '<span style="mso-element:field-separator"></span><![endif]-->' +
+        '<span style="mso-no-proof:yes">1</span>' +
+        '<!--[if supportFields]><span style="mso-element:field-end"></span><![endif]-->';
+    }
+
+    /** Repeating footer — confidential marker (left) and plan pagination (right). */
+    function buildWordMsoPageFooter() {
+      var muted = WORD_EXPORT_THEME.footerMuted;
+      var fontPt = WORD_EXPORT_LAYOUT.footerFontPt;
+      var cellBase = 'border:none;padding:0;font-size:' + fontPt + 'pt;color:' + muted + ';font-family:Calibri,Arial,sans-serif;line-height:1.25;';
+      return '<div style="mso-element:footer" id="word-doc-footer" class="word-mso-footer">' +
+        '<table width="100%" cellpadding="0" cellspacing="0" style="border:none;border-collapse:collapse;width:100%;">' +
+        '<tr style="' + wordTableRowNoSplitStyle() + '">' +
+        '<td style="' + cellBase + 'width:50%;text-align:left;vertical-align:bottom;">Confidential — Student Support Data</td>' +
+        '<td style="' + cellBase + 'width:50%;text-align:right;vertical-align:bottom;">Individualized Support Plan | Page ' +
+        buildWordMsoPageNumberField('PAGE') + ' of ' + buildWordMsoPageNumberField('NUMPAGES') +
+        '</td></tr></table></div>';
+    }
+
+    function mergeHtmlTrProtectionStyle(attrs, styleToAdd) {
+      attrs = attrs || '';
+      if (/page-break-inside/i.test(attrs)) return attrs;
+      if (/style="/i.test(attrs)) {
+        return attrs.replace(/style="([^"]*)"/i, function (_m, existing) {
+          return 'style="' + existing + styleToAdd + '"';
+        });
+      }
+      return ' style="' + styleToAdd + '"' + attrs;
+    }
+
+    /** cantSplit on every row; tblHeader on thead rows — applied at compile time. */
+    function applyWordTablePaginationProtections(html) {
+      var out = String(html || '');
+      out = out.replace(/<table(\s[^>]*)>\s*<thead>/gi, function (match, attrs) {
+        attrs = attrs || '';
+        if (/mso-table-header/i.test(attrs)) return match;
+        if (/style="/i.test(attrs)) {
+          return '<table' + attrs.replace(/style="([^"]*)"/i, 'style="$1mso-table-header:yes;"') + '><thead>';
+        }
+        return '<table' + attrs + ' style="mso-table-header:yes;"><thead>';
+      });
+      out = out.replace(/<thead>([\s\S]*?)<\/thead>/gi, function (match, inner) {
+        var fixed = inner.replace(/<tr([^>]*)>/gi, function (trMatch, trAttrs) {
+          if (/mso-table-header:yes/i.test(trAttrs)) return trMatch;
+          return '<tr' + mergeHtmlTrProtectionStyle(trAttrs, wordTableHeaderRowStyle()) + '>';
+        });
+        return '<thead>' + fixed + '</thead>';
+      });
+      out = out.replace(/<tr([^>]*)>/gi, function (match, trAttrs) {
+        if (/page-break-inside/i.test(trAttrs)) return match;
+        return '<tr' + mergeHtmlTrProtectionStyle(trAttrs, wordTableRowNoSplitStyle()) + '>';
+      });
+      return out;
+    }
+
+    /** Strip stray newline characters inside table cells; spacing comes from <p> margins. */
+    function sanitizeWordTableCellNewlines(html) {
+      return String(html || '')
+        .replace(/(<(?:td|th)[^>]*>)([\s\S]*?)(<\/(?:td|th)>)/gi, function (match, open, content, close) {
+          if (!/[\r\n]/.test(content)) return match;
+          if (/<p\b|<div\b|<table\b|<h[1-6]\b/i.test(content)) {
+            return open + content.replace(/>\s*[\r\n]+\s*</g, '><').replace(/[\r\n]+/g, ' ') + close;
+          }
+          var plain = content.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+          if (!plain) return open + close;
+          return open + wordTableCellParagraphsHtml(plain) + close;
+        })
+        .replace(/\\n/g, ' ');
     }
 
     function buildPdfLogoFooter() {
@@ -6388,79 +6931,8 @@
         '</div>';
     }
 
-    function buildPdfDetailsMeta(values, opts) {
-      opts = opts || {};
-      var html = '<div class="meta-line"><strong>Student:</strong> ' + values.name;
-      if (opts.showAge !== false && values.age) html += ' | Age: ' + values.age;
-      if (values.yearLevelLabel) html += ' | ' + values.yearLevelLabel;
-      html += '</div>';
-      html += '<div class="meta-line"><strong>Pronouns:</strong> ' + getPronounLabel(values.studentGender) + '</div>';
-      if (opts.showDateCreated && values.dateCreated) {
-        html += '<div class="meta-line"><strong>Date of Plan Creation:</strong> ' + values.dateCreated + '</div>';
-      }
-      if (opts.showIepDate && values.iepDate) {
-        html += '<div class="meta-line"><strong>Date of IEP Meeting:</strong> ' + values.iepDate + '</div>';
-      }
-      if (opts.showLeadContact && values.leadContact) {
-        html += '<div class="meta-line"><strong>Lead IEP Contact:</strong> ' + values.leadContact + '</div>';
-      }
-      if (opts.showAttendees && values.attendees) {
-        html += '<div class="meta-line"><strong>Attendees:</strong> ' + values.attendees + '</div>';
-      }
-      return html;
-    }
-
-    function buildPdfStudentVoiceSections(values, sv) {
-      return '<h2>Student Voice</h2>' +
-        '<div class="section"><strong>Likes, interests &amp; strengths at school' + sv + ':</strong><br>' + values.likesStrengths + '</div>' +
-        '<div class="section"><strong>Challenges at school' + sv + ':</strong><br>' + values.challenges + '</div>' +
-        (values.supportsLearningStyles ? '<div class="section"><strong>Supports, learning preferences &amp; what helps:</strong><br>' + values.supportsLearningStyles + '</div>' : '') +
-        (values.env.length ? '<div class="section"><strong>Environments for success' + sv + ':</strong><br>' + values.env.map(function (e) { return '• ' + e; }).join('<br>') + '</div>' : '') +
-        (values.triggers ? '<div class="section"><strong>Triggers / warning signs' + sv + ':</strong><br>' + values.triggers + '</div>' : '') +
-        (values.profileSupportServices ? '<div class="section"><strong>Current internal/external support services:</strong><br>' + values.profileSupportServices + '</div>' : '');
-    }
-
-    function buildPdfParentVoiceSection(values) {
-      if (!(values.parentConcerns || values.parentKeyInfo || values.parentLongTermGoals)) return '';
-      return '<h2>Parent Voice</h2><div class="section">' +
-        (values.parentConcerns ? '<strong>What is working well / could be improved:</strong> ' + values.parentConcerns + '<br>' : '') +
-        (values.parentKeyInfo ? '<strong>Key information from parent/carer:</strong> ' + values.parentKeyInfo + '<br>' : '') +
-        (values.parentLongTermGoals ? '<strong>Long-term goals (parent/carer):</strong> ' + values.parentLongTermGoals : '') +
-        '</div>';
-    }
-
     var genProgressManualUrls = [];
-
-    function getHtml2PdfOptions(filename) {
-      return {
-        margin: [12, 12, 14, 12],
-        filename: filename,
-        image: { type: 'jpeg', quality: 0.95 },
-        html2canvas: { scale: 2, useCORS: true, logging: false, letterRendering: true },
-        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-        pagebreak: { mode: ['css', 'legacy'], avoid: '.pdf-signature-block' }
-      };
-    }
-
-    function generatePdfBlob(html, filename) {
-      if (typeof html2pdf === 'undefined') {
-        return Promise.reject(new Error('PDF library not loaded. Check your internet connection and refresh the page.'));
-      }
-      return new Promise(function (resolve, reject) {
-        var wrap = document.createElement('div');
-        wrap.style.cssText = 'position:fixed;left:-10000px;top:0;width:210mm;background:#fff;z-index:-1;';
-        wrap.innerHTML = html;
-        document.body.appendChild(wrap);
-        var el = wrap.querySelector('.pdf-doc') || wrap;
-        html2pdf().set(getHtml2PdfOptions(filename)).from(el).outputPdf('blob').then(function (blob) {
-          if (wrap.parentNode) document.body.removeChild(wrap);
-          resolve(blob);
-        }).catch(function (err) {
-          if (wrap.parentNode) document.body.removeChild(wrap);
-          reject(err);
-        });
-      });
-    }
+    var wordExportInFlight = { iep: false, bsp: false, classroom: false };
 
     /**
      * Persist live control values into the DOM (value/checked/selected/textarea body)
@@ -6507,9 +6979,9 @@
     function prepareFormForWordExport(form, modeOpt) {
       if (!form) return;
       modeOpt = modeOpt || getSelectedMode();
-      syncFormControlsToDomAttributes(form, 'ALL');
+      syncFormControlsToDomAttributes(form);
       syncStudentPersonalizationFromForm();
-      if (modeOpt === 'ALL' || modeOpt === 'IEP') {
+      if (modeOpt === 'IEP') {
         IEP_GOAL_AREAS.forEach(function (area) {
           try {
             syncGoalCardToHiddenField(area.key);
@@ -6520,48 +6992,6 @@
       }
     }
 
-    function printDocumentSection(docKey) {
-      var section = document.getElementById('doc-section-' + docKey);
-      if (!section) {
-        alert('Generate your plan documents first, then use Print / Save as PDF.');
-        return;
-      }
-      document.body.classList.remove('print-doc-iep', 'print-doc-bsp', 'print-doc-classroom');
-      document.body.classList.add('print-doc-' + docKey);
-      function cleanup() {
-        document.body.classList.remove('print-doc-iep', 'print-doc-bsp', 'print-doc-classroom');
-        window.removeEventListener('afterprint', cleanup);
-      }
-      window.addEventListener('afterprint', cleanup);
-      requestAnimationFrame(function () {
-        window.print();
-      });
-    }
-
-  /** Desktop app: Electron main process printToPDF (Chromium engine). */
-    function saveDocumentAsNativePdf(docKey, suggestedFilename) {
-      var section = document.getElementById('doc-section-' + docKey);
-      if (!section) {
-        alert('Generate your plan documents first, then save as PDF.');
-        return;
-      }
-      if (!window.electronAPI || !window.electronAPI.saveDocumentAsPdf) {
-        printDocumentSection(docKey);
-        return;
-      }
-      return window.electronAPI.saveDocumentAsPdf({
-        docKey: docKey,
-        suggestedFilename: suggestedFilename
-      }).then(function (result) {
-        if (result && result.canceled) return;
-        if (result && result.filePath) {
-          console.log('PDF saved:', result.filePath);
-        }
-      }).catch(function (err) {
-        alert('Could not save PDF: ' + (err && err.message ? err.message : String(err)));
-      });
-    }
-
     function formatExportDate() {
       return new Date().toLocaleDateString('en-AU', {
         day: 'numeric',
@@ -6570,60 +7000,80 @@
       });
     }
 
-    function buildWordStudentDetailsTableRow(label, value) {
-      if (value == null || String(value).trim() === '') return '';
-      return '<tr><td class="label-cell">' + escapeHtml(label) + '</td><td class="value-cell">' + escapeHtml(String(value).trim()) + '</td></tr>';
+    function formatWordProfileDate(raw) {
+      if (!raw || String(raw).trim() === '' || raw === '—') return formatExportDate();
+      var parsed = new Date(raw);
+      if (!isNaN(parsed.getTime())) {
+        return parsed.toLocaleDateString('en-AU', { day: 'numeric', month: 'long', year: 'numeric' });
+      }
+      return String(raw).trim();
+    }
+
+    function formatWordDateOfBirthDisplay(values) {
+      if (values.dateOfBirth && String(values.dateOfBirth).trim()) {
+        return formatWordProfileDate(values.dateOfBirth);
+      }
+      if (values.age && String(values.age).trim()) {
+        return 'Age ' + String(values.age).trim() + ' years';
+      }
+      return '—';
+    }
+
+    function buildWordProfileMetadataCell(label, value) {
+      return '<td class="word-profile-label" style="font-weight:bold;color:#1A365D;padding:7pt 10pt;border:none;">' +
+        escapeHtml(label) + '</td>' +
+        '<td class="word-profile-value" style="color:#2D3748;padding:7pt 10pt;border:none;">' +
+        escapeHtml(value || '—') + '</td>';
     }
 
     function buildWordStudentDetailsBlock(values, opts) {
       opts = opts || {};
       var yearLevel = values.yearLevelLabel || '—';
-      var school = 'Wangaratta High School';
-      var dateVal = '—';
-      if (opts.showIepDate) dateVal = values.iepDate || values.dateCreated || '—';
-      else if (opts.showDateCreated) dateVal = values.dateCreated || values.iepDate || '—';
-      else dateVal = values.dateCreated || values.iepDate || '—';
-      if (!dateVal || dateVal === '—') dateVal = formatExportDate();
+      var planDate = '—';
+      if (opts.showIepDate) planDate = values.iepDate || values.dateCreated || '—';
+      else if (opts.showDateCreated) planDate = values.dateCreated || values.iepDate || '—';
+      else planDate = values.dateCreated || values.iepDate || '—';
+      planDate = formatWordProfileDate(planDate);
+      var dobDisplay = formatWordDateOfBirthDisplay(values);
+      var theme = WORD_EXPORT_THEME;
 
-      // Professional 2-column details table at top of report.
-      var html = '' +
-        '<table class="word-details-grid-table" border="1" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;">' +
+      var html = '<div class="word-profile-header" style="margin:0 0 20px 0;border-top:3pt solid ' + theme.secondary + ';padding-top:10pt;">' +
+        '<table width="100%" border="0" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;border:none;">' +
+        '<tr>' +
+        '<td class="word-profile-accent-bar" width="4" style="width:3pt;background:' + theme.secondary + ';border:none;padding:0;">&nbsp;</td>' +
+        '<td style="border:none;padding:0 0 0 12pt;vertical-align:top;">' +
+        '<table class="word-profile-metadata word-protected-table" border="0" cellpadding="0" cellspacing="0" style="width:100%;border:none;border-collapse:collapse;">' +
         '<tbody>' +
-        '<tr>' +
-        '<td class="word-details-label-cell"><strong>Student Name</strong></td>' +
-        '<td class="word-details-value-cell">' + escapeHtml(values.name || '—') + '</td>' +
+        '<tr style="' + wordTableRowNoSplitStyle() + '">' +
+        buildWordProfileMetadataCell('Student Name', values.name || '—') +
+        buildWordProfileMetadataCell('Date of Birth', dobDisplay) +
         '</tr>' +
-        '<tr>' +
-        '<td class="word-details-label-cell"><strong>Year Level</strong></td>' +
-        '<td class="word-details-value-cell">' + escapeHtml(yearLevel) + '</td>' +
+        '<tr style="' + wordTableRowNoSplitStyle() + '">' +
+        buildWordProfileMetadataCell('Year Level', yearLevel) +
+        buildWordProfileMetadataCell('Plan Date', planDate) +
         '</tr>' +
-        '<tr>' +
-        '<td class="word-details-label-cell"><strong>School</strong></td>' +
-        '<td class="word-details-value-cell">' + escapeHtml(school) + '</td>' +
-        '</tr>' +
-        '<tr>' +
-        '<td class="word-details-label-cell"><strong>Date</strong></td>' +
-        '<td class="word-details-value-cell">' + escapeHtml(dateVal) + '</td>' +
-        '</tr>';
-      if (opts.showAge && values.age) {
-        html += '<tr><td class="word-details-label-cell"><strong>Age</strong></td>' +
-          '<td class="word-details-value-cell">' + escapeHtml(String(values.age)) + '</td></tr>';
-      }
+        '</tbody></table>';
+
       if (opts.showLeadContact && values.leadContact) {
-        html += '<tr><td class="word-details-label-cell"><strong>Lead IEP Contact</strong></td>' +
-          '<td class="word-details-value-cell">' +
+        html += '<table class="word-details-grid-table" border="0" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;margin-top:10px;">' +
+          '<tbody><tr>' +
+          '<td class="word-details-label-cell"><strong>Lead IEP Contact</strong></td>' +
+          '<td class="word-details-value-cell" colspan="3">' +
           (wordTextToParagraphsHtml(values.leadContact) ||
             '<p class="word-para">' + escapeHtml(cleanWordExportText(values.leadContact)) + '</p>') +
-          '</td></tr>';
+          '</td></tr></tbody></table>';
       }
       if (opts.showAttendees && values.attendees) {
-        html += '<tr><td class="word-details-label-cell"><strong>Attendees</strong></td>' +
-          '<td class="word-details-value-cell">' +
+        html += '<table class="word-details-grid-table" border="0" cellpadding="0" cellspacing="0" style="width:100%;border-collapse:collapse;margin-top:8px;">' +
+          '<tbody><tr>' +
+          '<td class="word-details-label-cell"><strong>Attendees</strong></td>' +
+          '<td class="word-details-value-cell" colspan="3">' +
           (wordTextToParagraphsHtml(values.attendees) ||
             '<p class="word-para">' + escapeHtml(cleanWordExportText(values.attendees)) + '</p>') +
-          '</td></tr>';
+          '</td></tr></tbody></table>';
       }
-      html += '</tbody></table>';
+
+      html += '</td></tr></table></div>';
       return html;
     }
 
@@ -6683,31 +7133,43 @@
         '</div>';
     }
 
+    function buildWordCalloutPanel(title, innerHtml) {
+      innerHtml = String(innerHtml || '').trim();
+      if (!innerHtml) return '';
+      var theme = WORD_EXPORT_THEME;
+      return '<table class="word-callout-panel word-protected-table" border="0" cellpadding="0" cellspacing="0" style="width:100%;border:none;border-collapse:collapse;margin:0 0 20px 0;background:' + theme.calloutFill + ';">' +
+        '<tr style="' + wordTableRowNoSplitStyle() + '"><td style="border:none;border-left:3.5pt solid ' + theme.primary + ' !important;background:' + theme.calloutFill + ';padding:14pt 16pt;vertical-align:top;">' +
+        (title ? '<h2 style="margin:0 0 10px 0;font-size:13pt;font-weight:bold;color:' + theme.primary + ';">' + escapeHtml(title) + '</h2>' : '') +
+        '<div class="word-narrative">' + innerHtml + '</div>' +
+        '</td></tr></table>';
+    }
+
     function buildWordStudentVoiceSections(values) {
-      var html = '';
+      var inner = '';
       if (wordSectionHasContent(values.likesStrengths)) {
-        html += buildWordMajorSectionH2('Student Strengths', wordTextToParagraphsHtml(values.likesStrengths));
+        inner += '<h3>Student Strengths</h3>' + wordTextToParagraphsHtml(values.likesStrengths);
       }
       if (wordSectionHasContent(values.challenges)) {
-        html += buildWordMajorSectionH2('Challenges at School', wordTextToParagraphsHtml(values.challenges));
+        inner += '<h3>Challenges at School</h3>' + wordTextToParagraphsHtml(values.challenges);
       }
       if (wordSectionHasContent(values.supportsLearningStyles)) {
-        html += buildWordMajorSectionH2('Supports and Learning Preferences',
-          wordTextToParagraphsHtml(values.supportsLearningStyles));
+        inner += '<h3>Supports and Learning Preferences</h3>' +
+          wordTextToParagraphsHtml(values.supportsLearningStyles);
       }
       var envText = (values.env && values.env.length)
         ? values.env.map(function (e) { return cleanWordExportText(e); }).filter(wordSectionHasContent).join('; ')
         : '';
       if (wordSectionHasContent(envText)) {
-        html += buildWordMajorSectionH2('Environments for Success', wordTextToParagraphsHtml(envText));
+        inner += '<h3>Environments for Success</h3>' + wordTextToParagraphsHtml(envText);
       }
       if (wordSectionHasContent(values.triggers)) {
-        html += buildWordMajorSectionH2('Triggers and Warning Signs', wordTextToParagraphsHtml(values.triggers));
+        inner += '<h3>Triggers and Warning Signs</h3>' + wordTextToParagraphsHtml(values.triggers);
       }
       if (wordSectionHasContent(values.profileSupportServices)) {
-        html += buildWordMajorSectionH2('Support Services', wordTextToParagraphsHtml(values.profileSupportServices));
+        inner += '<h3>Support Services</h3>' + wordTextToParagraphsHtml(values.profileSupportServices);
       }
-      return html;
+      if (!inner) return '';
+      return buildWordCalloutPanel('Student Voice', inner);
     }
 
     function buildWordParentVoiceSection(values) {
@@ -6756,7 +7218,15 @@
     function normalizeWordExportHtml(html) {
       var out = String(html || '');
       out = out.replace(/<div\s+class="word-section"[^>]*>/gi, '<div class="word-narrative">');
-      out = out.replace(/\sstyle="[^"]*(?:border|background|box-shadow)[^"]*"/gi, '');
+      out = out.replace(/(<[^>]+)\sstyle="([^"]*)"/gi, function (match, tagStart, styleContent) {
+        if (/word-callout-panel|word-profile-header|word-profile-accent|word-profile-metadata|word-profile-label|word-profile-value|word-goal-table/i.test(tagStart)) {
+          return match;
+        }
+        if (/(?:border|background|box-shadow)/i.test(styleContent)) {
+          return tagStart;
+        }
+        return match;
+      });
       out = out.replace(/<ul\b[^>]*class="[^"]*dip-bullets[^"]*"[^>]*>/gi, '<div class="word-narrative">');
       out = out.replace(/<\/ul>/gi, '</div>');
       out = out.replace(/<li\b[^>]*>/gi, '<p class="word-para">');
@@ -6777,7 +7247,7 @@
     function ensureWordTableBorders(html) {
       return String(html || '').replace(/<table(\s[^>]*)?>/gi, function (match, attrs) {
         attrs = attrs || '';
-        if (/word-details-grid-table/i.test(attrs)) {
+        if (/word-details-grid-table|word-profile-metadata|word-callout-panel|word-goal-table/i.test(attrs)) {
           return '<table' + attrs + '>';
         }
         var extra = '';
@@ -6803,13 +7273,16 @@
       body = normalizeWordExportHtml(body);
       body = body.replace(/<table[^>]*class="[^"]*smart-goal-table[^"]*"[^>]*>[\s\S]*?<\/table>/gi, '');
       body = ensureWordTableBorders(body);
+      body = sanitizeWordTableCellNewlines(body);
+      body = applyWordTablePaginationProtections(body);
       var studentName = exportMeta.studentName || 'Student';
       var documentType = exportMeta.documentType || 'Student Document';
       var msoHeader = buildWordMsoPageHeader(studentName, documentType);
+      var msoFooter = buildWordMsoPageFooter();
       var wrappedBody = '<div class="WordSection1">' + body + '</div>';
       return '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word">' +
         '<head><meta charset="utf-8"><meta name="ProgId" content="Word.Document">' +
-        '<style>' + styles + '</style></head><body>' + msoHeader + wrappedBody + '</body></html>';
+        '<style>' + styles + '</style></head><body>' + msoHeader + msoFooter + wrappedBody + '</body></html>';
     }
 
     function createWordBlobFromContentString(contentString) {
@@ -6871,12 +7344,14 @@
       return createWordBlobFromContentString(buildWordDocumentContentString(htmlContent, styleText, exportMeta));
     }
 
-    async function saveWordDocumentToDisk(contentString, filename) {
+    async function saveWordDocumentToDisk(contentString, filename, opts) {
+      opts = opts || {};
       var safeName = sanitizeDownloadFilename(filename);
       if (window.electronAPI && window.electronAPI.saveWordDocument) {
         var result = await window.electronAPI.saveWordDocument({
           content: contentString,
-          suggestedFilename: safeName
+          suggestedFilename: safeName,
+          docKey: opts.docKey
         });
         if (result && result.canceled) {
           return { canceled: true };
@@ -6891,18 +7366,14 @@
       return { canceled: false };
     }
 
-    async function downloadWordContentString(contentString, filename) {
-      return saveWordDocumentToDisk(contentString, filename);
+    async function downloadWordContentString(contentString, filename, opts) {
+      return saveWordDocumentToDisk(contentString, filename, opts);
     }
 
     async function downloadWordBlobFromHtml(htmlContent, filename, styleText, exportMeta) {
       var contentString = buildWordDocumentContentString(htmlContent, styleText, exportMeta);
-      return downloadWordContentString(contentString, filename);
-    }
-
-    function downloadPdfFromHtml(html, filename) {
-      return generatePdfBlob(html, filename).then(function (blob) {
-        return triggerBlobDownload(blob, filename);
+      return downloadWordContentString(contentString, filename, {
+        docKey: exportMeta && exportMeta.docKey
       });
     }
 
@@ -7045,38 +7516,7 @@
         doneBtn.dataset.bound = 'true';
         doneBtn.addEventListener('click', hideGenerationProgressOverlay);
       }
-    }
-
-    async function downloadPdfSequenceWithProgress(items) {
-      var results = [];
-      var downloadIssueCount = 0;
-
-      for (var i = 0; i < items.length; i++) {
-        var item = items[i];
-        setGenerationProgressStep(item.step, 'active');
-        setGenerationProgressBar((i / items.length) * 100);
-
-        var blob = await generatePdfBlob(item.html, item.filename);
-        var entry = { step: item.step, filename: item.filename, blob: blob };
-        results.push(entry);
-
-        setGenerationProgressStep(item.step, 'done');
-        setGenerationProgressBar(((i + 0.65) / items.length) * 100);
-
-        try {
-          await triggerBlobDownload(blob, item.filename);
-        } catch (dlErr) {
-          downloadIssueCount++;
-          entry.downloadTriggered = false;
-        }
-
-        if (i < items.length - 1) {
-          await new Promise(function (r) { setTimeout(r, 500); });
-        }
-      }
-
-      setGenerationProgressBar(100);
-      return { results: results, downloadIssueCount: downloadIssueCount };
+      setTimeout(hideGenerationProgressOverlay, 3500);
     }
 
     var WORD_DOWNLOAD_DELAY_MS = 1000;
@@ -7123,7 +7563,7 @@
         results.push(entry);
 
         try {
-          var saveResult = await saveWordDocumentToDisk(contentString, entry.filename);
+          var saveResult = await saveWordDocumentToDisk(contentString, entry.filename, { docKey: item.step });
           entry.downloadTriggered = !(saveResult && saveResult.canceled);
           if (saveResult && saveResult.canceled) {
             entry.downloadCanceled = true;
@@ -7236,15 +7676,6 @@
       return '<ul class="dip-bullets">' + items.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul>';
     }
 
-    function buildMeetingOverviewPdfBlock(values) {
-      var moP = (values.meetingPurpose || '').trim();
-      var moO = (values.meetingObserved || '').trim();
-      if (!moP && !moO) return '';
-      return '<h2>Meeting Overview</h2>' +
-        (moP ? '<div class="section"><strong>Purpose of this BSP/IEP:</strong><br>' + moP + '</div>' : '') +
-        (moO ? '<div class="section"><strong>What is being observed:</strong><br>' + moO + '</div>' : '');
-    }
-
     function buildMeetingOverviewHtmlBlock(values) {
       var moP = (values.meetingPurpose || '').trim();
       var moO = (values.meetingObserved || '').trim();
@@ -7263,107 +7694,6 @@
         { fn: 'Interpersonal interactions', name: 'Interpersonal interactions', val: values.dipInterpersonal },
         { fn: 'Learning and applying knowledge', name: 'Learning and applying knowledge', val: values.dipLearning }
       ];
-    }
-
-    /**
-     * Word/PDF export HTML for one document type, using mode-scoped values.
-     * @param {object} values
-     * @param {'iep'|'bsp'|'classroom'} exportKind
-     */
-    function buildDocExportPdfHtml(values, exportKind) {
-      var SV = ' (student voice)';
-      var meetingOverviewPdfBlock = buildMeetingOverviewPdfBlock(values);
-      var pdfStudentVoice = buildPdfStudentVoiceSections(values, SV);
-      var pdfParentVoice = buildPdfParentVoiceSection(values);
-
-      if (exportKind === 'iep') {
-        var dipDomains = getDipFnOrderFromValues(values).filter(function (d) {
-          return values.fnNeeds.indexOf(d.fn) >= 0;
-        }).map(function (d) {
-          return { name: d.name, val: d.val.trim() ? d.val : '—' };
-        });
-        var pdfDetailsIep = buildPdfDetailsMeta(values, {
-          showAge: true, showIepDate: true, showLeadContact: true, showAttendees: true
-        });
-        var pdfSignatureIep = buildPdfSignatureBlock('Individual Education Plan (IEP)', 'IEP');
-        return '<div class="pdf-doc">' +
-          '<h1>Individual Education Plan (IEP)</h1>' +
-          pdfDetailsIep +
-          meetingOverviewPdfBlock +
-          pdfStudentVoice +
-          pdfParentVoice +
-          '<h2>IEP &amp; curriculum adjustments</h2>' +
-          '<div class="section"><strong>Learning levels:</strong>' + formatLearningLevelsListHtml(values) + '</div>' +
-          '<div class="section"><strong>Internal/external support services:</strong><br>' + (values.iepSupports || values.profileSupportServices || '—') + '</div>' +
-          '<div class="section"><strong>Functional needs:</strong> ' + (values.fnNeeds.length ? values.fnNeeds.join(', ') : 'None selected') +
-          (values.functionalNeedsOther ? '<br><strong>Other functional needs:</strong> ' + values.functionalNeedsOther : '') + '</div>' +
-          (values.functionalNeedsElaboration ? '<div class="section"><strong>Functional needs elaboration:</strong><br>' + values.functionalNeedsElaboration + '</div>' : '') +
-          '<h2>SMART goals</h2>' + (values.iepAreaGoals.length ? formatIepAreaGoalsHtml(values.iepAreaGoals) : '—') +
-          (dipDomains.length ? '<h2>Adjustments by domain</h2>' + dipDomains.map(function (d) {
-            return '<div class="section"><strong>' + d.name + ':</strong> ' + (d.val === '—' ? '—' : (formatDipAsBulletsExport(d.val) || d.val)) + '</div>';
-          }).join('') : '') +
-          '<div class="section"><strong>Ongoing monitoring of goals:</strong><br>' + values.monitoring + '</div>' +
-          pdfSignatureIep +
-          '</div>';
-      }
-
-      if (exportKind === 'bsp') {
-        var bspGoalsPdf = values.bspGoals.map(function (g, i) {
-          return formatBspSmartGoalDocHtml(g, i);
-        }).join('');
-        var pdfDetailsBsp = buildPdfDetailsMeta(values, {
-          showAge: true, showDateCreated: true, showAttendees: true
-        });
-        var pdfSignatureBsp = buildPdfSignatureBlock('Behaviour Support Plan (BSP)', 'BSP');
-        return '<div class="pdf-doc">' +
-          '<h1>Behaviour Support Plan (BSP)</h1>' +
-          pdfDetailsBsp +
-          meetingOverviewPdfBlock +
-          pdfStudentVoice +
-          pdfParentVoice +
-          '<h2>Behaviours &amp; interventions</h2>' +
-          '<div class="section"><strong>Behaviours demonstrated well:</strong><br>' +
-          (values.behavioursPositive.length ? values.behavioursPositive.map(function (b) { return '• ' + b; }).join('<br>') : '—') + '</div>' +
-          '<div class="section"><strong>Behaviours of concern:</strong><br>' +
-          (values.behaviours.length ? values.behaviours.map(function (b) { return '• ' + b; }).join('<br>') : '—') + '</div>' +
-          '<div class="section"><strong>Functional behaviour:</strong><br>' + values.functionalBehaviour + '</div>' +
-          (values.interventions.length ? '<div class="section"><strong>Current interventions:</strong><br>' + values.interventions.map(function (i) { return '• ' + i; }).join('<br>') + '</div>' : '') +
-          '<div class="section"><strong>PBIS/SWPBIS interventions:</strong><br>' +
-          (values.pbisInterventions.length ? values.pbisInterventions.map(function (p) { return '• ' + p; }).join('<br>') : '—') + '</div>' +
-          '<h2>BSP SMART goals</h2>' + bspGoalsPdf +
-          pdfSignatureBsp +
-          '</div>';
-      }
-
-      if (exportKind === 'classroom') {
-        var dipDomainsForClassroom = getDipFnOrderFromValues(values).filter(function (d) {
-          return values.fnNeeds.indexOf(d.fn) >= 0;
-        }).map(function (d) {
-          var v = d.val.trim();
-          return { name: d.name, bullets: v ? (formatDipAsBulletsExport(v) || v) : '—' };
-        });
-        var classroomAdjustmentsTableHtml = dipDomainsForClassroom.length
-          ? '<table class="table-adjustments" border="1" cellpadding="6" cellspacing="0"><thead><tr><th>Domain</th><th>Strategies / Adjustments</th></tr></thead><tbody>' +
-            dipDomainsForClassroom.map(function (d) {
-              return '<tr><td><strong>' + d.name + '</strong></td><td>' + d.bullets + '</td></tr>';
-            }).join('') +
-            '</tbody></table>'
-          : '';
-        var pdfDetailsClassroom = buildPdfDetailsMeta(values, { showAge: true });
-        var pdfSignatureClassroom = buildPdfSignatureBlock('Classroom Adjustments', 'Classroom Adjustments');
-        return '<div class="pdf-doc">' +
-          '<h1>Classroom Adjustments for Teachers</h1>' +
-          pdfDetailsClassroom +
-          meetingOverviewPdfBlock +
-          pdfStudentVoice +
-          pdfParentVoice +
-          '<h2>Differentiated instruction (DIP)</h2>' +
-          (classroomAdjustmentsTableHtml || '<p class="section">No adjustments recorded.</p>') +
-          pdfSignatureClassroom +
-          '</div>';
-      }
-
-      return '';
     }
 
     /**
@@ -7541,31 +7871,53 @@
     }
 
     function captureIsolatedExportSnapshot(form, values, exportKind, scrapeMode) {
-      if (!values) return;
+      if (!values) return '';
       prepareFormForWordExport(form, scrapeMode);
       var cloned = cloneExportValues(values);
+      var html = buildDocExportWordHtml(cloned, exportKind);
       isolatedExportSnapshots[exportKind] = {
         values: cloned,
-        html: buildDocExportWordHtml(cloned, exportKind)
+        html: html
       };
+      return html;
     }
 
-    function getIsolatedExportHtml(exportKind, form, scrapeMode) {
-      var snap = isolatedExportSnapshots[exportKind];
-      if (snap && snap.html) {
-        return snap.html;
-      }
+    function refreshIsolatedExportSnapshot(form, exportKind, scrapeMode) {
       prepareFormForWordExport(form, scrapeMode);
       var freshValues = getVisibleData(form, scrapeMode);
-      if (!freshValues) return '';
-      return buildDocExportWordHtml(cloneExportValues(freshValues), exportKind);
+      if (!freshValues) {
+        var existing = isolatedExportSnapshots[exportKind];
+        return existing && existing.html ? existing.html : '';
+      }
+      var cloned = cloneExportValues(freshValues);
+      var html = buildDocExportWordHtml(cloned, exportKind);
+      isolatedExportSnapshots[exportKind] = {
+        values: cloned,
+        html: html
+      };
+      return html;
+    }
+
+    function getIsolatedExportHtml(exportKind, form, scrapeMode, forceRefresh) {
+      if (!forceRefresh) {
+        var snap = isolatedExportSnapshots[exportKind];
+        if (snap && snap.html) {
+          return snap.html;
+        }
+      }
+      return refreshIsolatedExportSnapshot(form, exportKind, scrapeMode);
+    }
+
+    function getBatchExportHtml(exportKind) {
+      var snap = isolatedExportSnapshots[exportKind];
+      return snap && snap.html ? snap.html : '';
     }
 
     /**
      * Collect form values only from tabs in scope for the launchpad mode.
-     * ALL = every document tab; IEP / BSP / Adjustments = matching tabs plus shared Details & voice tabs.
+     * IEP / BSP / Adjustments = matching tabs plus shared Details & voice tabs.
      * @param {HTMLFormElement} form
-     * @param {'IEP'|'BSP'|'Adjustments'|'ALL'|null} [modeOpt]
+     * @param {'IEP'|'BSP'|'Adjustments'|null} [modeOpt]
      * @returns {object|null}
      */
     function getVisibleData(form, modeOpt) {
@@ -7713,73 +8065,15 @@
     }
 
     /**
-     * Generate All: three separate .doc files (IEP, BSP, Adjustments), each using
-     * buildDocExportWordHtml + WORD_EXPORT_PROFESSIONAL_CSS (grey/blue professional template).
-     */
-    function buildWordExportAllBatchItems(form, baseName) {
-      return [
-        {
-          step: 'iep',
-          getHtml: function () {
-            return getIsolatedExportHtml('iep', form, 'IEP');
-          },
-          filename: baseName + '_IEP.doc',
-          documentType: WORD_DOC_TYPE_LABELS.IEP
-        },
-        {
-          step: 'bsp',
-          getHtml: function () {
-            return getIsolatedExportHtml('bsp', form, 'BSP');
-          },
-          filename: baseName + '_BSP.doc',
-          documentType: WORD_DOC_TYPE_LABELS.BSP
-        },
-        {
-          step: 'classroom',
-          getHtml: function () {
-            return getIsolatedExportHtml('classroom', form, 'Adjustments');
-          },
-          filename: baseName + '_Adjustments.doc',
-          documentType: WORD_DOC_TYPE_LABELS.Adjustments
-        }
-      ];
-    }
-
-    /**
-     * Download Word (.doc) for launchpad mode or active document tab (IEP / BSP / Adjustments / ALL).
+     * Download Word (.doc) for launchpad mode or document tab (IEP / BSP / Adjustments).
      */
     async function runWordDownloadForMode(form, mode, ctx) {
       ctx = ctx || {};
       if (!mode) {
-        throw new Error('Choose IEP, BSP, Adjustments, or All documents from the launchpad first.');
+        throw new Error('Choose IEP, BSP, or Adjustments from the launchpad first.');
       }
 
-      prepareFormForWordExport(form, mode === 'ALL' ? 'ALL' : mode);
-
-      if (mode === 'ALL') {
-        var baseNameAll = ctx.baseName;
-        if (!baseNameAll) {
-          var n = getVisibleData(form, 'IEP') || getVisibleData(form, 'BSP') || getVisibleData(form, 'Adjustments');
-          baseNameAll = sanitizeExportBasename(n && n.name);
-        }
-        showGenerationProgressOverlay();
-        try {
-          var docBatch = await downloadWordSequenceWithProgress(
-            buildWordExportAllBatchItems(form, baseNameAll),
-            getWordDocumentStyles(),
-            { studentName: ctx.studentName }
-          );
-          completeGenerationProgressOverlay(docBatch.results, {
-            successMessage: 'Success! 3 Word documents have been downloaded.',
-            showManualLinks: true
-          });
-          return docBatch;
-        } catch (docErr) {
-          console.error(docErr);
-          failGenerationProgressOverlay('Word download encountered an issue. Try again or use the links below.');
-          throw docErr;
-        }
-      }
+      prepareFormForWordExport(form, mode);
 
       var scrapeMode = mode;
       var values = getVisibleData(form, scrapeMode);
@@ -7801,11 +8095,12 @@
     }
 
     /**
-     * Build plan documents for the current launchpad mode (IEP / BSP / Adjustments / ALL).
+     * Build plan documents for the current launchpad mode (IEP / BSP / Adjustments).
      * @param {HTMLFormElement} form
+     * @param {'IEP'|'BSP'|'Adjustments'} [explicitMode]
      */
-    async function generate(form) {
-      var mode = resolveGenerateExportMode(form);
+    async function generate(form, explicitMode) {
+      var mode = resolveGenerateExportMode(form, explicitMode);
       console.log('Generation started for mode: ' + mode);
 
       if (!form) {
@@ -7818,7 +8113,7 @@
         updateFormRequiredFields();
         updateFormFieldDisabledState();
 
-        var validation = validateBeforeGenerate(form);
+        var validation = validateBeforeGenerate(form, explicitMode);
       if (!validation.ok) {
         if (validation.alertMessage) {
           alert(validation.alertMessage);
@@ -7838,33 +8133,20 @@
         return;
       }
 
-      const selectedDocs = getSelectedDocuments();
       const genMode = mode;
+      const selectedDocs = (explicitMode && MODE_DOC_SELECTION[explicitMode])
+        ? MODE_DOC_SELECTION[explicitMode]
+        : getSelectedDocuments();
 
       prepareFormForWordExport(form, genMode);
 
-      var values;
-      var valuesIep = null;
-      var valuesBsp = null;
-      var valuesAdj = null;
-      if (genMode === 'ALL') {
-        valuesIep = getVisibleData(form, 'IEP');
-        valuesBsp = getVisibleData(form, 'BSP');
-        valuesAdj = getVisibleData(form, 'Adjustments');
-        values = valuesIep || valuesBsp || valuesAdj;
-      } else {
-        values = getVisibleData(form, genMode);
-      }
+      var values = getVisibleData(form, genMode);
       if (!values) {
         alert('Could not read form data. Please choose a document type from the Launchpad.');
         return;
       }
 
-      console.log('Visible data gathered for mode:', genMode, genMode === 'ALL' ? {
-        iep: valuesIep && valuesIep.includesIep,
-        bsp: valuesBsp && valuesBsp.includesBsp,
-        adjustments: valuesAdj && valuesAdj.includesAdjustments
-      } : {
+      console.log('Visible data gathered for mode:', genMode, {
         includesIep: values.includesIep,
         includesBsp: values.includesBsp,
         includesAdjustments: values.includesAdjustments
@@ -7878,11 +8160,6 @@
       const SV = ' (student voice)';
 
       function previewValuesFor(kind) {
-        if (genMode === 'ALL') {
-          if (kind === 'iep') return valuesIep || values;
-          if (kind === 'bsp') return valuesBsp || values;
-          if (kind === 'classroom') return valuesAdj || values;
-        }
         return values;
       }
 
@@ -7992,35 +8269,19 @@
       var adjDipPreview = buildDipPreviewBlocks(adjPreviewValues);
       const classroomTableHtml = adjDipPreview.classroomTableHtml;
 
-      var exportValuesIep = genMode === 'ALL' ? valuesIep : values;
-      var exportValuesBsp = genMode === 'ALL' ? valuesBsp : values;
-      var exportValuesAdj = genMode === 'ALL' ? valuesAdj : values;
-
       clearIsolatedExportSnapshots();
-      if (genMode === 'ALL') {
-        captureIsolatedExportSnapshot(form, exportValuesIep, 'iep', 'IEP');
-        captureIsolatedExportSnapshot(form, exportValuesBsp, 'bsp', 'BSP');
-        captureIsolatedExportSnapshot(form, exportValuesAdj, 'classroom', 'Adjustments');
-      } else {
-        if (selectedDocs.iep) {
-          captureIsolatedExportSnapshot(form, exportValuesIep, 'iep', 'IEP');
-        }
-        if (selectedDocs.bsp) {
-          captureIsolatedExportSnapshot(form, exportValuesBsp, 'bsp', 'BSP');
-        }
-        if (selectedDocs.classroom) {
-          captureIsolatedExportSnapshot(form, exportValuesAdj, 'classroom', 'Adjustments');
-        }
+      if (selectedDocs.iep) {
+        captureIsolatedExportSnapshot(form, values, 'iep', 'IEP');
+      }
+      if (selectedDocs.bsp) {
+        captureIsolatedExportSnapshot(form, values, 'bsp', 'BSP');
+      }
+      if (selectedDocs.classroom) {
+        captureIsolatedExportSnapshot(form, values, 'classroom', 'Adjustments');
       }
 
       const output = document.getElementById('output');
-      const generateMode = genMode || getSelectedMode();
-      var baseName = sanitizeExportBasename(
-        (exportValuesIep && exportValuesIep.name) ||
-        (exportValuesBsp && exportValuesBsp.name) ||
-        (exportValuesAdj && exportValuesAdj.name) ||
-        values.name
-      );
+      var baseName = sanitizeExportBasename(values.name);
 
       function exportDocActionsHtml(wordBtnId, wordLabel) {
         return '<div class="export-doc-actions">' +
@@ -8029,25 +8290,16 @@
       }
 
       var exportPanelHtml = '<div class="panel-card no-print" style="margin-top:0">' +
-        '<h3>' + (generateMode === 'ALL' ? 'Your complete student profile' : 'Download documents') + '</h3>';
-
-      if (generateMode === 'ALL') {
-        exportPanelHtml += '<p class="export-note" id="wordExportStatus">Generating three separate Word documents: IEP, BSP, and Adjustments…</p>' +
-          '<p class="export-note" style="margin-top:0.35rem">Use <strong>Generate Word</strong> below to download any document again individually.</p>' +
-          exportDocActionsHtml('dlWordIep', 'Generate Word — IEP') +
-          exportDocActionsHtml('dlWordBsp', 'Generate Word — BSP') +
-          exportDocActionsHtml('dlWordClassroom', 'Generate Word — Classroom Adjustments');
-      } else {
-        exportPanelHtml += '<p class="export-note">Download your plan as a Word (.doc) file.</p>';
-        if (selectedDocs.bsp) {
-          exportPanelHtml += exportDocActionsHtml('dlWordBsp', 'Generate Word — BSP');
-        }
-        if (selectedDocs.iep) {
-          exportPanelHtml += exportDocActionsHtml('dlWordIep', 'Generate Word — IEP');
-        }
-        if (selectedDocs.classroom) {
-          exportPanelHtml += exportDocActionsHtml('dlWordClassroom', 'Generate Word — Classroom Adjustments');
-        }
+        '<h3>Download document</h3>' +
+        '<p class="export-note">Download your plan as a Word (.doc) file, or use the matching <strong>Generate … Word Document</strong> button on that document\'s tab to export again.</p>';
+      if (selectedDocs.bsp) {
+        exportPanelHtml += exportDocActionsHtml('dlWordBsp', 'Generate Word — BSP');
+      }
+      if (selectedDocs.iep) {
+        exportPanelHtml += exportDocActionsHtml('dlWordIep', 'Generate Word — IEP');
+      }
+      if (selectedDocs.classroom) {
+        exportPanelHtml += exportDocActionsHtml('dlWordClassroom', 'Generate Word — Classroom Adjustments');
       }
       exportPanelHtml += '</div>';
 
@@ -8077,16 +8329,20 @@
       updateDocumentVisibility();
 
       var wordExportMeta = {
-        studentName: (exportValuesIep && exportValuesIep.name) || (exportValuesBsp && exportValuesBsp.name) || values.name
+        studentName: values.name
       };
 
       function bindDlWordButton(btnId, exportKind, filename, documentType, scrapeMode) {
         var btn = document.getElementById(btnId);
         if (!btn) return;
         btn.disabled = false;
+        btn.removeAttribute('aria-disabled');
         btn.onclick = async function () {
+          if (wordExportInFlight[exportKind]) return;
+          wordExportInFlight[exportKind] = true;
+          btn.disabled = false;
           try {
-            var html = getIsolatedExportHtml(exportKind, form, scrapeMode);
+            var html = refreshIsolatedExportSnapshot(form, exportKind, scrapeMode);
             if (!html) {
               alert('Could not read form data for this document.');
               return;
@@ -8097,17 +8353,20 @@
             });
           } catch (err) {
             alert('Could not create Word document: ' + (err && err.message ? err.message : String(err)));
+          } finally {
+            wordExportInFlight[exportKind] = false;
+            btn.disabled = false;
           }
         };
       }
 
-      if (selectedDocs.bsp || generateMode === 'ALL') {
+      if (selectedDocs.bsp) {
         bindDlWordButton('dlWordBsp', 'bsp', baseName + '_BSP', 'Behaviour Support Plan (BSP)', 'BSP');
       }
-      if (selectedDocs.iep || generateMode === 'ALL') {
+      if (selectedDocs.iep) {
         bindDlWordButton('dlWordIep', 'iep', baseName + '_IEP', 'Individual Education Plan (IEP)', 'IEP');
       }
-      if (selectedDocs.classroom || generateMode === 'ALL') {
+      if (selectedDocs.classroom) {
         bindDlWordButton('dlWordClassroom', 'classroom', baseName + '_Adjustments', 'Classroom Adjustments', 'Adjustments');
       }
 
@@ -8116,12 +8375,6 @@
           baseName: baseName,
           studentName: wordExportMeta.studentName
         });
-        if (genMode === 'ALL') {
-          var statusEl = document.getElementById('wordExportStatus');
-          if (statusEl) {
-            statusEl.textContent = 'Three .doc files ready: ' + baseName + '_IEP.doc, ' + baseName + '_BSP.doc, and ' + baseName + '_Adjustments.doc. Use Generate Word above to save any document again.';
-          }
-        }
       } catch (downloadErr) {
         console.error('Word download failed:', downloadErr);
         alert('Could not download Word document: ' + (downloadErr && downloadErr.message ? downloadErr.message : String(downloadErr)));
@@ -8137,44 +8390,42 @@
       }
     }
 
-    function initGenerateButtonHandler() {
+    function initTabGenerateWordHandlers() {
       var form = document.getElementById('planForm');
-      var btn = document.getElementById('generatePlanBtn');
       if (!form) {
         console.error('Generate setup failed: #planForm was not found.');
         return;
       }
-      if (!btn) {
-        console.error('Generate setup failed: #generatePlanBtn was not found.');
-        return;
-      }
-      ensureGenerateButtonPlacement();
-      updateGenerateButtonLabel();
-      btn.addEventListener('click', function (e) {
-        e.preventDefault();
-        console.log('Generate button clicked, mode:', resolveGenerateExportMode(form));
-        updateFormRequiredFields();
-        updateFormFieldDisabledState();
-        generate(form).catch(function (err) {
-          console.error('Unhandled generation error from button:', err);
+      [
+        { id: 'generateWordIep', mode: 'IEP' },
+        { id: 'generateWordBsp', mode: 'BSP' },
+        { id: 'generateWordClassroom', mode: 'Adjustments' }
+      ].forEach(function (cfg) {
+        var btn = document.getElementById(cfg.id);
+        if (!btn) return;
+        btn.addEventListener('click', function (e) {
+          e.preventDefault();
+          updateFormRequiredFields();
+          updateFormFieldDisabledState();
+          generate(form, cfg.mode).catch(function (err) {
+            console.error('Unhandled generation error from tab button:', err);
+          });
         });
       });
     }
 
-    initGenerateButtonHandler();
+    initTabGenerateWordHandlers();
 
     var planFormEl = document.getElementById('planForm');
     if (planFormEl) {
       planFormEl.setAttribute('novalidate', 'novalidate');
       planFormEl.addEventListener('submit', function (e) {
         e.preventDefault();
-        generate(e.target).catch(function (err) {
-          console.error('Unhandled generation error from submit:', err);
-        });
       });
     } else {
       console.error('Cannot attach submit handler: #planForm was not found.');
     }
 </script>
+  <script src="src/session-progress.js"></script>
 </body>
 </html>
