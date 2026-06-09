@@ -1,6 +1,7 @@
 /**
  * Generate4U — multi-document Word export (sequential Full Suite) and .btn-generate-all handling.
- * Requires index.html app globals (getVisibleData, buildDocExportWordHtml, etc.).
+ * DESKTOP OPTIONAL: not loaded by index.html. Browser users rely on src/session-progress.js only.
+ * Pure browser IIFE — no require/module.exports. Requires index.html app globals.
  */
 (function () {
   'use strict';

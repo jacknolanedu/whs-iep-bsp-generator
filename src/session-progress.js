@@ -1,9 +1,17 @@
 /**
  * Generate4U — session save/load, student-named backups, and sequential Full Suite Word export.
- * Loaded after index.html defines shared app globals (IEP_GOAL_AREAS, switchTab, etc.).
+ * Pure browser IIFE (no require/module.exports). Loaded after index.html defines app globals.
+ * Open index.html from a GitHub ZIP — no npm install or Electron required.
  */
 (function () {
   'use strict';
+
+  function isElectronApp() {
+    if (typeof window.isElectronApp === 'function') {
+      return window.isElectronApp();
+    }
+    return !!(window.electronAPI && typeof window.electronAPI.saveProgressJson === 'function');
+  }
 
   var PROGRESS_SAVE_VERSION = 3;
   var FALLBACK_PROGRESS_FILENAME = 'Student-Progress.json';
@@ -446,9 +454,15 @@
   }
 
   function triggerBrowserJsonDownload(json, filename) {
+    var blob = new Blob([json], { type: 'application/json;charset=utf-8' });
+    if (typeof window.browserSaveBlob === 'function') {
+      return window.browserSaveBlob(blob, filename);
+    }
+    if (typeof window.triggerBlobDownload === 'function') {
+      return window.triggerBlobDownload(blob, filename);
+    }
     return new Promise(function (resolve, reject) {
       try {
-        var blob = new Blob([json], { type: 'application/json;charset=utf-8' });
         var url = URL.createObjectURL(blob);
         var link = document.createElement('a');
         link.href = url;
@@ -480,7 +494,7 @@
     var json = JSON.stringify(payload, null, 2);
     var filename = getProgressDownloadFilename();
 
-    if (window.electronAPI && typeof window.electronAPI.saveProgressJson === 'function') {
+    if (isElectronApp() && typeof window.electronAPI.saveProgressJson === 'function') {
       try {
         var result = await window.electronAPI.saveProgressJson({
           content: json,
@@ -529,7 +543,7 @@
   }
 
   async function openLoadProgressDialog() {
-    if (window.electronAPI && typeof window.electronAPI.loadProgressJson === 'function') {
+    if (isElectronApp() && typeof window.electronAPI.loadProgressJson === 'function') {
       try {
         var result = await window.electronAPI.loadProgressJson();
         if (result && result.canceled) return;
@@ -786,7 +800,7 @@
         ? window.sanitizeDownloadFilename(filename)
         : filename;
 
-    if (window.electronAPI && typeof window.electronAPI.saveWordDocument === 'function') {
+    if (isElectronApp() && typeof window.electronAPI.saveWordDocument === 'function') {
       return window.electronAPI.saveWordDocument({
         content: contentString,
         suggestedFilename: safeName,
@@ -798,12 +812,15 @@
       return window.saveWordDocumentToDisk(contentString, safeName, { docKey: docKey });
     }
 
-    if (
-      typeof window.triggerBlobDownload === 'function' &&
-      typeof window.createWordBlobFromContentString === 'function'
-    ) {
+    if (typeof window.createWordBlobFromContentString === 'function') {
       var blob = window.createWordBlobFromContentString(contentString);
-      await window.triggerBlobDownload(blob, safeName);
+      if (typeof window.browserSaveBlob === 'function') {
+        await window.browserSaveBlob(blob, safeName);
+      } else if (typeof window.triggerBlobDownload === 'function') {
+        await window.triggerBlobDownload(blob, safeName);
+      } else {
+        throw new Error('Word save is not available in this environment.');
+      }
       return { canceled: false };
     }
 

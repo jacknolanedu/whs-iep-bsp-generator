@@ -7,6 +7,12 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+  <!--
+    Browser-first app: unzip from GitHub and open index.html in Chrome or Edge.
+    Word export uses client-side MS Word HTML (.doc Blob) — no npm, Node, or docx package required.
+    Electron files under src/main.js are optional desktop packaging only (not loaded here).
+  -->
+  <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js" crossorigin="anonymous"></script>
   <style>
     :root {
       /* Wangaratta High School-inspired palette (green / gold / navy) */
@@ -7293,18 +7299,26 @@
    * Trigger a file download via a temporary anchor + object URL.
    * Revokes the URL immediately after the click (per browser download hand-off).
    */
-    function triggerBlobDownload(blob, filename) {
+    function isElectronApp() {
+      return !!(window.electronAPI && typeof window.electronAPI.saveWordDocument === 'function');
+    }
+
+    /** Browser download helper — works when opening index.html from a GitHub ZIP (no terminal). */
+    function browserSaveBlob(blob, filename) {
       return new Promise(function (resolve, reject) {
         if (!blob || typeof blob.size !== 'number') {
           reject(new Error('No file data to download.'));
           return;
         }
         var safeName = sanitizeDownloadFilename(filename);
-        var url;
-        var link;
         try {
-          url = URL.createObjectURL(blob);
-          link = document.createElement('a');
+          if (typeof saveAs === 'function') {
+            saveAs(blob, safeName);
+            resolve(true);
+            return;
+          }
+          var url = URL.createObjectURL(blob);
+          var link = document.createElement('a');
           link.href = url;
           link.download = safeName;
           link.setAttribute('download', safeName);
@@ -7322,19 +7336,20 @@
           }
           document.body.removeChild(link);
           URL.revokeObjectURL(url);
-          url = null;
           resolve(true);
         } catch (err) {
-          if (link && link.parentNode) {
-            try { document.body.removeChild(link); } catch (e) { /* ignore */ }
-          }
-          if (url) {
-            try { URL.revokeObjectURL(url); } catch (e2) { /* ignore */ }
-          }
           reject(err);
         }
       });
     }
+
+    function triggerBlobDownload(blob, filename) {
+      return browserSaveBlob(blob, filename);
+    }
+
+    window.isElectronApp = isElectronApp;
+    window.browserSaveBlob = browserSaveBlob;
+    window.triggerBlobDownload = triggerBlobDownload;
 
     function buildWordDocumentHtml(htmlContent, styleText, exportMeta) {
       return buildWordDocumentContentString(htmlContent, styleText, exportMeta);
@@ -7347,7 +7362,7 @@
     async function saveWordDocumentToDisk(contentString, filename, opts) {
       opts = opts || {};
       var safeName = sanitizeDownloadFilename(filename);
-      if (window.electronAPI && window.electronAPI.saveWordDocument) {
+      if (isElectronApp()) {
         var result = await window.electronAPI.saveWordDocument({
           content: contentString,
           suggestedFilename: safeName,
@@ -7362,7 +7377,7 @@
         return { canceled: false, filePath: result && result.filePath };
       }
       var blob = createWordBlobFromContentString(contentString);
-      await triggerBlobDownload(blob, safeName);
+      await browserSaveBlob(blob, safeName);
       return { canceled: false };
     }
 
@@ -8426,6 +8441,9 @@
       console.error('Cannot attach submit handler: #planForm was not found.');
     }
 </script>
-  <script src="src/session-progress.js"></script>
+  <script
+    src="src/session-progress.js"
+    onerror="alert('Generate4U could not load src/session-progress.js. Unzip the full repository and keep the src folder beside index.html.')"
+  ></script>
 </body>
 </html>
