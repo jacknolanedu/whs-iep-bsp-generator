@@ -61,3 +61,10 @@ Implementation:
 - `src/main.js` — IPC handler `save-word-document`
 - `src/preload.js` — exposes `window.electronAPI.saveWordDocument()`
 - `index.html` — isolated per-document snapshots and individual **Generate Word** actions (including in Full suite / All Documents mode)
+
+## Changes by mrdavearms
+
+Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
+
+### Sync package-lock.json with package.json
+The lockfile still described the project as `whs-iep-bsp-generator` version `1.0.0`, while `package.json` says `generate4u` version `1.1.7`. npm rewrites those fields automatically on the next `npm install`, so the mismatch showed up as an unexpected change in the working directory for anyone setting the project up. Committing the corrected values makes a fresh `npm install` leave the repository clean. No dependency versions changed and there is no effect on the app.
