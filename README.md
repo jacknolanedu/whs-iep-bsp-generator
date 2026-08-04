@@ -66,5 +66,8 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Fix missing tag that stopped DIP fields being validated
+A `<div>` opening tag was missing in the IEP tab, around the "Ongoing monitoring of goals" box. Browsers repair markup like this silently, and the effect here was that the browser closed the `<form>` early — so the whole DIP tab ended up outside the form as far as the page was concerned. The visible consequence: the required **Learning** box on the DIP tab was never checked, so a teacher could generate a Classroom Adjustments document with it completely empty and get no warning. Adding the missing tag puts the DIP tab back inside the form and the check now runs. **This changes behaviour** — exports that previously went through with an empty Learning box will now stop and ask for it, and the monitoring box now sits in its own white card like every other section.
+
 ### Sync package-lock.json with package.json
 The lockfile still described the project as `whs-iep-bsp-generator` version `1.0.0`, while `package.json` says `generate4u` version `1.1.7`. npm rewrites those fields automatically on the next `npm install`, so the mismatch showed up as an unexpected change in the working directory for anyone setting the project up. Committing the corrected values makes a fresh `npm install` leave the repository clean. No dependency versions changed and there is no effect on the app.
