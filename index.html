@@ -5890,6 +5890,19 @@
       return !!(selected.iep && selected.bsp && selected.classroom);
     }
 
+    /**
+     * True when two or more documents are ticked. Scope must then be driven by the
+     * document selection, not by a single mode: getSelectedMode() can only return
+     * one mode, so a two-document selection would otherwise scope the form to
+     * whichever tab happens to be active and treat the other document's tabs as
+     * inactive — silently dropping their content from the export.
+     */
+    function isMultiDocumentMode() {
+      var selected = getSelectedDocuments();
+      var count = (selected.iep ? 1 : 0) + (selected.bsp ? 1 : 0) + (selected.classroom ? 1 : 0);
+      return count > 1;
+    }
+
     function isDocumentRuleActiveForSelection(rule) {
       if (!rule) return false;
       if (rule === 'any') return true;
@@ -6126,7 +6139,7 @@
 
     function updateFormRequiredFields() {
       var mode = getSelectedMode();
-      var allDocs = isAllDocumentsMode();
+      var allDocs = isMultiDocumentMode();
       var form = document.getElementById('planForm');
       if (!form) return;
 
@@ -6377,7 +6390,7 @@
 
     function updateFormTabVisibility() {
       var mode = getSelectedMode();
-      var allDocs = isAllDocumentsMode();
+      var allDocs = isMultiDocumentMode();
       var form = document.getElementById('planForm');
       if (!form) return;
 
