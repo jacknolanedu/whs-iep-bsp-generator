@@ -1,8 +1,25 @@
-# WHS IEP/BSP Generator (Desktop)
+<div align="center">
 
-Electron Forge desktop wrapper for the single-page IEP/BSP/Adjustments generator.
+# Generate4U
 
-**Repository:** https://github.com/jacknolanedu/whs-iep-bsp-generator
+### Individual Education Plans, Behaviour Support Plans, and Classroom Adjustments — drafted in minutes, on your own computer.
+
+Built for Wangaratta High School. Fill in a seven-tab form; get three finished Word
+documents with Victorian Curriculum 2.0 aligned SMART goals.
+
+**Works offline · Nothing you type ever leaves your computer · Free**
+
+<br>
+
+[![Download for Mac](https://img.shields.io/badge/Download%20for-Mac-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/jacknolanedu/whs-iep-bsp-generator/releases/latest)
+&nbsp;
+[![Download for Windows](https://img.shields.io/badge/Download%20for-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/jacknolanedu/whs-iep-bsp-generator/releases/latest)
+
+<sub>Not allowed to install software? There's a <a href="#no-install-allowed-use-the-browser-version">browser version</a> that needs no installation at all.</sub>
+
+</div>
+
+---
 
 ## 📥 Get Generate4U (for teachers)
 
@@ -74,22 +91,41 @@ browser instead — same forms, same documents:
 3. Note: the browser version doesn't update itself — re-download the ZIP now
    and then to stay current.
 
+---
+
+<details>
+<summary><strong>🛠 For developers — setup, running, and building</strong></summary>
+
+<br>
+
+**Repository:** https://github.com/jacknolanedu/whs-iep-bsp-generator
+
+Electron Forge desktop wrapper around the single-page IEP/BSP/Adjustments generator.
+The same `index.html` runs two ways: as the packaged desktop app, and by opening it
+directly in a browser with no build step.
+
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) 18 or newer (includes npm)
+- [Node.js](https://nodejs.org/) 20 or newer (includes npm). CI builds on Node 22.
 
 ## Setup
 
 ```bash
-cd IEP-BSP-Generator-App
 npm install
 ```
 
-`index.html` is the app UI. After editing `IEP-BSP-Generator.html` in the parent folder, copy it here:
+`index.html` **is** the app — all UI, styling, and logic in one file, plus a small
+`src/` folder for the Electron shell and the update checker. Edit `index.html`
+directly; there is no build step and no bundler.
+
+## Tests
 
 ```bash
-copy ..\IEP-BSP-Generator.html index.html
+npm test        # unit tests for the update logic (Node's built-in test runner)
+node --check src/main.js   # there is no linter; syntax checks are the other gate
 ```
+
+Both of these also run automatically on every pull request.
 
 ## Run in development
 
@@ -102,21 +138,24 @@ Optional DevTools: `set ELECTRON_DEVTOOLS=1` (Windows) then `npm start`.
 ## Build installers
 
 ```bash
-npm run package
-npm run make
+npm run package                    # unpackaged app under out/
+npm run make                       # installers under out/make/
+npm run make -- --arch=universal   # macOS: one build for Intel + Apple Silicon
 ```
 
-Windows installers are written under `out/make/`.
+You can only build for the operating system you're on — a Mac produces the `.dmg`
+and `.zip`, Windows produces `Generate4U-Setup.exe`. That's why releases are built
+by GitHub, which runs both.
 
-## Publish to GitHub Releases
+## Releasing
 
-1. Create the repo `whs-iep-bsp-generator` under https://github.com/jacknolanedu (or update `repository` in `package.json` and `publishers` in `forge.config.js` if you use another name).
-2. Set a token with `repo` scope: `set GITHUB_TOKEN=your_token` (Windows CMD) or `$env:GITHUB_TOKEN="your_token"` (PowerShell).
-3. Run:
+Releases are built by GitHub, not by hand. Push a tag like `v1.2.0` (matching
+`package.json`) and the workflow builds the universal Mac DMG and the Windows
+installer and publishes them.
 
-```bash
-npm run publish
-```
+**Don't run `npm run publish` locally** — it would upload installers built on one
+machine for one platform. See **[RELEASING.md](RELEASING.md)** for the full routine,
+including what to check before the first release.
 
 ## Generate All (3 Word documents)
 
@@ -132,9 +171,24 @@ Implementation:
 - `src/preload.js` — exposes `window.electronAPI.saveWordDocument()`
 - `index.html` — isolated per-document snapshots and individual **Generate Word** actions (including in Full suite / All Documents mode)
 
+</details>
+
+---
+
 ## Changes by mrdavearms
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
+
+### Give the repo front page a proper layout, and fix the stale setup steps
+Anyone sent a link to this repository previously landed on "Electron Forge desktop
+wrapper for the single-page IEP/BSP/Adjustments generator" — accurate, but not much
+help to a teacher. The README now opens with what the app does and two download
+buttons, and the developer instructions and older changelog entries are tucked into
+collapsible sections so they're still there without dominating the page. I also fixed
+the **Setup** steps I flagged to you last round: they told you to `cd` into a folder
+and copy a file that don't exist in this repository, so they couldn't work. Added a
+short **Tests** section too, since there are unit tests now. Presentation and
+documentation only — no code changed.
 
 ### Give teachers a plain-English download page
 The README now opens with a download section written for teachers, not
@@ -172,6 +226,11 @@ installer is named Generate4U-Setup.exe so teachers can tell what it is. Also
 added the standard guard so the Windows installer's behind-the-scenes launches
 don't flash app windows during install and update. No change to how documents
 generate or to the open-index.html-in-a-browser path.
+
+<details>
+<summary><strong>Earlier work — the previous round of eleven changes</strong></summary>
+
+<br>
 
 ### Summary of this round of work
 
@@ -271,7 +330,8 @@ before.
 One other thing worth knowing: the **Setup** section near the top of this README tells you
 to `cd IEP-BSP-Generator-App` and copy a file from the parent folder. Neither path exists in
 this repository, so those instructions don't currently work. I've left it alone since it's
-your documentation, but happy to fix it if you'd like.
+your documentation, but happy to fix it if you'd like. *(Now fixed — see the newest entry
+at the top of this section.)*
 
 ### Keep an automatic draft so work isn't lost
 Closing the window used to lose everything not manually saved with **Save Progress** — the most likely way for a teacher to lose an afternoon's work, particularly when notes are being taken live in a meeting. The app now keeps a draft on the computer as you type, and shows "Draft saved 2:15pm" in the header with a **Discard draft** link beside it. When you next open the app it *offers* the draft back, naming the student and the time, with **Restore** and **Discard** buttons — it never fills the form in on its own, because silently loading the previous student's details would be worse than losing them. The draft clears itself once all your documents have saved successfully. An untouched form doesn't create one.
@@ -311,3 +371,5 @@ A `<div>` opening tag was missing in the IEP tab, around the "Ongoing monitoring
 
 ### Sync package-lock.json with package.json
 The lockfile still described the project as `whs-iep-bsp-generator` version `1.0.0`, while `package.json` says `generate4u` version `1.1.7`. npm rewrites those fields automatically on the next `npm install`, so the mismatch showed up as an unexpected change in the working directory for anyone setting the project up. Committing the corrected values makes a fresh `npm install` leave the repository clean. No dependency versions changed and there is no effect on the app.
+
+</details>
