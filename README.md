@@ -1,8 +1,25 @@
-# WHS IEP/BSP Generator (Desktop)
+<div align="center">
 
-Electron Forge desktop wrapper for the single-page IEP/BSP/Adjustments generator.
+# Generate4U
 
-**Repository:** https://github.com/jacknolanedu/whs-iep-bsp-generator
+### Individual Education Plans, Behaviour Support Plans, and Classroom Adjustments — drafted in minutes, on your own computer.
+
+Built for Wangaratta High School. Fill in a seven-tab form; get three finished Word
+documents with Victorian Curriculum 2.0 aligned SMART goals.
+
+**Works offline · Nothing you type ever leaves your computer · Free**
+
+<br>
+
+[![Download for Mac](https://img.shields.io/badge/Download%20for-Mac-000000?style=for-the-badge&logo=apple&logoColor=white)](https://github.com/jacknolanedu/whs-iep-bsp-generator/releases/latest)
+&nbsp;
+[![Download for Windows](https://img.shields.io/badge/Download%20for-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/jacknolanedu/whs-iep-bsp-generator/releases/latest)
+
+<sub>Not allowed to install software? There's a <a href="#no-install-allowed-use-the-browser-version">browser version</a> that needs no installation at all.</sub>
+
+</div>
+
+---
 
 ## 📥 Get Generate4U (for teachers)
 
@@ -74,6 +91,19 @@ browser instead — same forms, same documents:
 3. Note: the browser version doesn't update itself — re-download the ZIP now
    and then to stay current.
 
+---
+
+<details>
+<summary><strong>🛠 For developers — setup, running, and building</strong></summary>
+
+<br>
+
+**Repository:** https://github.com/jacknolanedu/whs-iep-bsp-generator
+
+Electron Forge desktop wrapper around the single-page IEP/BSP/Adjustments generator.
+The same `index.html` runs two ways: as the packaged desktop app, and by opening it
+directly in a browser with no build step.
+
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) 18 or newer (includes npm)
@@ -108,15 +138,15 @@ npm run make
 
 Windows installers are written under `out/make/`.
 
-## Publish to GitHub Releases
+## Releasing
 
-1. Create the repo `whs-iep-bsp-generator` under https://github.com/jacknolanedu (or update `repository` in `package.json` and `publishers` in `forge.config.js` if you use another name).
-2. Set a token with `repo` scope: `set GITHUB_TOKEN=your_token` (Windows CMD) or `$env:GITHUB_TOKEN="your_token"` (PowerShell).
-3. Run:
+Releases are built by GitHub, not by hand. Push a tag like `v1.2.0` (matching
+`package.json`) and the workflow builds the universal Mac DMG and the Windows
+installer and publishes them.
 
-```bash
-npm run publish
-```
+**Don't run `npm run publish` locally** — it would upload installers built on one
+machine for one platform. See **[RELEASING.md](RELEASING.md)** for the full routine,
+including what to check before the first release.
 
 ## Generate All (3 Word documents)
 
@@ -131,6 +161,10 @@ Implementation:
 - `src/main.js` — IPC handler `save-word-document`
 - `src/preload.js` — exposes `window.electronAPI.saveWordDocument()`
 - `index.html` — isolated per-document snapshots and individual **Generate Word** actions (including in Full suite / All Documents mode)
+
+</details>
+
+---
 
 ## Changes by mrdavearms
 
@@ -172,6 +206,11 @@ installer is named Generate4U-Setup.exe so teachers can tell what it is. Also
 added the standard guard so the Windows installer's behind-the-scenes launches
 don't flash app windows during install and update. No change to how documents
 generate or to the open-index.html-in-a-browser path.
+
+<details>
+<summary><strong>Earlier work — the previous round of eleven changes</strong></summary>
+
+<br>
 
 ### Summary of this round of work
 
@@ -311,3 +350,5 @@ A `<div>` opening tag was missing in the IEP tab, around the "Ongoing monitoring
 
 ### Sync package-lock.json with package.json
 The lockfile still described the project as `whs-iep-bsp-generator` version `1.0.0`, while `package.json` says `generate4u` version `1.1.7`. npm rewrites those fields automatically on the next `npm install`, so the mismatch showed up as an unexpected change in the working directory for anyone setting the project up. Committing the corrected values makes a fresh `npm install` leave the repository clean. No dependency versions changed and there is no effect on the app.
+
+</details>
