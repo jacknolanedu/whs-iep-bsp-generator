@@ -66,6 +66,9 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Warn when a new field would be missed by the export
+When each document is built, the app copies the form's contents through a hand-written list of field names. Any field added to the form in future but forgotten in that list would be silently left out of the generated document — no error, just missing content. The list is correct today; this adds a check that prints a clear warning to the developer console if the two ever drift apart, so the problem shows up during development rather than in a student's document. Also merges two near-identical text-escaping helpers into one, since the older of the two handled slightly less. Nothing changes in the app's output.
+
 ### Remove the unused AI hook from the goal generator
 The goal generator contained a dormant option to send student details to an external AI service, switched off by two blank settings and accompanied by a comment inviting someone to fill in an API key. Because the app is a single HTML file in a public repository, filling those in would have put the key in plain sight and sent student information to a third party — a lot of risk sitting behind two empty strings. The code was never active, so removing it changes nothing: goals are still built from the local template library, and all eight test documents are byte-for-byte identical. The app now makes no network requests of any kind.
 
