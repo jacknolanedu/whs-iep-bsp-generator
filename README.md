@@ -6,7 +6,7 @@ Electron Forge desktop wrapper for the single-page IEP/BSP/Adjustments generator
 
 ## 📥 Get Generate4U (for teachers)
 
-**[Click here to download the latest version](https://github.com/jacknolanedu/whs-iep-bsp-generator/releases/latest)** — then follow the steps for your computer below. Once installed, the app keeps itself up to date.
+**[Click here to download the latest version](https://github.com/jacknolanedu/whs-iep-bsp-generator/releases/latest)** — then follow the steps for your computer below. On Windows the app then updates itself automatically; on a Mac it tells you when a new version is ready.
 
 ### On a Mac
 
