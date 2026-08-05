@@ -66,6 +66,15 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Let GitHub build every release automatically
+Pushing a version tag now makes GitHub build the Mac DMG and the Windows
+installer and publish them as a release — no more building installers by hand
+on someone's laptop. The release goes live as soon as the build finishes, and
+that is also the moment installed apps start updating to it, so a tag should
+only ever be pushed on a commit that's ready for teachers. A second small
+workflow now also syntax-checks the code and runs the unit tests on every pull
+request. The step-by-step release routine is written down in RELEASING.md.
+
 ### The desktop app now keeps itself up to date
 Installed copies of the desktop app now check GitHub for new versions when they
 open and every few hours after that. On Windows the new version downloads in the

@@ -1,0 +1,60 @@
+name: Release
+
+# Builds installers and publishes them as a GitHub release.
+# Trigger: push a tag like v1.2.0 (must match package.json's version — the
+# guard step below enforces it). The release goes live as soon as the first
+# job finishes, so only tag a commit that is ready for teachers.
+# Full walkthrough: RELEASING.md.
+#
+# Tag pushes ONLY — deliberately no workflow_dispatch. A manual run would build
+# from main at whatever version package.json currently holds, find the existing
+# release with that tag, and silently skip every same-named asset (the publisher
+# does not overwrite). To retry a failed build, re-run the tag's workflow run.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-upload:
+    strategy:
+      # Serialise the two builds so both append their files to ONE draft
+      # release instead of racing to create two.
+      # Also relies on fail-fast (GitHub's default): if the first job fails the
+      # second never starts, so a failure cannot leave a second stray draft.
+      max-parallel: 1
+      matrix:
+        include:
+          - os: macos-latest
+            arch: universal   # one DMG that runs on Intel and Apple-Silicon Macs
+          - os: windows-latest
+            arch: x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Stop if the tag does not match package.json's version
+        shell: bash
+        run: |
+          PKG="$(node -p "require('./package.json').version")"
+          TAG="${GITHUB_REF_NAME#v}"
+          if [ "$PKG" != "$TAG" ]; then
+            echo "::error::Tag v$TAG does not match package.json version $PKG. Bump package.json first (see RELEASING.md)."
+            exit 1
+          fi
+
+      - run: npm ci
+
+      - name: Build installers and upload to the draft release
+        run: npm run publish -- --arch=${{ matrix.arch }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
