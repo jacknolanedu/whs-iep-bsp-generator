@@ -1,0 +1,59 @@
+name: Release
+
+# Builds installers and uploads them to a DRAFT GitHub release.
+# Trigger: push a tag like v1.2.0 (must match package.json's version — the
+# guard step below enforces it). Publishing the draft on the Releases page is
+# the manual go-live step: installed apps only ever see published releases.
+# Full walkthrough: RELEASING.md.
+#
+# Tag pushes ONLY — deliberately no workflow_dispatch. A manual run would build
+# from main at whatever version package.json currently holds, find the existing
+# draft with that tag, and silently skip every same-named asset (the publisher
+# does not overwrite), leaving a draft that mixes old and new artifacts with no
+# error. To retry a failed build, re-run the tag's workflow run instead.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-upload:
+    strategy:
+      # Serialise the two builds so both append their files to ONE draft
+      # release instead of racing to create two.
+      max-parallel: 1
+      matrix:
+        include:
+          - os: macos-latest
+            arch: universal   # one DMG that runs on Intel and Apple-Silicon Macs
+          - os: windows-latest
+            arch: x64
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Stop if the tag does not match package.json's version
+        shell: bash
+        run: |
+          PKG="$(node -p "require('./package.json').version")"
+          TAG="${GITHUB_REF_NAME#v}"
+          if [ "$PKG" != "$TAG" ]; then
+            echo "::error::Tag v$TAG does not match package.json version $PKG. Bump package.json first (see RELEASING.md)."
+            exit 1
+          fi
+
+      - run: npm ci
+
+      - name: Build installers and upload to the draft release
+        run: npm run publish -- --arch=${{ matrix.arch }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
