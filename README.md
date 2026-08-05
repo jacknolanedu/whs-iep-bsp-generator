@@ -66,6 +66,9 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Remove a redundant line that could alter goal text
+When preparing a Word export, the app copied each text box's contents back into the page twice — once correctly, and once in a way that made the browser re-interpret the text as HTML. For most text that makes no difference. But in the SMART goal cards, text containing sequences like `&amp;` or `&lt;` was silently rewritten (`&amp;` became `&`), changing what appeared in the document. The second copy was never needed; the line above it already does the job. Removing it leaves normal exports byte-for-byte identical — verified across eight test cases covering every document combination.
+
 ### Fix content being dropped when two documents are selected
 Ticking exactly two documents (say BSP and Classroom Adjustments) caused the app to treat one of them as switched off. The form can only track a single "mode" at a time, and the code only used the real tick-box selection when all three documents were chosen — with two, it fell back to whichever tab happened to be open and marked the other document's tabs inactive. Fields on those tabs were then skipped when the document was built. The visible consequence: a BSP generated with two documents selected was missing Behaviours Demonstrated Well, Behaviours of Concern, Current Interventions, Functional Behaviour and PBIS Interventions — with no warning. Selecting BSP on its own produced the complete document, so the same student could get two different plans depending on the tick-boxes. The selection is now used whenever more than one document is chosen. Documents generated from a two-document selection are now identical to the single-document versions.
 
