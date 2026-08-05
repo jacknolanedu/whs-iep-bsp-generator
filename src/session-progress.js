@@ -30,6 +30,7 @@
     'prepareFormForWordExport', 'readSmartGoalCardFromArea', 'renderFormValidationSummary',
     'replaceGenericStudentTerms', 'resolveModeFromActiveTab', 'sanitizeDownloadFilename',
     'sanitizeExportBasename', 'saveWordDocumentToDisk', 'setDocumentSelection',
+    'showAppMessage',
     'switchIepGoalTab', 'switchTab', 'syncGoalCardToHiddenField', 'syncIepGoalLevelFromDashboard', 'syncSelectedModeFromDocuments',
     'syncStudentPersonalizationFromForm', 'triggerBlobDownload', 'updateDocumentVisibility',
     'updateFormFieldDisabledState', 'updateFormRequiredFields', 'updateLaunchpadBadge',
@@ -65,6 +66,24 @@
     if (debugOn) {
       console.log('Generate4U: all ' + REQUIRED_APP_GLOBALS.length + ' expected app functions present.');
     }
+  }
+
+  /**
+   * Show a non-blocking message via index.html's showAppMessage.
+   *
+   * Falls back to alert() only if that function is missing — which would mean
+   * index.html failed to load, and a blocking dialog is then the right last
+   * resort rather than a message nobody can see.
+   *
+   * @param {string} message
+   * @param {'error'|'warning'|'success'|'info'} [type]
+   */
+  function notify(message, type) {
+    if (typeof window.showAppMessage === 'function') {
+      window.showAppMessage(message, type || 'info');
+      return;
+    }
+    window.alert(message);
   }
 
   function isElectronApp() {
@@ -542,7 +561,7 @@
 
     var payload = collectFormProgressState();
     if (!payload) {
-      alert('Could not read form data to save.');
+      notify('Could not read form data to save.', 'error');
       return;
     }
 
@@ -563,7 +582,7 @@
         }
         return;
       } catch (err) {
-        alert('Could not save progress file: ' + (err && err.message ? err.message : String(err)));
+        notify('Could not save progress file: ' + (err && err.message ? err.message : String(err)), 'error');
         return;
       }
     }
@@ -571,7 +590,7 @@
     try {
       await triggerBrowserJsonDownload(json, filename);
     } catch (err) {
-      alert('Could not save progress file: ' + (err && err.message ? err.message : String(err)));
+      notify('Could not save progress file: ' + (err && err.message ? err.message : String(err)), 'error');
     }
   }
 
@@ -590,11 +609,11 @@
       try {
         loadProgressFromText(String(reader.result || ''));
       } catch (err) {
-        alert('Could not load progress file: ' + (err && err.message ? err.message : String(err)));
+        notify('Could not load progress file: ' + (err && err.message ? err.message : String(err)), 'error');
       }
     };
     reader.onerror = function () {
-      alert('Could not read the selected file.');
+      notify('Could not read the selected file.', 'error');
     };
     reader.readAsText(file);
   }
@@ -613,7 +632,7 @@
         }
         return;
       } catch (err) {
-        alert('Could not load progress file: ' + (err && err.message ? err.message : String(err)));
+        notify('Could not load progress file: ' + (err && err.message ? err.message : String(err)), 'error');
         return;
       }
     }
@@ -887,7 +906,7 @@
   function reportGenerateValidationFailure(validation) {
     if (!validation) return;
     if (validation.alertMessage) {
-      alert(validation.alertMessage);
+      notify(validation.alertMessage, 'warning');
       return;
     }
     if (validation.missing && validation.missing.length) {
@@ -958,14 +977,14 @@
     var form = getForm();
     if (!form) {
       fullSuiteExportInFlight = false;
-      alert('The form could not be found. Please refresh the page.');
+      notify('The form could not be found. Please refresh the page.', 'error');
       return;
     }
 
     steps = steps || detectAdaptiveExportSteps(form);
     if (!steps.length) {
       fullSuiteExportInFlight = false;
-      alert('Complete at least one document section (IEP, BSP, or Adjustments) before exporting.');
+      notify('Complete at least one document section (IEP, BSP, or Adjustments) before exporting.', 'warning');
       return;
     }
 
@@ -993,7 +1012,7 @@
           ? window.getVisibleData(form, probeMode)
           : null;
       if (!probe) {
-        alert('Could not read form data. Enter student details and try again.');
+        notify('Could not read form data. Enter student details and try again.', 'error');
         return;
       }
 
@@ -1007,7 +1026,8 @@
           typeof window.getWordDocumentStyles === 'function' ? window.getWordDocumentStyles() : ''
       };
 
-      var downloadIssueCount = 0;
+      var canceledCount = 0;
+      var failedCount = 0;
 
       for (var i = 0; i < steps.length; i++) {
         var step = steps[i];
@@ -1015,11 +1035,11 @@
         try {
           var saveResult = await runIndividualWordExportForMode(form, step, exportCtx);
           if (saveResult && saveResult.canceled) {
-            downloadIssueCount++;
+            canceledCount++;
           }
         } catch (dlErr) {
           console.warn('Adaptive export save failed:', step.mode, dlErr);
-          downloadIssueCount++;
+          failedCount++;
         }
 
         if (i < steps.length - 1) {
@@ -1027,14 +1047,29 @@
         }
       }
 
-      if (downloadIssueCount > 0) {
-        alert(
-          'Export finished with some issues. ' +
-            (steps.length === 1
-              ? steps[0].label + ' may not have saved completely.'
-              : 'One or more documents may not have saved completely.')
+      if (failedCount > 0) {
+        notify(
+          steps.length === 1
+            ? steps[0].label + ' may not have saved completely.'
+            : failedCount + ' of ' + steps.length + ' documents may not have saved completely.',
+          'error'
+        );
+      } else if (canceledCount === steps.length) {
+        /* Every save dialog was dismissed — a deliberate choice, not a problem. */
+        notify('Export cancelled.', 'info');
+      } else if (canceledCount > 0) {
+        notify(
+          'Saved ' + (steps.length - canceledCount) + ' of ' + steps.length +
+          ' documents. The rest were cancelled.',
+          'info'
         );
       } else {
+        notify(
+          steps.length === 1
+            ? steps[0].label + ' saved.'
+            : 'All ' + steps.length + ' documents saved.',
+          'success'
+        );
         console.log(
           'Adaptive export complete:',
           steps
@@ -1046,8 +1081,9 @@
       }
     } catch (err) {
       console.error('Adaptive export failed:', err);
-      alert(
-        'Could not complete export: ' + (err && err.message ? err.message : String(err))
+      notify(
+        'Could not complete export: ' + (err && err.message ? err.message : String(err)),
+        'error'
       );
     } finally {
       fullSuiteExportInFlight = false;
@@ -1192,15 +1228,16 @@
 
     if (!getStudentNameFromForm()) {
       updateFullSuiteExportBarVisibility();
-      alert('Enter the student name on the Details tab before exporting.');
+      notify('Enter the student name on the Details tab before exporting.', 'warning');
       focusStudentNameField();
       return;
     }
 
     var steps = detectAdaptiveExportSteps(getForm());
     if (!steps.length) {
-      alert(
-        'Complete at least one document section (IEP, BSP, or Adjustments), or open the tab you want to export.'
+      notify(
+        'Complete at least one document section (IEP, BSP, or Adjustments), or open the tab you want to export.',
+        'warning'
       );
       return;
     }
@@ -1241,8 +1278,9 @@
       e.stopPropagation();
       handleExportFullSuiteClick().catch(function (err) {
         console.error('Export Full Suite failed:', err);
-        alert(
-          'Export Full Suite could not run: ' + (err && err.message ? err.message : String(err))
+        notify(
+          'Export Full Suite could not run: ' + (err && err.message ? err.message : String(err)),
+          'error'
         );
       });
     });
@@ -1259,8 +1297,9 @@
       e.stopPropagation();
       handleExportFullSuiteClick().catch(function (err) {
         console.error('Full Suite header action failed:', err);
-        alert(
-          'Full Suite could not run: ' + (err && err.message ? err.message : String(err))
+        notify(
+          'Full Suite could not run: ' + (err && err.message ? err.message : String(err)),
+          'error'
         );
       });
     });

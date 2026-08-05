@@ -1840,6 +1840,61 @@
         font-weight: 700;
       }
     }
+
+    /* —— App messages (replaces blocking alert dialogs) —— */
+    .app-message-stack {
+      position: fixed;
+      top: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      width: min(34rem, calc(100vw - 2rem));
+      pointer-events: none;
+    }
+    .app-message {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.85rem 1rem;
+      border-radius: var(--radius-sm);
+      background: var(--card);
+      border-left: 4px solid var(--text-muted);
+      box-shadow: var(--shadow-lg);
+      color: var(--text);
+      font-size: 0.92rem;
+      line-height: 1.45;
+      pointer-events: auto;
+      animation: appMessageIn 0.22s ease both;
+    }
+    .app-message--error   { border-left-color: #c0392b; }
+    .app-message--warning { border-left-color: var(--accent-hover); }
+    .app-message--success { border-left-color: var(--primary); }
+    .app-message--info    { border-left-color: var(--primary-dark); }
+    .app-message--leaving { animation: appMessageOut 0.2s ease forwards; }
+    .app-message__text { flex: 1; }
+    .app-message__close {
+      flex: 0 0 auto;
+      background: none;
+      border: none;
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 0 0.15rem;
+      font-family: inherit;
+    }
+    .app-message__close:hover { color: var(--text); }
+    @keyframes appMessageIn {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes appMessageOut {
+      to { opacity: 0; transform: translateY(-8px); }
+    }
+    @media print { .app-message-stack { display: none !important; } }
   </style>
 </head>
 <body class="launchpad-open">
@@ -5294,6 +5349,69 @@
       return generateSmartGoalFromLibrary(input);
     }
 
+    /**
+     * Show a non-blocking message instead of a browser alert().
+     *
+     * alert() freezes the page until dismissed, which is poor during a meeting —
+     * and under Electron it can sit behind the window. These messages stack,
+     * announce themselves to screen readers, and never block typing.
+     *
+     * Errors stay until dismissed (a teacher may have looked away); everything
+     * else clears itself.
+     *
+     * @param {string} message
+     * @param {'error'|'warning'|'success'|'info'} [type='info']
+     * @returns {HTMLElement|null} the message element, for tests
+     */
+    function showAppMessage(message, type) {
+      var text = String(message == null ? '' : message).trim();
+      if (!text) return null;
+      type = type || 'info';
+
+      var stack = document.getElementById('appMessageStack');
+      if (!stack) {
+        stack = document.createElement('div');
+        stack.id = 'appMessageStack';
+        stack.className = 'app-message-stack no-print';
+        document.body.appendChild(stack);
+      }
+
+      var el = document.createElement('div');
+      el.className = 'app-message app-message--' + type;
+      // Errors interrupt a screen reader; the rest wait for a pause.
+      el.setAttribute('role', type === 'error' ? 'alert' : 'status');
+      el.setAttribute('aria-live', type === 'error' ? 'assertive' : 'polite');
+
+      var body = document.createElement('div');
+      body.className = 'app-message__text';
+      body.textContent = text;          // textContent: never parses user text as markup
+
+      var close = document.createElement('button');
+      close.type = 'button';
+      close.className = 'app-message__close';
+      close.setAttribute('aria-label', 'Dismiss message');
+      close.textContent = '×';
+
+      function dismiss() {
+        if (!el.parentNode) return;
+        el.classList.add('app-message--leaving');
+        window.setTimeout(function () {
+          if (el.parentNode) el.parentNode.removeChild(el);
+        }, 200);
+      }
+      close.addEventListener('click', dismiss);
+
+      el.appendChild(body);
+      el.appendChild(close);
+      stack.appendChild(el);
+
+      if (type !== 'error') {
+        window.setTimeout(dismiss, type === 'success' ? 4000 : 6000);
+      }
+      return el;
+    }
+    window.showAppMessage = showAppMessage;
+
     function escapeHtml(str) {
       return String(str || '')
         .replace(/&/g, '&amp;')
@@ -5353,18 +5471,18 @@
 
       var focusArea = (form[area.prefix + '_focusArea']?.value || '').trim();
       if (!focusArea) {
-        alert('Please select a Focus Area before generating a suggested goal.');
+        showAppMessage('Please select a Focus Area before generating a suggested goal.', 'warning');
         return;
       }
 
       if (getYearLevelFromForm(form) == null) {
-        alert('Please select Year Level on the Details tab.');
+        showAppMessage('Please select Year Level on the Details tab.', 'warning');
         return;
       }
 
       var achievementLevel = normalizeLearningLevel(form[area.prefix + '_currentLevel']?.value || '');
       if (!achievementLevel) {
-        alert('Please select Current Level (achievement) for this subject before generating a goal.');
+        showAppMessage('Please select Current Level (achievement) for this subject before generating a goal.', 'warning');
         return;
       }
 
@@ -5386,7 +5504,7 @@
         hideAllIepGoalNameWarnings();
       } catch (err) {
         console.error(err);
-        alert('Could not generate a goal. Please try again or edit the result card manually.');
+        showAppMessage('Could not generate a goal. Please try again or edit the result card manually.', 'error');
       } finally {
         if (btn) {
           btn.disabled = false;
@@ -7948,7 +8066,7 @@
 
       if (!form) {
         console.error('generate(): form is null');
-        alert('The form could not be found. Please refresh the page.');
+        showAppMessage('The form could not be found. Please refresh the page.', 'error');
         return;
       }
 
@@ -7959,7 +8077,7 @@
         var validation = validateBeforeGenerate(form, explicitMode);
       if (!validation.ok) {
         if (validation.alertMessage) {
-          alert(validation.alertMessage);
+          showAppMessage(validation.alertMessage, 'warning');
           if (validation.scrollToLaunchpad) {
             showLaunchpad();
           } else if (validation.focusTab && typeof switchTab === 'function') {
@@ -7985,7 +8103,7 @@
 
       var values = getVisibleData(form, genMode);
       if (!values) {
-        alert('Could not read form data. Please choose a document type from the Launchpad.');
+        showAppMessage('Could not read form data. Please choose a document type from the Launchpad.', 'warning');
         return;
       }
 
@@ -8164,7 +8282,7 @@
 
       if (!output) {
         console.error('generate(): #output element not found');
-        alert('Could not display generated documents (output area missing).');
+        showAppMessage('Could not display generated documents (output area missing).', 'error');
         return;
       }
 
@@ -8187,7 +8305,7 @@
           try {
             var html = refreshIsolatedExportSnapshot(form, exportKind, scrapeMode);
             if (!html) {
-              alert('Could not read form data for this document.');
+              showAppMessage('Could not read form data for this document.', 'error');
               return;
             }
             await downloadWordBlobFromHtml(html, filename, getWordDocumentStyles(), {
@@ -8195,7 +8313,7 @@
               studentName: wordExportMeta.studentName
             });
           } catch (err) {
-            alert('Could not create Word document: ' + (err && err.message ? err.message : String(err)));
+            showAppMessage('Could not create Word document: ' + (err && err.message ? err.message : String(err)), 'error');
           } finally {
             wordExportInFlight[exportKind] = false;
             btn.disabled = false;
@@ -8220,15 +8338,16 @@
         });
       } catch (downloadErr) {
         console.error('Word download failed:', downloadErr);
-        alert('Could not download Word document: ' + (downloadErr && downloadErr.message ? downloadErr.message : String(downloadErr)));
+        showAppMessage('Could not download Word document: ' + (downloadErr && downloadErr.message ? downloadErr.message : String(downloadErr)), 'error');
       }
 
       output.scrollIntoView({ behavior: 'smooth' });
       } catch (err) {
         console.error('Generation failed:', err);
-        alert(
+        showAppMessage(
           'Something went wrong while generating the plan. Please check required fields for your selected mode. ' +
-          (err && err.message ? err.message : String(err))
+          (err && err.message ? err.message : String(err)),
+          'error'
         );
       }
     }

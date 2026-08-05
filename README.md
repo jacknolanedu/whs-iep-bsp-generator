@@ -69,7 +69,22 @@ Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. E
 ### Summary of this round of work
 
 Jack, here's the short version of what I've done and why, so you can decide what you're
-comfortable with. Nine changes, grouped by what they're actually for.
+comfortable with. Eleven changes, grouped by what they're actually for. Every one has its
+own entry below with the reasoning; this is the overview.
+
+| # | Change | Kind |
+| - | ------ | ---- |
+| 1 | Two-document selection dropped five BSP sections | Document correctness |
+| 2 | Missing tag meant DIP fields were never validated | Document correctness |
+| 3 | Typed text now shown as text in the preview | Student-data risk |
+| 4 | Dormant AI hook removed | Student-data risk |
+| 5 | Desktop window pinned to the app's own page | Student-data risk |
+| 6 | Redundant line that could rewrite goal-card text | Robustness |
+| 7 | Warning if a new field would be missed by the export | Robustness |
+| 8 | Start-up check that the two code files still agree | Robustness |
+| 9 | Leftover export step that no longer did anything, removed | Tidying |
+| 10 | Pop-up dialogs replaced with on-screen messages | Usability |
+| 11 | `package-lock.json` name/version synced | Housekeeping |
 
 **Two bugs that were quietly producing incomplete documents.** These are the ones I'd
 look at first, because they affected what ended up in a student's file:
@@ -97,29 +112,75 @@ behaviours, diagnoses and family circumstances, so these felt worth tightening:
 **Three changes that make future mistakes visible** rather than silent: a warning if a new
 form field would be missed by the export, a start-up check that the two code files still
 agree on function names, and removal of a redundant line that could rewrite text in the
-goal cards. Plus one housekeeping fix to `package-lock.json`.
+goal cards.
 
-**How this was checked.** There are no tests in the project, so I built a throwaway test
-harness that drives the real app in a browser and captures the exact preview and Word
-output for eight scenarios — each document on its own, each pair, all three together, and
-a plain-text control. Every change was compared against those captured outputs before and
-after. Where a change was meant to alter nothing, the output is byte-for-byte identical;
-where it was meant to alter something, only the intended part differs. The harness isn't
-part of this repository — it lives outside it, so nothing here depends on it.
+**One usability change.** Every message the app gave you came through a pop-up that froze
+the page until you clicked OK — and in the desktop app those can end up hidden behind the
+window. Messages now appear as a banner you can work around. Cancelling a save is no longer
+reported as a failure, and a successful export now confirms itself.
 
-**Behaviour you'll notice.** Two changes alter what teachers experience, deliberately:
-exports that previously went through with an empty **Learning** box will now stop and ask
-for it, and the "Ongoing monitoring of goals" box now sits in its own white card like every
-other section. Everything else should look and behave exactly as before.
+**Two tidying changes:** a leftover export step that no longer did anything, and the
+`package-lock.json` name/version mismatch.
 
-**Still open, and needing your call before I go further:** whether to self-host the Google
-Fonts files or drop them (it affects both appearance and whether the desktop app needs
-internet); whether saving an automatic draft of in-progress work to the browser is
-acceptable given it would hold student data on a shared staff machine; and whether
-Foundation level is the right target for a young student assessed well below standard —
-at the moment that level is unreachable in the code. Also worth knowing: the Setup section
-near the top of this README refers to a folder and a file that don't exist in the
-repository, so those instructions don't currently work.
+#### How this was checked
+
+There are no tests in the project, so I built a throwaway harness that drives the real app
+in a browser and captures the exact preview and Word output for **eight scenarios** — each
+document on its own, each of the three pairs, all three together, and a plain-text control.
+Every change was compared against those captures before and after:
+
+- Where a change was meant to alter **nothing**, the output is byte-for-byte identical.
+- Where it was meant to alter **something**, only the intended part differs.
+
+Two details worth knowing, because they took a while to get right. The clock is frozen
+during capture — otherwise every run differs on dates and no comparison means anything. And
+the active tab is pinned, because with two documents ticked the app decides what to include
+partly from which tab is open.
+
+The harness lives **outside this repository**. Nothing here depends on it, and no test
+tooling has been added to `package.json`.
+
+#### What you'll notice as a user
+
+Three changes alter what teachers experience, all deliberately:
+
+1. Exports that previously went through with an empty **Learning** box on the DIP tab now
+   stop and ask for it.
+2. The "Ongoing monitoring of goals" box now sits in its own white card, like every other
+   section.
+3. Messages appear as a banner at the top of the page instead of a pop-up.
+
+Everything else — including every generated document — should look and behave exactly as
+before.
+
+#### Coming next
+
+Two further changes are planned, and are being done on the understanding that WHS staff use
+individually assigned machines rather than shared ones:
+
+- **Working offline.** The app currently loads its fonts from Google's servers, so the
+  desktop app needs internet to look right. The font files will be bundled with the app
+  instead, and a rule added that stops the app contacting anything external at all.
+- **Autosaving work in progress.** Right now, closing the window loses everything not
+  manually saved — the most likely thing to actually cost a teacher their afternoon. A draft
+  will be kept automatically and offered back when the app reopens, with a clear way to
+  discard it.
+
+#### Still open, and needing your call
+
+- **Foundation level.** For a student assessed well below standard, the code can currently
+  never target Foundation level — it stops at Level 1, so a Year 1 or 2 student is given
+  goals pitched above where they're working. Changing it alters the wording of generated
+  goals, so it needs your view on what's pedagogically right rather than mine. I can send a
+  before-and-after sample of the wording whenever you'd like to look at it.
+
+One other thing worth knowing: the **Setup** section near the top of this README tells you
+to `cd IEP-BSP-Generator-App` and copy a file from the parent folder. Neither path exists in
+this repository, so those instructions don't currently work. I've left it alone since it's
+your documentation, but happy to fix it if you'd like.
+
+### Replace pop-up dialogs with on-screen messages
+Every message the app gave you — validation prompts, export errors, save failures — came through a browser pop-up that freezes the page until you click OK. In a meeting that's disruptive, and in the desktop app the dialog can end up hidden behind the window. Messages now appear as a small banner at the top of the page that you can keep working around, colour-coded by kind: errors stay until dismissed, everything else clears itself. They're also announced properly to screen readers. One dialog is deliberately kept — if `src/session-progress.js` fails to load the app is genuinely broken, and that warrants stopping you. Also fixed a related annoyance: cancelling a save dialog was reported as "Export finished with some issues", when cancelling is a deliberate choice. The app now distinguishes cancelled from failed, and confirms when documents save successfully.
 
 ### Remove a leftover step that no longer did anything
 Before building a Word document, the app copied every field's contents back into the page as HTML attributes. That was needed by an older design that built documents by reading the page markup; the current code reads the fields directly, so nothing looked at those attributes any more. The step still ran on every export, doing invisible work. Checked first that nothing reads them — no code reads the attributes back, and no styling depends on them — then removed it. Save and Load Progress still round-trip all 78 fields unchanged, and all eight test documents are byte-for-byte identical.
