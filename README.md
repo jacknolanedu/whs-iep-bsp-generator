@@ -66,6 +66,17 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### The desktop app now keeps itself up to date
+Installed copies of the desktop app now check GitHub for new versions when they
+open and every few hours after that. On Windows the new version downloads in the
+background and installs itself the next time the app opens — teachers are offered
+an immediate restart but can finish what they're doing first, and either way the
+update isn't skippable. Apple doesn't allow self-updating without a paid developer
+certificate, so on Mac the app instead shows a clear "new version available"
+message with a one-click download, then the usual drag-into-Applications step. The
+update check sends only the app's version number to GitHub — never any student
+data — and the browser (open-index.html) version is completely unaffected.
+
 ### Prepare the desktop packaging for automatic installer builds
 The Mac build now produces a proper DMG (the standard drag-to-Applications
 installer) that runs on both Intel and Apple-Silicon Macs, and the Windows
