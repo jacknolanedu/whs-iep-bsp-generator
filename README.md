@@ -153,16 +153,6 @@ Three changes alter what teachers experience, all deliberately:
 Everything else — including every generated document — should look and behave exactly as
 before.
 
-#### Coming next
-
-One further change is planned, on the understanding that WHS staff use individually
-assigned machines rather than shared ones:
-
-- **Autosaving work in progress.** Right now, closing the window loses everything not
-  manually saved — the most likely thing to actually cost a teacher their afternoon. A draft
-  will be kept automatically and offered back when the app reopens, with a clear way to
-  discard it.
-
 #### Still open, and needing your call
 
 - **Foundation level.** For a student assessed well below standard, the code can currently
@@ -175,6 +165,9 @@ One other thing worth knowing: the **Setup** section near the top of this README
 to `cd IEP-BSP-Generator-App` and copy a file from the parent folder. Neither path exists in
 this repository, so those instructions don't currently work. I've left it alone since it's
 your documentation, but happy to fix it if you'd like.
+
+### Keep an automatic draft so work isn't lost
+Closing the window used to lose everything not manually saved with **Save Progress** — the most likely way for a teacher to lose an afternoon's work, particularly when notes are being taken live in a meeting. The app now keeps a draft on the computer as you type, and shows "Draft saved 2:15pm" in the header with a **Discard draft** link beside it. When you next open the app it *offers* the draft back, naming the student and the time, with **Restore** and **Discard** buttons — it never fills the form in on its own, because silently loading the previous student's details would be worse than losing them. The draft clears itself once all your documents have saved successfully. An untouched form doesn't create one.
 
 ### Make the app work without an internet connection
 The app loaded its fonts from Google's servers and a small download helper from another external site. On a laptop with no connection — or a school network that blocks them — the app fell back to a different typeface and looked wrong. The two font families are now bundled in `fonts/` (about 160KB, under the SIL Open Font License, with the licence included), and the download helper has been removed because the app already had a working built-in fallback. A security policy has also been added that blocks the app from contacting anything external at all, so student information cannot leave the machine even if something went wrong elsewhere in the page. Tested with the network switched off: the app looks identical and generates documents normally.

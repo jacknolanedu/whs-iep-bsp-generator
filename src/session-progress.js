@@ -1064,6 +1064,8 @@
           'info'
         );
       } else {
+        /* Everything the teacher asked for is now on disk — the draft has served its purpose. */
+        clearDraft();
         notify(
           steps.length === 1
             ? steps[0].label + ' saved.'
@@ -3157,7 +3159,220 @@
     boot();
   }
 
+  /* ---------------------------------------------------------------------
+   * Autosave
+   *
+   * Closing the window previously lost everything not manually saved — the
+   * most likely way for a teacher to lose an afternoon's work. A draft is now
+   * kept in localStorage and offered back on the next visit.
+   *
+   * It is never restored silently. Reopening the app and finding the previous
+   * student's details already filled in would be worse than losing them, so the
+   * draft is offered and the teacher chooses.
+   * ------------------------------------------------------------------- */
+
+  var DRAFT_KEY = 'generate4u.draft.v1';
+  var DRAFT_DEBOUNCE_MS = 1200;
+  var draftSaveTimer = null;
+  var draftStorageWarned = false;
+  /* JSON of the form's fields before anyone touches it — see writeDraft(). */
+  var pristineFields = null;
+  var PRISTINE_SETTLE_MS = 1500;   // clears the app's own 800ms init work
+
+  function draftStorage() {
+    try {
+      var s = window.localStorage;
+      var probe = '__g4u_probe__';
+      s.setItem(probe, '1');
+      s.removeItem(probe);
+      return s;
+    } catch (err) {
+      return null;   // private browsing, disabled storage, etc.
+    }
+  }
+
+  function formatDraftTime(iso) {
+    try {
+      return new Date(iso).toLocaleTimeString('en-AU', { hour: 'numeric', minute: '2-digit' });
+    } catch (err) {
+      return '';
+    }
+  }
+
+  function setDraftStatus(text) {
+    var wrap = document.getElementById('draftStatus');
+    var label = document.getElementById('draftStatusText');
+    if (!wrap || !label) return;
+    if (!text) { wrap.hidden = true; label.textContent = ''; return; }
+    label.textContent = text;
+    wrap.hidden = false;
+  }
+
+  function readDraft() {
+    var s = draftStorage();
+    if (!s) return null;
+    try {
+      var raw = s.getItem(DRAFT_KEY);
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      return parsed && parsed.payload ? parsed : null;
+    } catch (err) {
+      console.warn('Draft could not be read; discarding it.', err);
+      try { s.removeItem(DRAFT_KEY); } catch (e) { /* nothing more to do */ }
+      return null;
+    }
+  }
+
+  function writeDraft() {
+    var s = draftStorage();
+    if (!s) return;
+    var form = getForm();
+    if (!form) return;
+
+    var payload;
+    try {
+      payload = collectFormProgressState();
+    } catch (err) {
+      console.warn('Draft not saved — could not read the form.', err);
+      return;
+    }
+    if (!payload) return;
+
+    /* Don't create a draft for an untouched form.
+       Checking "is any field non-empty" does not work: the app fills in default
+       achievement levels and generates BSP goal text on its own, so a form nobody
+       has touched still looks full. Compare against a snapshot of the pristine
+       form instead, which stays correct if those defaults ever change. */
+    if (pristineFields === null) {
+      scheduleDraftSave();          // baseline not captured yet — try again shortly
+      return;
+    }
+    if (JSON.stringify(payload.fields || {}) === pristineFields) return;
+
+    var name = getStudentNameFromForm();
+
+    var record = { savedAt: new Date().toISOString(), studentName: name || '', payload: payload };
+    try {
+      s.setItem(DRAFT_KEY, JSON.stringify(record));
+      setDraftStatus('Draft saved ' + formatDraftTime(record.savedAt));
+    } catch (err) {
+      if (!draftStorageWarned) {
+        draftStorageWarned = true;
+        notify('Could not autosave a draft on this computer. Use Save Progress to keep your work.', 'warning');
+      }
+      console.warn('Draft could not be stored.', err);
+    }
+  }
+
+  function clearDraft() {
+    /* Cancel any pending write first — otherwise a debounced save queued before
+       the discard fires afterwards and quietly recreates the draft. */
+    if (draftSaveTimer) {
+      window.clearTimeout(draftSaveTimer);
+      draftSaveTimer = null;
+    }
+    var s = draftStorage();
+    if (s) {
+      try { s.removeItem(DRAFT_KEY); } catch (err) { /* already gone */ }
+    }
+    setDraftStatus('');
+  }
+
+  function scheduleDraftSave() {
+    if (draftSaveTimer) window.clearTimeout(draftSaveTimer);
+    draftSaveTimer = window.setTimeout(function () {
+      draftSaveTimer = null;
+      writeDraft();
+    }, DRAFT_DEBOUNCE_MS);
+  }
+
+  /** Write immediately — used when the page is going away and a timer would not fire. */
+  function flushDraftNow() {
+    if (draftSaveTimer) {
+      window.clearTimeout(draftSaveTimer);
+      draftSaveTimer = null;
+    }
+    writeDraft();
+  }
+
+  function offerDraftRestore() {
+    var draft = readDraft();
+    if (!draft) return;
+
+    var who = draft.studentName ? '"' + draft.studentName + '"' : 'an unnamed student';
+    var when = formatDraftTime(draft.savedAt);
+    notifyWithActions(
+      'Unsaved work for ' + who + ' from ' + when + ' was found on this computer. Restore it?',
+      'info',
+      [
+        {
+          label: 'Restore',
+          onClick: function () {
+            try {
+              applyFormProgressState(draft.payload);
+              requestAnimationFrame(function () {
+                refreshUiAfterLoad();
+                requestAnimationFrame(refreshUiAfterLoad);
+              });
+              setDraftStatus('Draft saved ' + when);
+              notify('Restored your unsaved work.', 'success');
+            } catch (err) {
+              notify('Could not restore the draft: ' + (err && err.message ? err.message : String(err)), 'error');
+            }
+          }
+        },
+        { label: 'Discard', onClick: function () { clearDraft(); } }
+      ]
+    );
+  }
+
+  function notifyWithActions(message, type, actions) {
+    if (typeof window.showAppMessage === 'function') {
+      window.showAppMessage(message, type, actions);
+      return;
+    }
+    /* No message system: fall back to a confirm so the choice is still offered. */
+    if (window.confirm(message) && actions && actions[0]) actions[0].onClick();
+    else if (actions && actions[1]) actions[1].onClick();
+  }
+
+  function initAutosave() {
+    var form = getForm();
+    if (!form) return;
+
+    form.addEventListener('input', scheduleDraftSave);
+    form.addEventListener('change', scheduleDraftSave);
+
+    var discard = document.getElementById('discardDraftBtn');
+    if (discard) {
+      discard.addEventListener('click', function () {
+        clearDraft();
+        notify('Draft discarded.', 'info');
+      });
+    }
+
+    /* Capture the pristine form once the app's own start-up population has run. */
+    window.setTimeout(function () {
+      if (pristineFields !== null) return;
+      try {
+        var baseline = collectFormProgressState();
+        pristineFields = JSON.stringify((baseline && baseline.fields) || {});
+      } catch (err) {
+        pristineFields = '';   // never captured; fall back to always saving
+      }
+    }, PRISTINE_SETTLE_MS);
+
+    /* pagehide fires on close and on navigation, where a pending timer would not. */
+    window.addEventListener('pagehide', flushDraftNow);
+    document.addEventListener('visibilitychange', function () {
+      if (document.visibilityState === 'hidden') flushDraftNow();
+    });
+
+    offerDraftRestore();
+  }
+
   checkRequiredAppGlobals();
+  initAutosave();
 
   window.setTimeout(function () {
     ensureHeaderFullSuiteButton();
@@ -3189,6 +3404,9 @@
     getSecondaryBehaviourOfConcern: getSecondaryBehaviourOfConcern,
     getPrimaryStrengthFocus: getPrimaryStrengthFocus,
     scrollWorkflowToTop: scrollWorkflowToTop,
+    saveDraftNow: flushDraftNow,
+    readDraft: readDraft,
+    clearDraft: clearDraft,
     refreshWorkflowContinueButtons: function () {
       refreshMainTabContinueButtons();
       refreshBspGoalContinueButtons();
