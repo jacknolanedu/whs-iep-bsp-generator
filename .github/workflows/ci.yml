@@ -1,0 +1,35 @@
+name: CI
+
+# Cheap sanity checks on every PR: can Node parse every script, and do the
+# unit tests pass. There is no bundler and no test framework beyond node:test,
+# so this is the whole verification surface.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Syntax-check every script
+        run: |
+          node --check src/main.js
+          node --check src/preload.js
+          node --check src/session-progress.js
+          node --check src/generation-engine.js
+          node --check src/update-core.js
+          node --check src/update-manager.js
+
+      - name: Unit tests
+        run: npm test
