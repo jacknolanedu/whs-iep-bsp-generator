@@ -66,6 +66,9 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Show typed text as text in the on-screen preview
+The preview was built by dropping the form's contents straight into the page, so anything a teacher typed that looked like HTML — angle brackets, ampersands — was treated as formatting instead of being shown as text. A note like "reading < Year 4 level" displayed incorrectly, and pasted content could disturb the page. The preview now shows typed text exactly as entered. The Word export already handled this correctly and is unchanged: all eight test documents are byte-for-byte identical to before, as is the preview for text that contains no special characters.
+
 ### Remove a redundant line that could alter goal text
 When preparing a Word export, the app copied each text box's contents back into the page twice — once correctly, and once in a way that made the browser re-interpret the text as HTML. For most text that makes no difference. But in the SMART goal cards, text containing sequences like `&amp;` or `&lt;` was silently rewritten (`&amp;` became `&`), changing what appeared in the document. The second copy was never needed; the line above it already does the job. Removing it leaves normal exports byte-for-byte identical — verified across eight test cases covering every document combination.
 

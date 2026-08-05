@@ -7697,11 +7697,12 @@
       return '';
     }
 
+    /** Preview only (despite the name) — returns HTML, so it escapes its own input. */
     function formatDipAsBulletsExport(val) {
       if (!val || !val.trim()) return '';
       var items = val.split(/;\s*/).map(function (s) { return s.trim(); }).filter(Boolean);
-      if (items.length <= 1) return val;
-      return '<ul class="dip-bullets">' + items.map(function (i) { return '<li>' + i + '</li>'; }).join('') + '</ul>';
+      if (items.length <= 1) return escapeHtml(val);
+      return '<ul class="dip-bullets">' + items.map(function (i) { return '<li>' + escapeHtml(i) + '</li>'; }).join('') + '</ul>';
     }
 
     function buildMeetingOverviewHtmlBlock(values) {
@@ -7709,8 +7710,8 @@
       var moO = (values.meetingObserved || '').trim();
       if (!moP && !moO) return '';
       return '<strong>Meeting Overview</strong><br>' +
-        (moP ? '<strong>Purpose of this BSP/IEP:</strong><br>' + moP + '<br><br>' : '') +
-        (moO ? '<strong>What is being observed:</strong><br>' + moO + '<br><br>' : '');
+        (moP ? '<strong>Purpose of this BSP/IEP:</strong><br>' + escapeHtml(moP) + '<br><br>' : '') +
+        (moO ? '<strong>What is being observed:</strong><br>' + escapeHtml(moO) + '<br><br>' : '');
     }
 
     function getDipFnOrderFromValues(values) {
@@ -8182,7 +8183,7 @@
 
     function joinList(label, arr) {
       if (arr.length === 0) return '';
-        return `<strong>${label}</strong><br>${arr.map(i=>"• "+i).join("<br>")}`;
+        return `<strong>${escapeHtml(label)}</strong><br>${arr.map(i=>"• "+escapeHtml(i)).join("<br>")}`;
       }
 
       const SV = ' (student voice)';
@@ -8214,11 +8215,11 @@
         var dipBlock = dipDomains.length
           ? '<strong>Adjustments by Domain</strong><br>' +
             dipDomains.map(function (d) {
-              return '<strong>' + d.name + ':</strong> ' + (d.val === '—' ? '—' : (formatDipAsBullets(d.val) || d.val));
+              return '<strong>' + d.name + ':</strong> ' + (d.val === '—' ? '—' : formatDipAsBullets(d.val));
             }).join('<br>')
           : '';
         var dipDomainsForClassroom = dipDomains.map(function (d) {
-          var bullets = d.val === '—' ? '—' : (formatDipAsBullets(d.val) || d.val);
+          var bullets = d.val === '—' ? '—' : formatDipAsBullets(d.val);
           return { name: d.name, bullets: bullets };
         });
         var classroomTableHtml = dipDomainsForClassroom.length
@@ -8237,27 +8238,27 @@
 
       const bsp = `
       <h3>Behaviour Support Plan (BSP)</h3>
-      <strong>Student:</strong> ${bspPreviewValues.name} (Age: ${bspPreviewValues.age}, ${bspPreviewValues.yearLevelLabel})<br>
+      <strong>Student:</strong> ${escapeHtml(bspPreviewValues.name)} (Age: ${escapeHtml(bspPreviewValues.age)}, ${escapeHtml(bspPreviewValues.yearLevelLabel)})<br>
       <strong>Pronouns:</strong> ${getPronounLabel(bspPreviewValues.studentGender)}<br>
-      <strong>Date Created:</strong> ${bspPreviewValues.dateCreated}<br>
-      <strong>Attendees:</strong> ${bspPreviewValues.attendees}<br>
+      <strong>Date Created:</strong> ${escapeHtml(bspPreviewValues.dateCreated)}<br>
+      <strong>Attendees:</strong> ${escapeHtml(bspPreviewValues.attendees)}<br>
       ${buildMeetingOverviewHtmlBlock(bspPreviewValues)}
       <br>
-      <strong>Likes, interests &amp; strengths at school${SV}:</strong> <br>${bspPreviewValues.likesStrengths}<br>
-      <strong>Challenges at School${SV}:</strong><br>${bspPreviewValues.challenges}<br>
-      ${bspPreviewValues.supportsLearningStyles ? `<strong>Supports, learning preferences &amp; what helps (student &amp; school):</strong><br>${bspPreviewValues.supportsLearningStyles}<br>` : ''}
-        ${bspPreviewValues.profileSupportServices ? `<strong>Current internal/external support services:</strong><br>${bspPreviewValues.profileSupportServices}<br>` : ''}
-      ${(bspPreviewValues.parentConcerns || bspPreviewValues.parentKeyInfo || bspPreviewValues.parentLongTermGoals) ? `<strong>Parent Voice</strong><br>${bspPreviewValues.parentConcerns ? `<strong>What is working well, what could be improved (parent/carer):</strong> ${bspPreviewValues.parentConcerns}<br>` : ''}${bspPreviewValues.parentKeyInfo ? `<strong>Key information from parent/carer:</strong> ${bspPreviewValues.parentKeyInfo}<br>` : ''}${bspPreviewValues.parentLongTermGoals ? `<strong>Long-term goals for the student (parent/carer):</strong> ${bspPreviewValues.parentLongTermGoals}<br>` : ''}<br>` : ''}
+      <strong>Likes, interests &amp; strengths at school${SV}:</strong> <br>${escapeHtml(bspPreviewValues.likesStrengths)}<br>
+      <strong>Challenges at School${SV}:</strong><br>${escapeHtml(bspPreviewValues.challenges)}<br>
+      ${bspPreviewValues.supportsLearningStyles ? `<strong>Supports, learning preferences &amp; what helps (student &amp; school):</strong><br>${escapeHtml(bspPreviewValues.supportsLearningStyles)}<br>` : ''}
+        ${bspPreviewValues.profileSupportServices ? `<strong>Current internal/external support services:</strong><br>${escapeHtml(bspPreviewValues.profileSupportServices)}<br>` : ''}
+      ${(bspPreviewValues.parentConcerns || bspPreviewValues.parentKeyInfo || bspPreviewValues.parentLongTermGoals) ? `<strong>Parent Voice</strong><br>${bspPreviewValues.parentConcerns ? `<strong>What is working well, what could be improved (parent/carer):</strong> ${escapeHtml(bspPreviewValues.parentConcerns)}<br>` : ''}${bspPreviewValues.parentKeyInfo ? `<strong>Key information from parent/carer:</strong> ${escapeHtml(bspPreviewValues.parentKeyInfo)}<br>` : ''}${bspPreviewValues.parentLongTermGoals ? `<strong>Long-term goals for the student (parent/carer):</strong> ${escapeHtml(bspPreviewValues.parentLongTermGoals)}<br>` : ''}<br>` : ''}
       ${joinList("Environments for Success" + SV + ":", bspPreviewValues.env)}
       <br>${bspPreviewValues.behavioursPositive.length ? joinList("Behaviours demonstrated well:", bspPreviewValues.behavioursPositive) : '<strong>Behaviours demonstrated well:</strong><br>—<br>'}
       <br>${bspPreviewValues.behaviours.length ? joinList("Behaviours of concern:", bspPreviewValues.behaviours) : '<strong>Behaviours of concern:</strong><br>—<br>'}
       <br>
-      <strong>Triggers/Warning Signs${SV}:</strong> <br>${bspPreviewValues.triggers}<br>
-      <strong>Functional behaviour:</strong> <br>${bspPreviewValues.functionalBehaviour}<br>
+      <strong>Triggers/Warning Signs${SV}:</strong> <br>${escapeHtml(bspPreviewValues.triggers)}<br>
+      <strong>Functional behaviour:</strong> <br>${escapeHtml(bspPreviewValues.functionalBehaviour)}<br>
         <br>
       ${joinList("Current Interventions:", bspPreviewValues.interventions)}
       <br>
-      <strong>PBIS/SWPBIS interventions (PBIS World):</strong><br>${bspPreviewValues.pbisInterventions.length ? bspPreviewValues.pbisInterventions.map(function (p) { return '• ' + p; }).join('<br>') : '—'}<br>
+      <strong>PBIS/SWPBIS interventions (PBIS World):</strong><br>${bspPreviewValues.pbisInterventions.length ? bspPreviewValues.pbisInterventions.map(function (p) { return '• ' + escapeHtml(p); }).join('<br>') : '—'}<br>
         <br>
       <strong>SMART Goals:</strong>
         <div style="margin-top:0.35rem">${bspPreviewValues.bspGoals.map((g,i)=>formatSmartGoal(g,i)).join('')}</div>
@@ -8270,27 +8271,27 @@
 
     const iep = `
       <h3>Individual Education Plan (IEP)</h3>
-        <strong>Student:</strong> ${iepPreviewValues.name} (${iepPreviewValues.yearLevelLabel})<br>
+        <strong>Student:</strong> ${escapeHtml(iepPreviewValues.name)} (${escapeHtml(iepPreviewValues.yearLevelLabel)})<br>
         <strong>Pronouns:</strong> ${getPronounLabel(iepPreviewValues.studentGender)}<br>
-      <strong>Date of IEP Meeting:</strong> ${iepPreviewValues.iepDate}<br>
-      <strong>Lead Contact:</strong> ${iepPreviewValues.leadContact}<br>
+      <strong>Date of IEP Meeting:</strong> ${escapeHtml(iepPreviewValues.iepDate)}<br>
+      <strong>Lead Contact:</strong> ${escapeHtml(iepPreviewValues.leadContact)}<br>
         ${buildMeetingOverviewHtmlBlock(iepPreviewValues)}
         <br>
         ${allThreeDocsSelected ? learningLevelsHtmlBlock : ''}
         <strong>Student Profile</strong><br>
-        <strong>Likes, interests &amp; strengths at school${SV}:</strong> ${iepPreviewValues.likesStrengths}<br>
-        <strong>Challenges at School${SV}:</strong> ${iepPreviewValues.challenges}<br>
-        <strong>Environments for Success${SV}:</strong> ${iepPreviewValues.env.length ? '<br>' + iepPreviewValues.env.map(e => '• ' + e).join('<br>') + '<br>' : '—<br>'}
-        <strong>Supports, learning preferences &amp; what helps (student &amp; school):</strong> ${iepPreviewValues.supportsLearningStyles || '—'}<br>
-        ${(iepPreviewValues.parentConcerns || iepPreviewValues.parentKeyInfo || iepPreviewValues.parentLongTermGoals) ? `<strong>Parent Voice</strong><br>${iepPreviewValues.parentConcerns ? `What is working well, what could be improved (parent/carer): ${iepPreviewValues.parentConcerns}<br>` : ''}${iepPreviewValues.parentKeyInfo ? `Key information from parent/carer: ${iepPreviewValues.parentKeyInfo}<br>` : ''}${iepPreviewValues.parentLongTermGoals ? `Long-term goals for the student (parent/carer): ${iepPreviewValues.parentLongTermGoals}<br>` : ''}<br>` : ''}
-        <strong>Internal/External Support Services:</strong> ${iepPreviewValues.iepSupports || iepPreviewValues.profileSupportServices || '—'}<br>
-        <strong>Functional Needs:</strong> ${iepPreviewValues.fnNeeds.length ? iepPreviewValues.fnNeeds.join(", ") : "None selected"}${iepPreviewValues.functionalNeedsOther ? `<br><strong>Other functional needs:</strong> ${iepPreviewValues.functionalNeedsOther}` : ""}<br>
-        ${iepPreviewValues.functionalNeedsElaboration ? `<strong>Functional needs elaboration:</strong><br>${iepPreviewValues.functionalNeedsElaboration}<br>` : ''}
+        <strong>Likes, interests &amp; strengths at school${SV}:</strong> ${escapeHtml(iepPreviewValues.likesStrengths)}<br>
+        <strong>Challenges at School${SV}:</strong> ${escapeHtml(iepPreviewValues.challenges)}<br>
+        <strong>Environments for Success${SV}:</strong> ${iepPreviewValues.env.length ? '<br>' + iepPreviewValues.env.map(e => '• ' + escapeHtml(e)).join('<br>') + '<br>' : '—<br>'}
+        <strong>Supports, learning preferences &amp; what helps (student &amp; school):</strong> ${escapeHtml(iepPreviewValues.supportsLearningStyles) || '—'}<br>
+        ${(iepPreviewValues.parentConcerns || iepPreviewValues.parentKeyInfo || iepPreviewValues.parentLongTermGoals) ? `<strong>Parent Voice</strong><br>${iepPreviewValues.parentConcerns ? `What is working well, what could be improved (parent/carer): ${escapeHtml(iepPreviewValues.parentConcerns)}<br>` : ''}${iepPreviewValues.parentKeyInfo ? `Key information from parent/carer: ${escapeHtml(iepPreviewValues.parentKeyInfo)}<br>` : ''}${iepPreviewValues.parentLongTermGoals ? `Long-term goals for the student (parent/carer): ${escapeHtml(iepPreviewValues.parentLongTermGoals)}<br>` : ''}<br>` : ''}
+        <strong>Internal/External Support Services:</strong> ${escapeHtml(iepPreviewValues.iepSupports || iepPreviewValues.profileSupportServices) || '—'}<br>
+        <strong>Functional Needs:</strong> ${iepPreviewValues.fnNeeds.length ? iepPreviewValues.fnNeeds.map(escapeHtml).join(", ") : "None selected"}${iepPreviewValues.functionalNeedsOther ? `<br><strong>Other functional needs:</strong> ${escapeHtml(iepPreviewValues.functionalNeedsOther)}` : ""}<br>
+        ${iepPreviewValues.functionalNeedsElaboration ? `<strong>Functional needs elaboration:</strong><br>${escapeHtml(iepPreviewValues.functionalNeedsElaboration)}<br>` : ''}
       ${allThreeDocsSelected ? '' : learningLevelsHtmlBlock}
         <strong>SMART Goals:</strong>
         <div style="margin-top:0.35rem">${iepGoalsHtml || '—'}</div>
         <br>${iepDipPreview.dipBlock}
-        <br><strong>Ongoing Monitoring of Goals:</strong><br>${iepPreviewValues.monitoring}<br>
+        <br><strong>Ongoing Monitoring of Goals:</strong><br>${escapeHtml(iepPreviewValues.monitoring)}<br>
       <hr style="margin:1.5em 0">
     `;
 
