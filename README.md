@@ -45,16 +45,21 @@ Electron Forge desktop wrapper for the single-page IEP/BSP/Adjustments generator
    time you open the app.
 
 > **School network note:** if the download is blocked at school, ask IT to allow
-> `github.com`, or download at home. IT can verify the app themselves — all of
-> its code is public on this page.
+> `github.com`, or download at home. On Windows, automatic updates also need
+> `update.electronjs.org`, so it's worth asking IT about both at once. IT can
+> verify the app themselves — all of its code is public on this page.
 
 ### Your privacy and student data
 
 - Everything you type **stays on your computer**. Documents and progress files
-  save locally; nothing is uploaded anywhere.
-- The desktop app's only internet use is a version check against this GitHub
-  page (it sends the app's version number, nothing else). The browser version
-  makes no internet connections at all.
+  save locally; nothing you write is ever uploaded anywhere.
+- The desktop app's only internet use is checking whether a newer version exists.
+  On a Mac it asks GitHub for the latest version number. On Windows it asks
+  `update.electronjs.org` — a free service run by the Electron project — which
+  looks up this page's latest release; that request includes the app's own
+  version number and whether the computer is 64-bit, and nothing else.
+  **No student information is sent, on either system.**
+- The browser version makes no internet connections at all.
 - Your in-progress form is autosaved on your computer and offered back if the
   app closes.
 
