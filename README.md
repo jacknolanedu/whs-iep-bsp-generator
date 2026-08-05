@@ -66,6 +66,61 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Summary of this round of work
+
+Jack, here's the short version of what I've done and why, so you can decide what you're
+comfortable with. Nine changes, grouped by what they're actually for.
+
+**Two bugs that were quietly producing incomplete documents.** These are the ones I'd
+look at first, because they affected what ended up in a student's file:
+
+- Ticking **two** documents (say BSP and Classroom Adjustments) made the app treat one of
+  them as switched off. A BSP generated that way came out missing five whole sections —
+  Behaviours Demonstrated Well, Behaviours of Concern, Current Interventions, Functional
+  Behaviour and PBIS Interventions. Ticking BSP on its own gave the complete document, so
+  the same student could get two different plans depending on the tick-boxes, with no
+  warning either way.
+- A missing `<div>` tag caused the browser to close the form early, which put the whole
+  DIP tab outside it. The required **Learning** box was therefore never checked — a
+  Classroom Adjustments document could be generated with it completely empty.
+
+**Three things that reduce risk around student information.** The app holds names,
+behaviours, diagnoses and family circumstances, so these felt worth tightening:
+
+- Text typed into the form is now displayed as text in the preview rather than being
+  interpreted as page formatting.
+- A dormant hook that could have sent student details to an external AI service has been
+  removed. It was switched off, but it sat in a public repository with a comment inviting
+  someone to add an API key. **The app now makes no network requests of any kind.**
+- The desktop window is now pinned to the app's own page and can't be navigated elsewhere.
+
+**Three changes that make future mistakes visible** rather than silent: a warning if a new
+form field would be missed by the export, a start-up check that the two code files still
+agree on function names, and removal of a redundant line that could rewrite text in the
+goal cards. Plus one housekeeping fix to `package-lock.json`.
+
+**How this was checked.** There are no tests in the project, so I built a throwaway test
+harness that drives the real app in a browser and captures the exact preview and Word
+output for eight scenarios — each document on its own, each pair, all three together, and
+a plain-text control. Every change was compared against those captured outputs before and
+after. Where a change was meant to alter nothing, the output is byte-for-byte identical;
+where it was meant to alter something, only the intended part differs. The harness isn't
+part of this repository — it lives outside it, so nothing here depends on it.
+
+**Behaviour you'll notice.** Two changes alter what teachers experience, deliberately:
+exports that previously went through with an empty **Learning** box will now stop and ask
+for it, and the "Ongoing monitoring of goals" box now sits in its own white card like every
+other section. Everything else should look and behave exactly as before.
+
+**Still open, and needing your call before I go further:** whether to self-host the Google
+Fonts files or drop them (it affects both appearance and whether the desktop app needs
+internet); whether saving an automatic draft of in-progress work to the browser is
+acceptable given it would hold student data on a shared staff machine; and whether
+Foundation level is the right target for a young student assessed well below standard —
+at the moment that level is unreachable in the code. Also worth knowing: the Setup section
+near the top of this README refers to a folder and a file that don't exist in the
+repository, so those instructions don't currently work.
+
 ### Report when the two code files fall out of step
 `index.html` and `src/session-progress.js` are connected only by function names: the second file looks up around 46 functions defined in the first, and every lookup quietly does nothing if the name isn't found. So renaming a function in `index.html` doesn't produce an error — it just makes part of Save/Load Progress or the Full Suite export stop working, with nothing to indicate why. The expected names are now listed in one place and checked when the app starts, printing a clear message naming anything missing. A healthy start-up stays silent; add `?debug=1` to the address to confirm the check ran.
 
