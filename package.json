@@ -18,7 +18,7 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "test": "node --test test/*.test.js"
+    "test": "node --test"
   },
   "keywords": [
     "iep",

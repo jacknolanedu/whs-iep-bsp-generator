@@ -124,6 +124,13 @@ function fetchLatestRelease() {
       }
     }, (res) => {
       if (res.statusCode !== 200) {
+        // 403/429 here means the shared school IP hit GitHub's anonymous rate
+        // limit — worth distinguishing from "there is genuinely no release".
+        if (res.statusCode === 403 || res.statusCode === 429) {
+          console.warn('[update] GitHub rate limit reached; will retry at the next check');
+        } else if (res.statusCode !== 404) {
+          console.warn('[update] update check got HTTP ' + res.statusCode);
+        }
         res.resume();
         resolve(null);
         return;
