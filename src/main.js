@@ -9,6 +9,7 @@ const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
  */
 if (require('electron-squirrel-startup')) {
   app.quit();
+  return; // a pre-ready quit still lets whenReady fire — nothing below may run
 }
 
 /** @type {BrowserWindow | null} */

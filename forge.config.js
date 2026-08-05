@@ -2,7 +2,13 @@ module.exports = {
   packagerConfig: {
     asar: true,
     name: 'WHS IEP BSP Generator',
-    executableName: 'whs-iep-bsp-generator'
+    executableName: 'whs-iep-bsp-generator',
+    // Keep working files out of the shipped app: notes, plans, and tests are
+    // not part of the product, and CLAUDE.md documents known weaknesses.
+    ignore: [
+      /^\/(test|\.github|\.claude|\.superpowers|out)($|\/)/,
+      /^\/(CLAUDE|RELEASING)\.md$/
+    ]
   },
   rebuildConfig: {},
   makers: [
