@@ -12,6 +12,8 @@ if (require('electron-squirrel-startup')) {
   return; // a pre-ready quit still lets whenReady fire — nothing below may run
 }
 
+const { initUpdateManager } = require('./update-manager');
+
 /** @type {BrowserWindow | null} */
 let mainWindow = null;
 
@@ -102,6 +104,7 @@ function createMainWindow() {
 
 app.whenReady().then(() => {
   createMainWindow();
+  initUpdateManager();
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) {
