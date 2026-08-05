@@ -121,6 +121,9 @@ at the moment that level is unreachable in the code. Also worth knowing: the Set
 near the top of this README refers to a folder and a file that don't exist in the
 repository, so those instructions don't currently work.
 
+### Replace pop-up dialogs with on-screen messages
+Every message the app gave you — validation prompts, export errors, save failures — came through a browser pop-up that freezes the page until you click OK. In a meeting that's disruptive, and in the desktop app the dialog can end up hidden behind the window. Messages now appear as a small banner at the top of the page that you can keep working around, colour-coded by kind: errors stay until dismissed, everything else clears itself. They're also announced properly to screen readers. One dialog is deliberately kept — if `src/session-progress.js` fails to load the app is genuinely broken, and that warrants stopping you. Also fixed a related annoyance: cancelling a save dialog was reported as "Export finished with some issues", when cancelling is a deliberate choice. The app now distinguishes cancelled from failed, and confirms when documents save successfully.
+
 ### Remove a leftover step that no longer did anything
 Before building a Word document, the app copied every field's contents back into the page as HTML attributes. That was needed by an older design that built documents by reading the page markup; the current code reads the fields directly, so nothing looked at those attributes any more. The step still ran on every export, doing invisible work. Checked first that nothing reads them — no code reads the attributes back, and no styling depends on them — then removed it. Save and Load Progress still round-trip all 78 fields unchanged, and all eight test documents are byte-for-byte identical.
 
