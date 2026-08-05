@@ -29,6 +29,30 @@ How a new version reaches teachers. The robots build; a human publishes.
 5. **Spot-check**: download the DMG and the Setup exe from the published
    release and open each once if you can.
 
+## Before the very first release from this pipeline
+
+Do these once, in this order. They cannot be undone later.
+
+1. **Delete the two stale drafts.** They were built by hand before this
+   pipeline existed and their files use the old installer naming. Drafts are
+   invisible to users and to auto-update, so deleting them costs nothing:
+   ```bash
+   gh release delete v1.1.7 --repo jacknolanedu/whs-iep-bsp-generator --yes
+   gh release delete v1.0.1 --repo jacknolanedu/whs-iep-bsp-generator --yes
+   ```
+   If a draft tagged `v1.1.7` is left in place and someone tags `v1.1.7`, the
+   build reuses that draft and keeps its old files — the publisher never
+   overwrites an existing asset — and Windows updates would then read a stale
+   package. Publishing that is not reversible.
+2. **The first tag must be higher than `v1.1.7`.** Use `v1.2.0`. Bump
+   `package.json` to match (`npm pkg set version=1.2.0` then
+   `npm install --package-lock-only`) — the workflow refuses to build if the
+   tag and `package.json` disagree.
+3. **Check the repo's Actions settings**: Actions must be enabled, and
+   workflow permissions must allow writing (Settings → Actions → General →
+   Workflow permissions → "Read and write"). Otherwise the build runs for
+   ~15 minutes and then fails at the upload step with a 403.
+
 ## Rules
 
 - The tag must exactly match `package.json`'s version (`v1.2.0` ↔ `1.2.0`);

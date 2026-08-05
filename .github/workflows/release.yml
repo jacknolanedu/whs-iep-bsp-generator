@@ -25,6 +25,8 @@ jobs:
     strategy:
       # Serialise the two builds so both append their files to ONE draft
       # release instead of racing to create two.
+      # Also relies on fail-fast (GitHub's default): if the first job fails the
+      # second never starts, so a failure cannot leave a second stray draft.
       max-parallel: 1
       matrix:
         include:
