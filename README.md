@@ -155,12 +155,9 @@ before.
 
 #### Coming next
 
-Two further changes are planned, and are being done on the understanding that WHS staff use
-individually assigned machines rather than shared ones:
+One further change is planned, on the understanding that WHS staff use individually
+assigned machines rather than shared ones:
 
-- **Working offline.** The app currently loads its fonts from Google's servers, so the
-  desktop app needs internet to look right. The font files will be bundled with the app
-  instead, and a rule added that stops the app contacting anything external at all.
 - **Autosaving work in progress.** Right now, closing the window loses everything not
   manually saved — the most likely thing to actually cost a teacher their afternoon. A draft
   will be kept automatically and offered back when the app reopens, with a clear way to
@@ -178,6 +175,9 @@ One other thing worth knowing: the **Setup** section near the top of this README
 to `cd IEP-BSP-Generator-App` and copy a file from the parent folder. Neither path exists in
 this repository, so those instructions don't currently work. I've left it alone since it's
 your documentation, but happy to fix it if you'd like.
+
+### Make the app work without an internet connection
+The app loaded its fonts from Google's servers and a small download helper from another external site. On a laptop with no connection — or a school network that blocks them — the app fell back to a different typeface and looked wrong. The two font families are now bundled in `fonts/` (about 160KB, under the SIL Open Font License, with the licence included), and the download helper has been removed because the app already had a working built-in fallback. A security policy has also been added that blocks the app from contacting anything external at all, so student information cannot leave the machine even if something went wrong elsewhere in the page. Tested with the network switched off: the app looks identical and generates documents normally.
 
 ### Replace pop-up dialogs with on-screen messages
 Every message the app gave you — validation prompts, export errors, save failures — came through a browser pop-up that freezes the page until you click OK. In a meeting that's disruptive, and in the desktop app the dialog can end up hidden behind the window. Messages now appear as a small banner at the top of the page that you can keep working around, colour-coded by kind: errors stay until dismissed, everything else clears itself. They're also announced properly to screen readers. One dialog is deliberately kept — if `src/session-progress.js` fails to load the app is genuinely broken, and that warrants stopping you. Also fixed a related annoyance: cancelling a save dialog was reported as "Export finished with some issues", when cancelling is a deliberate choice. The app now distinguishes cancelled from failed, and confirms when documents save successfully.
