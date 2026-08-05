@@ -30,8 +30,7 @@
     'prepareFormForWordExport', 'readSmartGoalCardFromArea', 'renderFormValidationSummary',
     'replaceGenericStudentTerms', 'resolveModeFromActiveTab', 'sanitizeDownloadFilename',
     'sanitizeExportBasename', 'saveWordDocumentToDisk', 'setDocumentSelection',
-    'switchIepGoalTab', 'switchTab', 'syncFormControlsToDomAttributes',
-    'syncGoalCardToHiddenField', 'syncIepGoalLevelFromDashboard', 'syncSelectedModeFromDocuments',
+    'switchIepGoalTab', 'switchTab', 'syncGoalCardToHiddenField', 'syncIepGoalLevelFromDashboard', 'syncSelectedModeFromDocuments',
     'syncStudentPersonalizationFromForm', 'triggerBlobDownload', 'updateDocumentVisibility',
     'updateFormFieldDisabledState', 'updateFormRequiredFields', 'updateLaunchpadBadge',
     'validateBeforeGenerate'
@@ -198,9 +197,6 @@
     var form = getForm();
     if (!form) return;
 
-    if (typeof window.syncFormControlsToDomAttributes === 'function') {
-      window.syncFormControlsToDomAttributes(form);
-    }
     if (typeof window.syncStudentPersonalizationFromForm === 'function') {
       window.syncStudentPersonalizationFromForm();
     }
@@ -463,7 +459,6 @@
   }
 
   function refreshUiAfterLoad() {
-    callApp('syncFormControlsToDomAttributes', getForm());
     callApp('syncStudentPersonalizationFromForm');
     callApp('updateDocumentVisibility');
     callApp('updateFormRequiredFields');

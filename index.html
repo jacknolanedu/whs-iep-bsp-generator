@@ -6784,51 +6784,9 @@
     var genProgressManualUrls = [];
     var wordExportInFlight = { iep: false, bsp: false, classroom: false };
 
-    /**
-     * Persist live control values into the DOM (value/checked/selected/textarea body)
-     * so export and hidden-field sync capture everything the user typed.
-     */
-    function syncFormControlsToDomAttributes(form, modeOpt) {
-      if (!form) return;
-      modeOpt = modeOpt || getSelectedMode();
-
-      function syncElement(el) {
-        if (!el || el.type === 'hidden') return;
-        if (el.classList && el.classList.contains('iep-goal-generated-store')) return;
-        if (el.getAttribute && el.getAttribute('aria-hidden') === 'true') return;
-
-        var tag = el.tagName ? el.tagName.toLowerCase() : '';
-        if (tag === 'textarea') {
-          var tv = el.value != null ? String(el.value) : '';
-          el.textContent = tv;
-          return;
-        }
-        if (el.type === 'checkbox' || el.type === 'radio') {
-          if (el.checked) el.setAttribute('checked', 'checked');
-          else el.removeAttribute('checked');
-          return;
-        }
-        if (tag === 'select') {
-          Array.prototype.forEach.call(el.options || [], function (opt) {
-            if (opt.selected) opt.setAttribute('selected', 'selected');
-            else opt.removeAttribute('selected');
-          });
-          el.setAttribute('value', el.value != null ? String(el.value) : '');
-          return;
-        }
-        if (el.type !== 'button' && el.type !== 'submit' && el.type !== 'reset' && el.type !== 'file') {
-          el.setAttribute('value', el.value != null ? String(el.value) : '');
-        }
-      }
-
-      /* Deep fix: sync every control so values typed on inactive tabs are captured for export */
-      form.querySelectorAll('input, textarea, select').forEach(syncElement);
-    }
-
     function prepareFormForWordExport(form, modeOpt) {
       if (!form) return;
       modeOpt = modeOpt || getSelectedMode();
-      syncFormControlsToDomAttributes(form);
       syncStudentPersonalizationFromForm();
       if (modeOpt === 'IEP') {
         IEP_GOAL_AREAS.forEach(function (area) {
