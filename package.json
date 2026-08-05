@@ -34,5 +34,8 @@
     "@electron-forge/plugin-auto-unpack-natives": "^7.8.1",
     "@electron-forge/publisher-github": "^7.11.2",
     "electron": "^35.1.5"
+  },
+  "dependencies": {
+    "electron-squirrel-startup": "^1.0.1"
   }
 }
