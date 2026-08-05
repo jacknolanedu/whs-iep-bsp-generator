@@ -2001,6 +2001,51 @@
       font-family: inherit;
     }
     .app-message__close:hover { color: var(--text); }
+    .app-message__actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.6rem;
+    }
+    .app-message__action {
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 0.35rem 0.8rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+    }
+    .app-message__action:hover { background: var(--card); border-color: var(--text-muted); }
+    .app-message__action:first-child {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: #fff;
+    }
+    .app-message__action:first-child:hover { background: var(--primary-light); }
+
+    /* —— Draft status (autosave) —— */
+    .draft-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+    .draft-status[hidden] { display: none; }
+    .draft-status__discard {
+      font-family: inherit;
+      font-size: 0.78rem;
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      text-decoration: underline;
+      cursor: pointer;
+      padding: 0;
+    }
+    .draft-status__discard:hover { color: #c0392b; }
     @keyframes appMessageIn {
       from { opacity: 0; transform: translateY(-8px); }
       to   { opacity: 1; transform: translateY(0); }
@@ -2066,6 +2111,10 @@
         <p class="subtitle">Complete the form across tabs, then use <strong>Export Full Suite</strong> to download your Word documents.</p>
       </div>
       <div class="progress-controls" role="group" aria-label="Local progress and export">
+        <span class="draft-status no-print" id="draftStatus" hidden role="status" aria-live="polite">
+          <span id="draftStatusText"></span>
+          <button type="button" class="draft-status__discard" id="discardDraftBtn">Discard draft</button>
+        </span>
         <button type="button" class="btn-save-progress" id="saveProgressBtn">Save Progress</button>
         <button type="button" class="btn-load-progress" id="loadProgressBtn">Load Progress</button>
         <button
@@ -5475,9 +5524,12 @@
      *
      * @param {string} message
      * @param {'error'|'warning'|'success'|'info'} [type='info']
+     * @param {Array<{label: string, onClick: Function}>} [actions]
+     *        Buttons shown inside the message. A message with actions never
+     *        auto-dismisses — it is asking a question and must wait for an answer.
      * @returns {HTMLElement|null} the message element, for tests
      */
-    function showAppMessage(message, type) {
+    function showAppMessage(message, type, actions) {
       var text = String(message == null ? '' : message).trim();
       if (!text) return null;
       type = type || 'info';
@@ -5516,10 +5568,29 @@
       close.addEventListener('click', dismiss);
 
       el.appendChild(body);
+
+      if (actions && actions.length) {
+        var row = document.createElement('div');
+        row.className = 'app-message__actions';
+        actions.forEach(function (action) {
+          var btn = document.createElement('button');
+          btn.type = 'button';
+          btn.className = 'app-message__action';
+          btn.textContent = action.label;
+          btn.addEventListener('click', function () {
+            dismiss();
+            if (typeof action.onClick === 'function') action.onClick();
+          });
+          row.appendChild(btn);
+        });
+        body.appendChild(row);
+      }
+
       el.appendChild(close);
       stack.appendChild(el);
 
-      if (type !== 'error') {
+      /* A message that asks a question must wait for an answer. */
+      if (type !== 'error' && !(actions && actions.length)) {
         window.setTimeout(dismiss, type === 'success' ? 4000 : 6000);
       }
       return el;
