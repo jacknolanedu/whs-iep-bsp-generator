@@ -82,26 +82,32 @@ function startWindowsAutoUpdate() {
   setInterval(() => autoUpdater.checkForUpdates(), CHECK_INTERVAL_MS);
 }
 
-function promptWindowsRestart() {
+async function promptWindowsRestart() {
   if (updateDialogOpen) return;
   updateDialogOpen = true;
-  showUpdateDialog({
-    type: 'info',
-    title: 'Update ready',
-    message: 'A new version of Generate4U is ready.',
-    detail: 'Your work is kept as an autosaved draft and will be offered back after the restart. ' +
-      'If you choose "Next time I open the app", the update is applied automatically then instead.',
-    buttons: ['Restart and update now', 'Next time I open the app'],
-    defaultId: 0,
-    cancelId: 1
-  }).then((result) => {
+  let result;
+  try {
+    result = await showUpdateDialog({
+      type: 'info',
+      title: 'Update ready',
+      message: 'A new version of Generate4U is ready.',
+      detail: 'Your work is kept as an autosaved draft and will be offered back after the restart. ' +
+        'If you choose "Next time I open the app", the update is applied automatically then instead.',
+      buttons: ['Restart and update now', 'Next time I open the app'],
+      defaultId: 0,
+      cancelId: 1
+    });
+  } catch (err) {
+    console.warn('[update] restart prompt failed:', err.message);
+    return;
+  } finally {
     updateDialogOpen = false;
-    if (result.response === 0) {
-      autoUpdater.quitAndInstall();
-    }
-    // Either way the update is already downloaded: Squirrel launches the new
-    // version on the next start, so the update cannot be skipped.
-  });
+  }
+  if (result.response === 0) {
+    autoUpdater.quitAndInstall();
+  }
+  // Either way the update is already downloaded: Squirrel launches the new
+  // version on the next start, so the update cannot be skipped.
 }
 
 /**
@@ -135,6 +141,19 @@ function fetchLatestRelease() {
   });
 }
 
+/**
+ * Only ever hand an https://github.com/ link to the OS. dmgUrl comes from
+ * remote JSON — GitHub generates it, but a tampered response must not be able
+ * to feed shell.openExternal a file:, javascript:, or SMB target.
+ * @param {string | null} dmgUrl
+ * @returns {string}
+ */
+function safeDownloadUrl(dmgUrl) {
+  return (typeof dmgUrl === 'string' && dmgUrl.startsWith('https://github.com/'))
+    ? dmgUrl
+    : LATEST_RELEASE_PAGE;
+}
+
 async function checkMacOnce() {
   const latest = await fetchLatestRelease();
   // Logged, not silent: "no dialog appeared" must be distinguishable from
@@ -150,24 +169,31 @@ async function checkMacOnce() {
   }
   if (updateDialogOpen) return;
   updateDialogOpen = true;
-  const result = await showUpdateDialog({
-    type: 'info',
-    title: 'Update available',
-    message: 'Generate4U ' + latest.version + ' is available (you have ' + app.getVersion() + ').',
-    detail: 'Please update to keep documents consistent across the school.\n\n' +
-      'The new version downloads in your browser. Open it, drag ' +
-      '"WHS IEP BSP Generator" into Applications and choose Replace, then quit ' +
-      'this app and open it again.\n\n' +
-      'Your Mac will show its "unverified developer" warning again — that is normal ' +
-      'for this app; the install instructions on the download page explain it. ' +
-      'Your work is kept as an autosaved draft.',
-    buttons: ['Download the update', 'Remind me later'],
-    defaultId: 0,
-    cancelId: 1
-  });
-  updateDialogOpen = false;
+  let result;
+  try {
+    result = await showUpdateDialog({
+      type: 'info',
+      title: 'Update available',
+      message: 'Generate4U ' + latest.version + ' is available (you have ' + app.getVersion() + ').',
+      detail: 'Please update to keep documents consistent across the school.\n\n' +
+        'The new version downloads in your browser. Open it, drag ' +
+        '"WHS IEP BSP Generator" into Applications and choose Replace, then quit ' +
+        'this app and open it again.\n\n' +
+        'Your Mac will show its "unverified developer" warning again — that is normal ' +
+        'for this app; the install instructions on the download page explain it. ' +
+        'Your work is kept as an autosaved draft.',
+      buttons: ['Download the update', 'Remind me later'],
+      defaultId: 0,
+      cancelId: 1
+    });
+  } catch (err) {
+    console.warn('[update] update dialog failed:', err.message);
+    return;
+  } finally {
+    updateDialogOpen = false;
+  }
   if (result.response === 0) {
-    shell.openExternal(latest.dmgUrl || LATEST_RELEASE_PAGE);
+    shell.openExternal(safeDownloadUrl(latest.dmgUrl));
   }
 }
 
