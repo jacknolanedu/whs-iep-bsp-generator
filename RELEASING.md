@@ -1,6 +1,10 @@
 # Releasing Generate4U
 
-How a new version reaches teachers. The robots build; a human publishes.
+> **Tagging publishes immediately.** There is no draft step and no second
+> chance: the moment the build finishes, the release is live and installed
+> apps will start updating to it. Only tag a commit that is ready for teachers.
+
+How a new version reaches teachers. The robots build and publish it automatically.
 
 ## Normal release, step by step
 
@@ -18,14 +22,18 @@ How a new version reaches teachers. The robots build; a human publishes.
    git push origin v1.2.0
    ```
 3. **Watch the build**: GitHub → Actions → "Release". Two jobs run in
-   sequence (Mac, then Windows), about 10–15 minutes total. They attach to
-   one **draft** release: a `.dmg` and `.zip` (Mac), and
-   `Generate4U-Setup.exe` + a `.nupkg` + a `RELEASES` file (Windows —
-   all three are required; the last two are what auto-update reads).
-4. **Publish the draft**: Releases page → the draft → add plain-English
-   release notes teachers can read → **Publish release**. This is the
-   go-live moment: installed apps see the new version at their next check
-   (on launch and every 4 hours).
+   sequence (Mac, then Windows), about 10–15 minutes total. The release is
+   created and published automatically as soon as the first job uploads its
+   assets — there's no draft and no separate publish step. By the end it
+   holds a `.dmg` and `.zip` (Mac), and `Generate4U-Setup.exe` + a `.nupkg` +
+   a `RELEASES` file (Windows — all three are required; the last two are what
+   auto-update reads).
+4. **Verify the release**: Releases page → the new release → check every
+   expected asset is attached (the five files listed above) → add
+   plain-English release notes teachers can read. The release already went
+   live the moment the build finished, so this is a check, not a go-live
+   step — installed apps may already be seeing the new version at their next
+   check (on launch and every 4 hours).
 5. **Spot-check**: download the DMG and the Setup exe from the published
    release and open each once if you can.
 
@@ -60,19 +68,24 @@ Do these once, in this order. They cannot be undone later.
 - Never re-use a version number teachers may already have.
 - Never delete a published release that auto-update has served — Windows
   updates read the `RELEASES` chain.
-- Publishing the draft is the release decision. Per the repo's working
-  agreement, that's Jack's call unless he's delegated it.
+- Pushing the tag is the release decision — the build publishes automatically
+  the moment it finishes, with no separate approval step. Per the repo's
+  working agreement, only push a release tag when that's Jack's call, unless
+  he's delegated it.
 
 ## If the build fails
 
-**Delete the draft release first — this is mandatory, not tidying.** The
-publisher never overwrites an asset that already exists under the same name,
-so re-running a build over a half-filled draft silently keeps the *broken*
-files and uploads only what's missing. Drafts are invisible to users and to
-auto-update, so deleting one costs nothing.
+**Delete the release first — this is mandatory, not tidying.** The publisher
+never overwrites an asset that already exists under the same name, so
+re-running a build over a half-finished release silently keeps the *broken*
+files and uploads only what's missing. This is now a **published** release,
+not an invisible draft — it went live and started serving auto-update the
+moment the first job finished, so deleting it is more disruptive than it used
+to be. If anyone may already have downloaded it, don't reuse the tag: ship a
+new patch version instead.
 
 1. Fix the problem on a branch → PR → merge.
-2. Delete the draft:
+2. Delete the release:
    ```bash
    gh release delete v1.2.0 --repo jacknolanedu/whs-iep-bsp-generator --yes
    ```
@@ -86,7 +99,7 @@ auto-update, so deleting one costs nothing.
 
 **Known flake:** the Mac job occasionally fails with `hdiutil: Resource busy`
 while building the DMG. That's a GitHub runner quirk, not a code problem —
-delete the draft and re-run the job.
+delete the release (if one was created) and re-run the job.
 
 ## How updates reach teachers
 

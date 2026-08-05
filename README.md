@@ -68,9 +68,10 @@ Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. E
 
 ### Let GitHub build every release automatically
 Pushing a version tag now makes GitHub build the Mac DMG and the Windows
-installer and attach them to a draft release — no more building installers by
-hand on someone's laptop. Publishing the draft stays a human decision, and
-that's the moment installed apps start seeing the update. A second small
+installer and publish them as a release — no more building installers by hand
+on someone's laptop. The release goes live as soon as the build finishes, and
+that is also the moment installed apps start updating to it, so a tag should
+only ever be pushed on a commit that's ready for teachers. A second small
 workflow now also syntax-checks the code and runs the unit tests on every pull
 request. The step-by-step release routine is written down in RELEASING.md.
 
