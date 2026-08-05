@@ -6139,13 +6139,13 @@
 
     function updateFormRequiredFields() {
       var mode = getSelectedMode();
-      var allDocs = isMultiDocumentMode();
+      var useSelectionScope = isMultiDocumentMode();
       var form = document.getElementById('planForm');
       if (!form) return;
 
       form.querySelectorAll('[data-doc-required]').forEach(function (el) {
         var rule = el.getAttribute('data-doc-required');
-        el.required = allDocs
+        el.required = useSelectionScope
           ? isDocumentRuleActiveForSelection(rule)
           : isDocumentRuleActiveForMode(rule, mode);
       });
@@ -6390,13 +6390,13 @@
 
     function updateFormTabVisibility() {
       var mode = getSelectedMode();
-      var allDocs = isMultiDocumentMode();
+      var useSelectionScope = isMultiDocumentMode();
       var form = document.getElementById('planForm');
       if (!form) return;
 
       form.querySelectorAll('[data-doc-form]').forEach(function (el) {
         var rule = el.getAttribute('data-doc-form');
-        var active = allDocs
+        var active = useSelectionScope
           ? isDocumentRuleActiveForSelection(rule)
           : isDocumentRuleActiveForMode(rule, mode);
         el.classList.toggle('tab-doc-inactive', !active);
