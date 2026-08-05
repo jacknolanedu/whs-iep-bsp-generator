@@ -3163,31 +3163,6 @@
       };
     }
 
-    function formatCurriculumReferenceForPrompt(input) {
-      var ctx = getCurriculumContextForGoal(input);
-      if (!ctx) return '';
-      var focus = formatFocusLabel(input.focusArea || '');
-      var lines = [
-        'CURRICULUM REFERENCE (Victorian Curriculum 2.0):',
-        '- Target band: ' + input.targetCurriculumLabel + ' (' + ctx.levelLabel + ').',
-        '- Strand emphasis: ' + ctx.strandFocus + '.',
-        '- Selected focus area: ' + focus + '.',
-        '- Level outcome (curriculum content): ' + (ctx.focusOutcomePhrase || 'see strand emphasis') + ' ' + ctx.vcTag + '.',
-        (isSecondaryStudentYear(input.yearLevel) && ctx.ageAppropriateOutcomePhrase
-          ? '- Age-appropriate phrasing for Year ' + input.yearLevel + ': ' + ctx.ageAppropriateOutcomePhrase + '.'
-          : ''),
-        '- Secondary scaffolds to mention: ' + getAgeAppropriateSupports(input, '') + '.',
-        '- Other focus areas at this level include: ' + ctx.allFocusAreas.slice(0, 8).join('; ') +
-          (ctx.allFocusAreas.length > 8 ? '; …' : '') + '.',
-        '',
-        'Generator steps:',
-        '1. Identify that the goal must align with ' + input.targetCurriculumLabel + ' outcomes only.',
-        '2. Select a skill relevant to "' + focus + '" from that level (not the student\'s year-level content if higher).',
-        '3. Write the Long-Term Goal using Victorian Curriculum 2.0 terminology for ' +
-          ctx.levelLabel + ', with mature tone for a Year ' + input.yearLevel + ' student.',
-        '4. Write the Short-Term SMART Goal in plain teacher language with secondary-appropriate tools/scaffolds.'
-      ].filter(Boolean).join('\n');
-    }
 
     function buildLongTermGoalFromCurriculumReference(input) {
       var ctx = getCurriculumContextForGoal(input);
@@ -4959,18 +4934,6 @@
       };
     }
 
-    function formatTargetCurriculumStrictInstruction(targetInfo, input) {
-      if (!targetInfo || !targetInfo.targetLabel) return '';
-      var base =
-        'STRICT INSTRUCTION: All goal text must align to ' + targetInfo.targetLabel +
-        ' only (student is in Year ' + targetInfo.yearLevel + ' with achievement level "' +
-        targetInfo.achievementLevel + '"). Do not target content above ' + targetInfo.targetLabel + '.';
-      if (input) {
-        var ref = formatCurriculumReferenceForPrompt(input);
-        if (ref) return base + '\n\n' + ref;
-      }
-      return base;
-    }
 
     function getTargetCurriculumForSmartGoal(form, achievementLevel) {
       return calculateTargetCurriculumLevel(getYearLevelFromForm(form), achievementLevel);
@@ -5220,16 +5183,6 @@
       return t;
     }
 
-    /**
-     * Optional AI backend for SMART goal generation.
-     * Set endpoint + apiKey to call your API; leave empty to use the local generator.
-     * Expected API shape (OpenAI-compatible): POST JSON { model, messages } → choices[0].message.content
-     */
-    var SMART_GOAL_AI_CONFIG = {
-      endpoint: '',
-      apiKey: '',
-      model: 'gpt-4o-mini'
-    };
 
     function getStepUpTargetLevel(currentLevel) {
       var level = normalizeLearningLevel(currentLevel);
@@ -5316,120 +5269,7 @@
       };
     }
 
-    function buildSmartGoalAIPrompt(input) {
-      var student = formatStudentDisplayName(input.studentName || input.studentFirstName || '');
-      var focus = formatFocusLabel(input.focusArea || '');
-      var strictTarget = formatTargetCurriculumStrictInstruction(input.targetCurriculum, input);
-      var toneBlock = formatAgeAppropriateToneInstruction(input);
-      var targetBlock = strictTarget
-        ? strictTarget + '\n\n' + (toneBlock ? toneBlock + '\n\n' : '')
-        : 'Set Year Level on the Details tab and Current Level on this subject tab to calculate a target curriculum level.\n\n';
-      var secondaryExample = isSecondaryStudentYear(input.yearLevel)
-        ? '- Secondary English example: "By the end of Term 2, given graphic organisers and annotated mentor texts, ' +
-          student + ' will apply grammar conventions in extended writing with 80% accuracy."\n' +
-          '- Secondary Maths example: "By the end of the unit, using a scientific calculator and structured problem templates for support, ' +
-          student + ' will develop fluency with rational numbers, including fractions and decimals, in 4 out of 5 opportunities."\n\n'
-        : '';
-      return (
-        targetBlock +
-        'Based on a student in Year ' + (input.yearLevel != null ? input.yearLevel : '?') +
-        ' at achievement level "' + input.achievementLevel + '"' +
-        (input.targetCurriculumLabel ? ' (target: ' + input.targetCurriculumLabel + ')' : '') +
-        ', with assessment scores of ' + input.assessment +
-        ', and a focus on ' + focus +
-        ', generate a Long-Term Goal and Short-Term SMART Goal.\n\n' +
-        'Formatting rules:\n' +
-        '- Capitalise the student name (' + student + ') and subject focus (' + focus + ') correctly.\n' +
-        '- Victorian Curriculum 2.0 references may appear ONLY in the Long-Term Goal line, never in the Short-Term SMART Goal.\n' +
-        '- Never write "will [Verb-ing]" (e.g. will emerging, will building). Use base verbs: will emerge, will build, will demonstrate.\n' +
-        secondaryExample +
-        (!secondaryExample
-          ? '- English example: "By the end of Term 2, given word banks and phonic scaffolds, Jack will correctly apply Grammar rules in his writing with 80% accuracy."\n' +
-            '- Maths example: "By the end of the unit, using a number line for support, Sarah will solve addition problems in 4 out of 5 opportunities."\n\n'
-          : '') +
-        'Goal requirements:\n' +
-        (input.targetCurriculumLabel
-          ? '- Goals must reflect ' + input.targetCurriculumLabel + ' content only (Year ' +
-            input.yearLevel + ' + ' + input.achievementLevel + ').\n' +
-            '- Long-Term Goal must use Victorian Curriculum 2.0 terminology for ' +
-            input.targetCurriculumLabel + ' and the focus area "' + focus + '".\n'
-          : '- Realistic step up from ' + input.currentLevel + '.\n') +
-        '- Use "given …" for literacy supports; "using … for support" for maths tools; "with X% accuracy" or "in N out of M opportunities" for measures.\n' +
-        '- Subject: ' + input.areaLabel + '.\n' +
-        '- Student name: ' + (formatStudentDisplayName(input.studentFullName) || student) + '.\n' +
-        '- Preferred pronouns: ' + getPronounLabel(input.preferredPronoun) + '.\n' +
-        '- Australian English.\n\n' +
-        'Return exactly two lines and nothing else:\n' +
-        'Long-Term Goal: ...\n' +
-        'Short-Term SMART Goal: ...'
-      );
-    }
 
-    function parseSmartGoalAIResponse(rawText, input) {
-      var band = getGoalLibraryLevelBand(input.currentLevel);
-      var templates = findGoalLibraryTemplates(input.areaKey, band, input.focusArea);
-      var tpl = pickGoalLibraryTemplate(templates, input.focusArea, input.assessment);
-      var card = buildStructuredSmartGoalCard(input, tpl);
-      if (!rawText || !String(rawText).trim()) return card;
-      var lines = String(rawText).split('\n').map(function (l) { return l.trim(); }).filter(Boolean);
-      lines.forEach(function (line) {
-        var m = line.match(/^([^:]+):\s*(.*)$/);
-        if (!m) return;
-        var label = m[1].trim().toLowerCase();
-        var val = m[2].trim();
-        if (label.indexOf('long-term') === 0 || label.indexOf('long term') === 0) {
-          card.longTermGoal = personalizeSmartGoalField(val, input, 'longTerm');
-        } else if (label === 'specific') {
-          card.specific = personalizeSmartGoalField(val, input, 'shortTerm');
-        } else if (label === 'measurable') {
-          card.measurable = personalizeSmartGoalField(val, input, 'shortTerm');
-        } else if (label === 'attainable') {
-          card.attainable = personalizeSmartGoalField(val, input, 'shortTerm');
-        } else if (label === 'time-bound' || label === 'time bound') {
-          card.timeBound = personalizeSmartGoalField(val, input, 'shortTerm');
-        }
-      });
-      return applyPersonalizationToSmartGoalCard(card, input);
-    }
-
-    /**
-     * Calls AI when configured; otherwise uses the local Goal Library.
-     * @returns {Promise<Object>} Structured SMART goal card
-     */
-    async function callSmartGoalAI(prompt, input) {
-      if (SMART_GOAL_AI_CONFIG.endpoint && SMART_GOAL_AI_CONFIG.apiKey) {
-        try {
-          var response = await fetch(SMART_GOAL_AI_CONFIG.endpoint, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'Bearer ' + SMART_GOAL_AI_CONFIG.apiKey
-            },
-            body: JSON.stringify({
-              model: SMART_GOAL_AI_CONFIG.model,
-              messages: [
-                {
-                  role: 'system',
-                  content: 'You write professional IEP goals for Victorian schools. Goals must be age-appropriate but level-specific: curriculum content at the target level (e.g. Level 6), tone and scaffolds for the student\'s actual year (e.g. Year 9 — scientific calculator, graphic organisers; never childish phrasing). Long-Term Goal includes Victorian Curriculum 2.0 level tags. Never use "will [Verb-ing]". Return only Long-Term Goal and Short-Term SMART Goal lines.'
-                },
-                { role: 'user', content: prompt }
-              ]
-            })
-          });
-          if (!response.ok) {
-            throw new Error('AI request failed (' + response.status + ')');
-          }
-          var data = await response.json();
-          var content = (data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content) ||
-            data.output || data.text || '';
-          var parsed = parseSmartGoalAIResponse(content, input);
-          if (parsed) return parsed;
-        } catch (err) {
-          console.warn('SMART goal AI unavailable, using local generator:', err);
-        }
-      }
-      return generateSmartGoalFromLibrary(input);
-    }
 
     function getDefaultSupportsForLevel(areaKey, level, input) {
       var raw;
@@ -5451,9 +5291,6 @@
     function buildSuggestedSmartGoalCard(form, area) {
       var input = getSmartGoalGenerationInput(form, area);
       if (!input.focusArea) return null;
-      if (SMART_GOAL_AI_CONFIG.endpoint && SMART_GOAL_AI_CONFIG.apiKey) {
-        return callSmartGoalAI(buildSmartGoalAIPrompt(input), input);
-      }
       return generateSmartGoalFromLibrary(input);
     }
 

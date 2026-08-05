@@ -66,6 +66,9 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Remove the unused AI hook from the goal generator
+The goal generator contained a dormant option to send student details to an external AI service, switched off by two blank settings and accompanied by a comment inviting someone to fill in an API key. Because the app is a single HTML file in a public repository, filling those in would have put the key in plain sight and sent student information to a third party — a lot of risk sitting behind two empty strings. The code was never active, so removing it changes nothing: goals are still built from the local template library, and all eight test documents are byte-for-byte identical. The app now makes no network requests of any kind.
+
 ### Stop the desktop app navigating away from itself
 The desktop app had no restriction on where its window could go. Nothing in the app tries to open external links, but with no guard in place, content in the page could in principle send the window to another site — which matters because the form holds student information. The window is now pinned to the app's own page: attempts to open a new window or navigate elsewhere are refused and logged, while reloading the app itself still works. Saving documents is unaffected, as downloads use a separate mechanism. Browser use is unchanged; this only applies to the desktop build.
 
