@@ -66,6 +66,9 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Stop the desktop app navigating away from itself
+The desktop app had no restriction on where its window could go. Nothing in the app tries to open external links, but with no guard in place, content in the page could in principle send the window to another site — which matters because the form holds student information. The window is now pinned to the app's own page: attempts to open a new window or navigate elsewhere are refused and logged, while reloading the app itself still works. Saving documents is unaffected, as downloads use a separate mechanism. Browser use is unchanged; this only applies to the desktop build.
+
 ### Show typed text as text in the on-screen preview
 The preview was built by dropping the form's contents straight into the page, so anything a teacher typed that looked like HTML — angle brackets, ampersands — was treated as formatting instead of being shown as text. A note like "reading < Year 4 level" displayed incorrectly, and pasted content could disturb the page. The preview now shows typed text exactly as entered. The Word export already handled this correctly and is unchanged: all eight test documents are byte-for-byte identical to before, as is the preview for text that contains no special characters.
 

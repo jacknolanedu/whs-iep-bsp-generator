@@ -16,6 +16,46 @@ function enqueueWordSave(task) {
   return run;
 }
 
+/** The only page this app is ever meant to display. */
+const APP_PAGE_PATH = path.join(__dirname, '..', 'index.html');
+
+/**
+ * Keep the window pinned to the bundled page.
+ *
+ * The app holds student data and opens no external links: there are no
+ * window.open calls, no target="_blank", and no location assignments anywhere
+ * in index.html or src/. So both handlers deny unconditionally rather than
+ * routing anything to the browser.
+ *
+ * Note this does not affect saving documents — Blob downloads go through
+ * will-download, not will-navigate.
+ *
+ * @param {BrowserWindow} win
+ */
+function applyNavigationGuards(win) {
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    console.warn('[nav-guard] blocked attempt to open a new window:', url);
+    return { action: 'deny' };
+  });
+
+  win.webContents.on('will-navigate', (event, url) => {
+    let targetPath = null;
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol === 'file:') targetPath = decodeURIComponent(parsed.pathname);
+    } catch (err) {
+      /* unparseable URL — treat as external and block */
+    }
+
+    if (targetPath && path.normalize(targetPath) === path.normalize(APP_PAGE_PATH)) {
+      return; // reloading the app's own page is fine
+    }
+
+    console.warn('[nav-guard] blocked navigation away from the app:', url);
+    event.preventDefault();
+  });
+}
+
 function createMainWindow() {
   mainWindow = new BrowserWindow({
     title: 'Generate4U',
@@ -36,6 +76,8 @@ function createMainWindow() {
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
   });
+
+  applyNavigationGuards(mainWindow);
 
   mainWindow.loadFile(path.join(__dirname, '..', 'index.html'));
 
