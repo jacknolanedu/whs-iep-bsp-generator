@@ -40,9 +40,10 @@ module.exports = {
           owner: 'jacknolanedu',
           name: 'whs-iep-bsp-generator'
         },
-        // CI uploads to a DRAFT; a human publishing it on GitHub is the
-        // go-live step (auto-update only sees published releases).
-        draft: true
+        // Tagging a version publishes the release immediately — there is no
+        // draft step. Installed apps see a new version as soon as the build
+        // finishes, so only tag a commit that is ready for teachers.
+        draft: false
       }
     }
   ],
