@@ -9,12 +9,21 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
-        name: 'whs_iep_bsp_generator'
+        name: 'whs_iep_bsp_generator',
+        // Teacher-facing installer filename. Renaming the *installer* is safe;
+        // the squirrel `name` above must never change or updates break.
+        setupExe: 'Generate4U-Setup.exe'
       }
     },
     {
+      // Kept alongside the DMG: Squirrel.Mac auto-update consumes a zip,
+      // so this becomes load-bearing the day the app is code-signed.
       name: '@electron-forge/maker-zip',
       platforms: ['darwin']
+    },
+    {
+      name: '@electron-forge/maker-dmg',
+      config: {}
     }
   ],
   publishers: [
@@ -24,7 +33,10 @@ module.exports = {
         repository: {
           owner: 'jacknolanedu',
           name: 'whs-iep-bsp-generator'
-        }
+        },
+        // CI uploads to a DRAFT; a human publishing it on GitHub is the
+        // go-live step (auto-update only sees published releases).
+        draft: true
       }
     }
   ],
