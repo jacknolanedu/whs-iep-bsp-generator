@@ -4,6 +4,76 @@ Electron Forge desktop wrapper for the single-page IEP/BSP/Adjustments generator
 
 **Repository:** https://github.com/jacknolanedu/whs-iep-bsp-generator
 
+## 📥 Get Generate4U (for teachers)
+
+**[Click here to download the latest version](https://github.com/jacknolanedu/whs-iep-bsp-generator/releases/latest)** — then follow the steps for your computer below. On Windows the app then updates itself automatically; on a Mac it tells you when a new version is ready.
+
+### On a Mac
+
+> On your Mac the app is called **WHS IEP BSP Generator** — that's the name
+> you'll see in the Applications folder and in any security messages.
+
+1. On the download page, click the file ending in **`.dmg`**.
+2. Open the downloaded file and **drag WHS IEP BSP Generator into the
+   Applications folder**.
+3. The first time you open it, your Mac may say it *"could not verify"* the app
+   or that it's from an *"unidentified developer"*. That's normal for small school
+   tools that aren't in Apple's paid developer program — the app is safe, works
+   offline, and never sends student information anywhere. To open it:
+   - **Newer Macs (macOS 15 and later):** click **Done** on the warning, open
+     **System Settings → Privacy & Security**, scroll down, and click
+     **Open Anyway** next to WHS IEP BSP Generator. Then confirm **Open Anyway**
+     again.
+   - **Older Macs:** in Applications, **right-click (or Control-click)
+     WHS IEP BSP Generator → Open → Open**.
+4. Updating later: the app tells you when a new version is out and gives you a
+   download button. Drag the new copy into Applications, click **Replace**, then
+   **quit the app and open it again** to start using the new version.
+   **Heads-up:** your Mac shows that same security warning after *every* update,
+   so expect to repeat step 3 each time. (Buying an Apple developer certificate
+   would remove the warning permanently — a school decision, not a technical one.)
+
+### On a Windows computer
+
+1. On the download page, click **`Generate4U-Setup.exe`**.
+2. Open the downloaded file. Windows may show a blue **"Windows protected your
+   PC"** box — that appears for any new app from a small publisher, and this app
+   is safe. Click **More info**, then **Run anyway**.
+3. There's no install wizard — a short animation plays and the app opens itself,
+   with shortcuts added to your Start menu and desktop. That's it.
+4. Updating later is automatic: new versions install themselves quietly the next
+   time you open the app.
+
+> **School network note:** if the download is blocked at school, ask IT to allow
+> `github.com`, or download at home. On Windows, automatic updates also need
+> `update.electronjs.org`, so it's worth asking IT about both at once. IT can
+> verify the app themselves — all of its code is public on this page.
+
+### Your privacy and student data
+
+- Everything you type **stays on your computer**. Documents and progress files
+  save locally; nothing you write is ever uploaded anywhere.
+- The desktop app's only internet use is checking whether a newer version exists.
+  On a Mac it asks GitHub for the latest version number. On Windows it asks
+  `update.electronjs.org` — a free service run by the Electron project — which
+  looks up this page's latest release; that request includes the app's own
+  version number and whether the computer is 64-bit, and nothing else.
+  **No student information is sent, on either system.**
+- The browser version makes no internet connections at all.
+- Your in-progress form is autosaved on your computer and offered back if the
+  app closes.
+
+### No install allowed? Use the browser version
+
+If you can't install apps on your computer, you can run Generate4U in a web
+browser instead — same forms, same documents:
+
+1. [Download the code as a ZIP](https://github.com/jacknolanedu/whs-iep-bsp-generator/archive/refs/heads/main.zip)
+2. Double-click the downloaded ZIP to unzip it, open the folder, and
+   double-click **`index.html`** — it opens in your browser, no installation.
+3. Note: the browser version doesn't update itself — re-download the ZIP now
+   and then to stay current.
+
 ## Prerequisites
 
 - [Node.js](https://nodejs.org/) 18 or newer (includes npm)
@@ -65,6 +135,15 @@ Implementation:
 ## Changes by mrdavearms
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
+
+### Give teachers a plain-English download page
+The README now opens with a download section written for teachers, not
+developers: one link to the latest version, step-by-step install instructions
+for Mac and Windows including exactly what to do when the computer shows its
+"unverified app" security warning (unavoidable without paid signing
+certificates, and worth explaining rather than leaving people stuck), a plain
+statement of what the app does and doesn't do with student data, and the
+browser-based fallback for locked-down computers.
 
 ### Let GitHub build every release automatically
 Pushing a version tag now makes GitHub build the Mac DMG and the Windows
