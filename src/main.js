@@ -2,6 +2,16 @@ const path = require('path');
 const fs = require('fs/promises');
 const { app, BrowserWindow, ipcMain, dialog, shell } = require('electron');
 
+/**
+ * Squirrel.Windows relaunches the app with special flags during install,
+ * update, and uninstall to manage shortcuts. Those launches must exit
+ * immediately instead of opening a window. No-op on macOS and in dev.
+ */
+if (require('electron-squirrel-startup')) {
+  app.quit();
+  return; // a pre-ready quit still lets whenReady fire — nothing below may run
+}
+
 /** @type {BrowserWindow | null} */
 let mainWindow = null;
 

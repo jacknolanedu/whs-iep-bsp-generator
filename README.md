@@ -66,6 +66,14 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Prepare the desktop packaging for automatic installer builds
+The Mac build now produces a proper DMG (the standard drag-to-Applications
+installer) that runs on both Intel and Apple-Silicon Macs, and the Windows
+installer is named Generate4U-Setup.exe so teachers can tell what it is. Also
+added the standard guard so the Windows installer's behind-the-scenes launches
+don't flash app windows during install and update. No change to how documents
+generate or to the open-index.html-in-a-browser path.
+
 ### Summary of this round of work
 
 Jack, here's the short version of what I've done and why, so you can decide what you're
