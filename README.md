@@ -121,6 +121,9 @@ at the moment that level is unreachable in the code. Also worth knowing: the Set
 near the top of this README refers to a folder and a file that don't exist in the
 repository, so those instructions don't currently work.
 
+### Remove a leftover step that no longer did anything
+Before building a Word document, the app copied every field's contents back into the page as HTML attributes. That was needed by an older design that built documents by reading the page markup; the current code reads the fields directly, so nothing looked at those attributes any more. The step still ran on every export, doing invisible work. Checked first that nothing reads them — no code reads the attributes back, and no styling depends on them — then removed it. Save and Load Progress still round-trip all 78 fields unchanged, and all eight test documents are byte-for-byte identical.
+
 ### Report when the two code files fall out of step
 `index.html` and `src/session-progress.js` are connected only by function names: the second file looks up around 46 functions defined in the first, and every lookup quietly does nothing if the name isn't found. So renaming a function in `index.html` doesn't produce an error — it just makes part of Save/Load Progress or the Full Suite export stop working, with nothing to indicate why. The expected names are now listed in one place and checked when the app starts, printing a clear message naming anything missing. A healthy start-up stays silent; add `?debug=1` to the address to confirm the check ran.
 
