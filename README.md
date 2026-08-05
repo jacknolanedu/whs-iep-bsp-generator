@@ -66,6 +66,9 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Report when the two code files fall out of step
+`index.html` and `src/session-progress.js` are connected only by function names: the second file looks up around 46 functions defined in the first, and every lookup quietly does nothing if the name isn't found. So renaming a function in `index.html` doesn't produce an error — it just makes part of Save/Load Progress or the Full Suite export stop working, with nothing to indicate why. The expected names are now listed in one place and checked when the app starts, printing a clear message naming anything missing. A healthy start-up stays silent; add `?debug=1` to the address to confirm the check ran.
+
 ### Warn when a new field would be missed by the export
 When each document is built, the app copies the form's contents through a hand-written list of field names. Any field added to the form in future but forgotten in that list would be silently left out of the generated document — no error, just missing content. The list is correct today; this adds a check that prints a clear warning to the developer console if the two ever drift apart, so the problem shows up during development rather than in a student's document. Also merges two near-identical text-escaping helpers into one, since the older of the two handled slightly less. Nothing changes in the app's output.
 

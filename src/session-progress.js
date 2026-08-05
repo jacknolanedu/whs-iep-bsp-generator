@@ -6,6 +6,68 @@
 (function () {
   'use strict';
 
+  /**
+   * Functions this file expects index.html to have defined on window.
+   *
+   * The coupling between the two files is by name only: every call site here is
+   * guarded with `typeof window.X === 'function'` (or goes through callApp), and
+   * both patterns return quietly when the function is absent. So renaming or
+   * removing something in index.html does not throw — it just makes part of Load
+   * Progress, or an export step, stop happening, with nothing reported.
+   *
+   * This list makes that contract explicit and checkable. Keep it in step with
+   * the call sites below.
+   */
+  var REQUIRED_APP_GLOBALS = [
+    'applyFullSuiteWorkspaceEntry', 'browserSaveBlob', 'buildDocExportWordHtml',
+    'buildGoalParagraphConcise', 'buildWordDocumentContentString', 'cleanWordExportText',
+    'createWordBlobFromContentString', 'dismissLaunchpad', 'focusFirstMissingField',
+    'formatBspSmartGoalDocHtml', 'formatSmartGoalSmatTableHtml', 'formatStudentDisplayName',
+    'getDocumentSectionFillStatus', 'getPronounSet', 'getSelectedDocuments',
+    'getSmartGoalTermPhrase', 'getStudentDisplayNameForGoals', 'getVisibleData',
+    'getWordDocumentStyles', 'isAllDocumentsMode', 'isElectronApp',
+    'mountSmartGoalResultCard', 'parseSmartGoalCardFromStoredText', 'postProcessGoalText',
+    'prepareFormForWordExport', 'readSmartGoalCardFromArea', 'renderFormValidationSummary',
+    'replaceGenericStudentTerms', 'resolveModeFromActiveTab', 'sanitizeDownloadFilename',
+    'sanitizeExportBasename', 'saveWordDocumentToDisk', 'setDocumentSelection',
+    'switchIepGoalTab', 'switchTab', 'syncFormControlsToDomAttributes',
+    'syncGoalCardToHiddenField', 'syncIepGoalLevelFromDashboard', 'syncSelectedModeFromDocuments',
+    'syncStudentPersonalizationFromForm', 'triggerBlobDownload', 'updateDocumentVisibility',
+    'updateFormFieldDisabledState', 'updateFormRequiredFields', 'updateLaunchpadBadge',
+    'validateBeforeGenerate'
+  ];
+
+  /**
+   * Report any expected global that index.html did not define.
+   *
+   * A missing name is always warned about, because it means a feature has gone
+   * quiet rather than failed loudly. The "all present" line is only printed when
+   * debugging is switched on, so a healthy load stays silent.
+   *
+   * Enable with `?debug=1` in the URL, or `window.GENERATE4U_DEBUG = true`.
+   */
+  function checkRequiredAppGlobals() {
+    var missing = REQUIRED_APP_GLOBALS.filter(function (name) {
+      return typeof window[name] !== 'function';
+    });
+
+    if (missing.length) {
+      console.warn(
+        'Generate4U: session-progress.js expects ' + missing.length +
+        ' function(s) that index.html did not define: ' + missing.join(', ') +
+        '. Features depending on them will silently do nothing. ' +
+        'If something was renamed in index.html, update the call sites here.'
+      );
+      return;
+    }
+
+    var debugOn = window.GENERATE4U_DEBUG === true ||
+      (typeof location !== 'undefined' && /[?&]debug=1\b/.test(location.search || ''));
+    if (debugOn) {
+      console.log('Generate4U: all ' + REQUIRED_APP_GLOBALS.length + ' expected app functions present.');
+    }
+  }
+
   function isElectronApp() {
     if (typeof window.isElectronApp === 'function') {
       return window.isElectronApp();
@@ -3060,6 +3122,8 @@
   } else {
     boot();
   }
+
+  checkRequiredAppGlobals();
 
   window.setTimeout(function () {
     ensureHeaderFullSuiteButton();
