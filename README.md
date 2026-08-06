@@ -179,6 +179,14 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Write down how we work on this repo
+Added `CONTRIBUTING.md`, so the working agreement lives in the repository instead of
+in a chat window. It covers branching, pull requests, the changelog rule, who decides
+what, and the handful of commands that can actually cause damage — each with the
+reason rather than just the rule. It also includes the one-minute setup for protecting
+the `main` branch, which needs your admin access and can't be done on your behalf.
+Documentation only; nothing about how the app works has changed.
+
 ### Give the repo front page a proper layout, and fix the stale setup steps
 Anyone sent a link to this repository previously landed on "Electron Forge desktop
 wrapper for the single-page IEP/BSP/Adjustments generator" — accurate, but not much
