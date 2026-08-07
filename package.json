@@ -2,7 +2,7 @@
   "name": "generate4u",
   "productName": "Generate4U",
   "version": "1.2.0",
-  "description": "Wangaratta High School IEP, BSP, and Classroom Adjustments generator (desktop)",
+  "description": "IEP, BSP, and Classroom Adjustments generator for Victorian secondary schools (desktop)",
   "main": "src/main.js",
   "private": true,
   "repository": {
