@@ -61,6 +61,24 @@ Do these once, in this order. They cannot be undone later.
    Workflow permissions → "Read and write"). Otherwise the build runs for
    ~15 minutes and then fails at the upload step with a 403.
 
+## Install guidance is added to every release automatically
+
+You don't need to write install instructions. After both builds finish, the
+workflow appends `.github/release-install-guidance.md` to the release notes —
+which file to download, and exactly how to get past the "unverified developer"
+warning on a Mac and "Windows protected your PC" on Windows.
+
+This matters because the README's download buttons and the app's own update
+prompt both send teachers **straight to a release page**. Most will never read
+the README, so the guidance has to live where they actually land.
+
+- If you write your own notes for a release, they're kept and the guidance is
+  added underneath.
+- It's safe to re-run — a marker comment stops it being added twice.
+- To change the wording for all future releases, edit
+  `.github/release-install-guidance.md`. It only applies to releases built
+  after that change; earlier ones keep the text they were published with.
+
 ## Rules
 
 - The tag must exactly match `package.json`'s version (`v1.2.0` ↔ `1.2.0`);

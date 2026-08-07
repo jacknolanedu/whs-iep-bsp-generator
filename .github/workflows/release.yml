@@ -54,7 +54,43 @@ jobs:
 
       - run: npm ci
 
-      - name: Build installers and upload to the draft release
+      - name: Build installers and upload to the release
         run: npm run publish -- --arch=${{ matrix.arch }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Teachers reach a release page straight from the README's download buttons and
+  # from the app's own update prompt — most will never read the README. Without
+  # this, they meet Gatekeeper or SmartScreen with no explanation and get stuck.
+  # So every release carries the install guidance, automatically, forever.
+  install-guidance:
+    needs: build-and-upload
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Add the install guidance to the release notes
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          TAG="${GITHUB_REF_NAME}"
+          BODY="$(gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json body --jq .body)"
+
+          # Idempotent: the marker means the guidance is already there, so a
+          # re-run never duplicates it. Any release notes a human wrote are kept
+          # and the guidance is appended below them.
+          if printf '%s' "$BODY" | grep -q '<!-- install-guidance -->'; then
+            echo "Guidance already present on $TAG — nothing to do."
+            exit 0
+          fi
+
+          {
+            if [ -n "$BODY" ]; then
+              printf '%s\n\n---\n\n' "$BODY"
+            fi
+            cat .github/release-install-guidance.md
+          } > /tmp/notes.md
+
+          gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes-file /tmp/notes.md
+          echo "Install guidance added to $TAG."
