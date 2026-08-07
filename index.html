@@ -656,6 +656,7 @@
     }
     .btn-save-progress,
     .btn-load-progress,
+    .btn-letterhead,
     .progress-controls .btn-generate-all {
       padding: 0.45rem 0.85rem;
       font-family: inherit;
@@ -709,7 +710,8 @@
       background: #f2b705 !important;
     }
     .btn-save-progress:hover,
-    .btn-load-progress:hover {
+    .btn-load-progress:hover,
+    .btn-letterhead:hover {
       border-color: var(--primary);
       color: var(--primary);
       background: rgba(10, 122, 62, 0.06);
@@ -717,6 +719,7 @@
     }
     .btn-save-progress:focus-visible,
     .btn-load-progress:focus-visible,
+    .btn-letterhead:focus-visible,
     .progress-controls .btn-generate-all:focus-visible {
       outline: 2px solid var(--primary-light);
       outline-offset: 2px;
@@ -1728,6 +1731,32 @@
     }
     .output-adjustments-table tbody tr:nth-child(even) { background: var(--bg); }
     .output-adjustments-table tbody tr:hover { background: rgba(10, 122, 62, 0.06); }
+    /* —— School letterhead dialog —— */
+    .letterhead-dialog {
+      position: fixed; inset: 0; z-index: 60;
+      background: rgba(15, 30, 25, 0.55);
+      display: flex; align-items: center; justify-content: center; padding: 1.5rem;
+    }
+    .letterhead-dialog[hidden] { display: none; }
+    .letterhead-dialog__panel {
+      background: #fff; border-radius: 12px; padding: 1.75rem;
+      width: min(520px, 100%); max-height: 90vh; overflow-y: auto;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, 0.3);
+    }
+    .letterhead-dialog__panel h2 { margin: 0 0 0.5rem; }
+    .letterhead-dialog__hint { font-size: 0.85rem; color: #55635c; margin: 0.35rem 0 1rem; }
+    .letterhead-dialog__label { display: block; font-weight: 600; margin-top: 0.9rem; margin-bottom: 0.3rem; }
+    .letterhead-dialog__panel input[type="text"] { width: 100%; padding: 0.55rem 0.7rem; }
+    .letterhead-dialog__preview {
+      display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;
+      margin-top: 1.1rem; padding: 0.85rem; border: 1px dashed #c7d2cc; border-radius: 8px;
+    }
+    .letterhead-dialog__preview img { height: 48px; width: auto; }
+    .letterhead-dialog__status { min-height: 1.2em; font-size: 0.85rem; margin: 0.75rem 0 0; }
+    .letterhead-dialog__actions {
+      display: flex; gap: 0.5rem; justify-content: flex-end; flex-wrap: wrap; margin-top: 1.25rem;
+    }
+
     .whs-output-footer {
       margin-top: 1.25rem;
       padding-top: 1rem;
@@ -2115,6 +2144,7 @@
           <span id="draftStatusText"></span>
           <button type="button" class="draft-status__discard" id="discardDraftBtn">Discard draft</button>
         </span>
+        <button type="button" class="btn-letterhead" id="letterheadBtn" title="Set the school name and logo printed on your documents">Letterhead</button>
         <button type="button" class="btn-save-progress" id="saveProgressBtn">Save Progress</button>
         <button type="button" class="btn-load-progress" id="loadProgressBtn">Load Progress</button>
         <button
@@ -2125,6 +2155,36 @@
         >Full Suite</button>
       </div>
     </header>
+
+    <!-- School letterhead: what gets printed on the generated documents. -->
+    <div class="letterhead-dialog no-print" id="letterheadDialog" hidden role="dialog" aria-modal="true" aria-labelledby="letterheadTitle">
+      <div class="letterhead-dialog__panel">
+        <h2 id="letterheadTitle">Your school's letterhead</h2>
+        <p class="letterhead-dialog__hint">This name and logo are printed on the documents
+          Generate4U produces. They stay on this computer and are never sent anywhere.</p>
+
+        <label class="letterhead-dialog__label" for="letterheadName">School name</label>
+        <input type="text" id="letterheadName" maxlength="120" placeholder="e.g. Riverside Secondary College">
+
+        <label class="letterhead-dialog__label" for="letterheadLogo">School logo</label>
+        <input type="file" id="letterheadLogo" accept="image/png,image/jpeg,image/svg+xml">
+        <p class="letterhead-dialog__hint">A PNG with a transparent background works best. Under 400&nbsp;KB.</p>
+
+        <div class="letterhead-dialog__preview">
+          <span>Preview:</span>
+          <img id="letterheadPreview" alt="Current school logo">
+          <strong id="letterheadPreviewName"></strong>
+        </div>
+
+        <p class="letterhead-dialog__status" id="letterheadStatus" role="status" aria-live="polite"></p>
+
+        <div class="letterhead-dialog__actions">
+          <button type="button" class="btn-letterhead" id="letterheadResetBtn">Reset to default</button>
+          <button type="button" class="btn-letterhead" id="letterheadCancelBtn">Cancel</button>
+          <button type="button" class="btn-save-progress" id="letterheadSaveBtn">Save letterhead</button>
+        </div>
+      </div>
+    </div>
 
     <div class="doc-picker no-print" id="docPicker">
       <div class="doc-picker-header">
@@ -6617,6 +6677,191 @@
       return 'they / them / their';
     }
     const WHS_LOGO_DATA_URI = "data:image/png;base64,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";
+    /* —— School letterhead ——————————————————————————————————————————————
+       The school name and logo printed on generated documents. Stored in
+       localStorage so each school sets its own once; defaults to the constants
+       above, so an existing user who never opens the dialog sees no change.
+       Logos are held as data URIs — the CSP allows img-src data:, and a data
+       URI keeps the app working offline and with no file paths to go stale. */
+    var BRANDING_KEY = 'generate4u.branding.v1';
+    var DEFAULT_SCHOOL_NAME = 'Wangaratta High School';
+    /* Guard against a pathological logo filling localStorage and breaking the
+       autosave draft, which shares the same quota. */
+    var MAX_LOGO_BYTES = 400000;
+
+    function brandingStorage() {
+      try {
+        return window.localStorage;
+      } catch (err) {
+        return null; // private mode, or file:// with storage disabled
+      }
+    }
+
+    /**
+     * The school name and logo to print on documents.
+     * Always returns usable values — falls back to the built-in defaults.
+     * @returns {{ name: string, logo: string }}
+     */
+    function getSchoolBranding() {
+      var fallback = { name: DEFAULT_SCHOOL_NAME, logo: WHS_LOGO_DATA_URI };
+      var s = brandingStorage();
+      if (!s) return fallback;
+      try {
+        var raw = s.getItem(BRANDING_KEY);
+        if (!raw) return fallback;
+        var saved = JSON.parse(raw);
+        return {
+          name: (saved && typeof saved.name === 'string' && saved.name.trim())
+            ? saved.name.trim() : fallback.name,
+          /* Only ever accept an image data URI — never a remote or file: URL. */
+          logo: (saved && typeof saved.logo === 'string' && /^data:image\//.test(saved.logo))
+            ? saved.logo : fallback.logo
+        };
+      } catch (err) {
+        console.warn('Saved letterhead could not be read; using the default.', err);
+        return fallback;
+      }
+    }
+
+    function saveSchoolBranding(name, logo) {
+      var s = brandingStorage();
+      if (!s) return false;
+      try {
+        s.setItem(BRANDING_KEY, JSON.stringify({ name: name, logo: logo }));
+        return true;
+      } catch (err) {
+        console.warn('Letterhead could not be saved.', err);
+        return false;
+      }
+    }
+
+    function clearSchoolBranding() {
+      var s = brandingStorage();
+      if (!s) return;
+      try { s.removeItem(BRANDING_KEY); } catch (err) { /* nothing more to do */ }
+    }
+
+    window.getSchoolBranding = getSchoolBranding;
+
+    /* Dialog wiring. pendingLogo holds an uploaded image until Save is pressed,
+       so Cancel really does discard it. */
+    var pendingLogo = null;
+
+    function letterheadStatus(text) {
+      var el = document.getElementById('letterheadStatus');
+      if (el) el.textContent = text || '';
+    }
+
+    function refreshLetterheadPreview(name, logo) {
+      var img = document.getElementById('letterheadPreview');
+      var label = document.getElementById('letterheadPreviewName');
+      if (img) img.src = logo;
+      if (label) label.textContent = name;
+    }
+
+    function openLetterheadDialog() {
+      var branding = getSchoolBranding();
+      pendingLogo = null;
+      var nameInput = document.getElementById('letterheadName');
+      var fileInput = document.getElementById('letterheadLogo');
+      if (nameInput) nameInput.value = branding.name;
+      if (fileInput) fileInput.value = '';
+      refreshLetterheadPreview(branding.name, branding.logo);
+      letterheadStatus('');
+      var dialog = document.getElementById('letterheadDialog');
+      if (dialog) dialog.hidden = false;
+      if (nameInput) nameInput.focus();
+    }
+
+    function closeLetterheadDialog() {
+      var dialog = document.getElementById('letterheadDialog');
+      if (dialog) dialog.hidden = true;
+      pendingLogo = null;
+    }
+
+    function initLetterheadDialog() {
+      var openBtn = document.getElementById('letterheadBtn');
+      var saveBtn = document.getElementById('letterheadSaveBtn');
+      var cancelBtn = document.getElementById('letterheadCancelBtn');
+      var resetBtn = document.getElementById('letterheadResetBtn');
+      var fileInput = document.getElementById('letterheadLogo');
+      var nameInput = document.getElementById('letterheadName');
+      var dialog = document.getElementById('letterheadDialog');
+      if (!openBtn || !dialog) return;
+
+      openBtn.addEventListener('click', openLetterheadDialog);
+      if (cancelBtn) cancelBtn.addEventListener('click', closeLetterheadDialog);
+
+      /* Click the backdrop, or press Escape, to dismiss. */
+      dialog.addEventListener('click', function (e) {
+        if (e.target === dialog) closeLetterheadDialog();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !dialog.hidden) closeLetterheadDialog();
+      });
+
+      if (nameInput) {
+        nameInput.addEventListener('input', function () {
+          refreshLetterheadPreview(nameInput.value || DEFAULT_SCHOOL_NAME,
+            pendingLogo || getSchoolBranding().logo);
+        });
+      }
+
+      if (fileInput) {
+        fileInput.addEventListener('change', function () {
+          var file = fileInput.files && fileInput.files[0];
+          if (!file) return;
+          if (!/^image\//.test(file.type)) {
+            letterheadStatus('That file is not an image. Please choose a PNG, JPG, or SVG.');
+            fileInput.value = '';
+            return;
+          }
+          var reader = new FileReader();
+          reader.onload = function () {
+            var result = String(reader.result || '');
+            if (result.length > MAX_LOGO_BYTES) {
+              letterheadStatus('That logo is too large. Please use an image under 400 KB.');
+              fileInput.value = '';
+              return;
+            }
+            pendingLogo = result;
+            refreshLetterheadPreview(
+              (nameInput && nameInput.value) || DEFAULT_SCHOOL_NAME, pendingLogo);
+            letterheadStatus('Logo ready — choose Save letterhead to keep it.');
+          };
+          reader.onerror = function () {
+            letterheadStatus('That image could not be read. Please try another file.');
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      if (saveBtn) {
+        saveBtn.addEventListener('click', function () {
+          var current = getSchoolBranding();
+          var name = (nameInput && nameInput.value.trim()) || DEFAULT_SCHOOL_NAME;
+          var logo = pendingLogo || current.logo;
+          if (saveSchoolBranding(name, logo)) {
+            letterheadStatus('Saved. New documents will use this letterhead.');
+            window.setTimeout(closeLetterheadDialog, 900);
+          } else {
+            letterheadStatus('Could not save — this browser is blocking local storage.');
+          }
+        });
+      }
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+          clearSchoolBranding();
+          pendingLogo = null;
+          if (nameInput) nameInput.value = DEFAULT_SCHOOL_NAME;
+          if (fileInput) fileInput.value = '';
+          refreshLetterheadPreview(DEFAULT_SCHOOL_NAME, WHS_LOGO_DATA_URI);
+          letterheadStatus('Reset to the built-in default.');
+        });
+      }
+    }
+
     // Tab navigation — data-tab on buttons must match id="tab-{name}" on panels
     function switchTab(tabId) {
       if (!tabId || !isFormTabAvailable(tabId)) {
@@ -6684,6 +6929,7 @@
 
     function bootMainTabNavigation() {
       initMainTabNavigation();
+      initLetterheadDialog();
       if (getSelectedMode()) {
         switchTab(getFirstAvailableTabId());
         updateFormFieldDisabledState();
@@ -7052,9 +7298,10 @@
     }
 
     function buildPdfLogoFooter() {
+      var branding = getSchoolBranding();
       return '<div class="whs-logo-footer">' +
-        '<img src="' + WHS_LOGO_DATA_URI + '" alt="Wangaratta High School logo">' +
-        '<div class="brand">Wangaratta High School</div></div>';
+        '<img src="' + branding.logo + '" alt="' + escapeHtml(branding.name) + ' logo">' +
+        '<div class="brand">' + escapeHtml(branding.name) + '</div></div>';
     }
 
     function buildPdfSignatureBlock(documentTitle, documentShort) {
@@ -8450,13 +8697,14 @@
       exportPanelHtml += '</div>';
 
       var previewSections = '';
+      var iepBranding = getSchoolBranding();
       if (selectedDocs.bsp) {
         previewSections += '<div id="doc-section-bsp" class="doc-section output" style="margin-top:1.5rem">' + bsp + '</div>';
       }
       if (selectedDocs.iep) {
         previewSections += '<div id="doc-section-iep" class="doc-section output" style="margin-top:1.5rem">' + iep +
-          '<div class="whs-output-footer"><div class="brand">Wangaratta High School</div>' +
-          '<img src="' + WHS_LOGO_DATA_URI + '" alt="Wangaratta High School logo"></div></div>';
+          '<div class="whs-output-footer"><div class="brand">' + escapeHtml(iepBranding.name) + '</div>' +
+          '<img src="' + iepBranding.logo + '" alt="' + escapeHtml(iepBranding.name) + ' logo"></div></div>';
       }
       if (selectedDocs.classroom) {
         previewSections += '<div id="doc-section-classroom" class="doc-section panel-card" style="margin-top:1.5rem">' +

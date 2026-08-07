@@ -4,8 +4,8 @@
 
 ### Individual Education Plans, Behaviour Support Plans, and Classroom Adjustments — drafted in minutes, on your own computer.
 
-Built for Wangaratta High School. Fill in a seven-tab form; get three finished Word
-documents with Victorian Curriculum 2.0 aligned SMART goals.
+Built for Victorian secondary schools. Fill in a seven-tab form; get three finished
+Word documents with Victorian Curriculum 2.0 aligned SMART goals.
 
 **Works offline · Nothing you type ever leaves your computer · Free**
 
@@ -28,7 +28,9 @@ documents with Victorian Curriculum 2.0 aligned SMART goals.
 ### On a Mac
 
 > On your Mac the app is called **WHS IEP BSP Generator** — that's the name
-> you'll see in the Applications folder and in any security messages.
+> you'll see in the Applications folder and in any security messages. (It's the
+> app's original internal name. Renaming it now would lose everyone's autosaved
+> drafts and stop automatic updates, so it stays as it is.)
 
 1. On the download page, click the file ending in **`.dmg`**.
 2. Open the downloaded file and **drag WHS IEP BSP Generator into the
@@ -65,6 +67,35 @@ documents with Victorian Curriculum 2.0 aligned SMART goals.
 > `github.com`, or download at home. On Windows, automatic updates also need
 > `update.electronjs.org`, so it's worth asking IT about both at once. IT can
 > verify the app themselves — all of its code is public on this page.
+
+### Set your school's letterhead
+
+The school name and logo printed at the bottom of generated documents can be changed
+to your own — you only do this once per computer.
+
+1. Click **Letterhead** in the top right of the app.
+2. Type your school's name.
+3. Click **Choose file** and pick your school logo. A PNG with a transparent
+   background looks best; keep it under 400&nbsp;KB.
+4. Click **Save letterhead**. Documents you generate from then on use it.
+
+**Reset to default** puts back the original. Your letterhead is stored on your own
+computer and is never sent anywhere.
+
+### For other schools
+
+Generate4U is free to use and adapt. Two things worth knowing before you adopt it:
+
+- **The goal library is written against Victorian Curriculum 2.0.** If your school
+  is in Victoria, it will fit straight away. Interstate, the SMART goal wording and
+  curriculum levels would need rewriting — that's a teacher's job rather than a
+  technical one, and it's the substantial part.
+- **The letterhead is yours to change.** The school name and logo printed on
+  generated documents can be set to your own — see **Set your school's letterhead**
+  below. Everything else works the same.
+
+There's no licence fee, no account, and no server. If you adapt it for your school
+and improve something, a pull request back here is welcome but never expected.
 
 ### Your privacy and student data
 
@@ -178,6 +209,16 @@ Implementation:
 ## Changes by mrdavearms
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
+
+### Let each school set its own letterhead
+The school name and logo printed on generated documents were written into the code,
+so the app only really suited one school. There's now a **Letterhead** button in the
+top right where a teacher can set their own school name and upload a logo, stored on
+their own computer. Nothing changes unless someone opens that dialog — if you never
+touch it, documents come out exactly as they do today. The README also now describes
+the app as being for Victorian secondary schools rather than for Wangaratta
+specifically, and says plainly that the goal library is written against Victorian
+Curriculum 2.0, which is the real limit on adopting it interstate.
 
 ### Write down how we work on this repo
 Added `CONTRIBUTING.md`, so the working agreement lives in the repository instead of
