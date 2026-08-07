@@ -210,6 +210,15 @@ Implementation:
 
 Contributions from [@mrdavearms](https://github.com/mrdavearms), newest first. Each entry says what changed and why, so the reasoning is visible without reading the diff.
 
+### Put the install warnings guidance where teachers actually land
+The instructions for getting past the Mac and Windows security warnings only
+existed in this README — but the download buttons, and the app's own update
+prompt, send teachers straight to a release page instead. Releases built
+automatically had no notes at all, so a teacher would download the file, meet
+"unverified developer" or "Windows protected your PC", and have nothing telling
+them it was expected or what to click. Every release now carries those
+instructions automatically, and the current release has been updated with them.
+
 ### Let each school set its own letterhead
 The school name and logo printed on generated documents were written into the code,
 so the app only really suited one school. There's now a **Letterhead** button in the
